@@ -1,0 +1,84 @@
+\documentclass[12pt,italian]{article}
+%----------------------------
+%		PACKAGES
+%----------------------------
+\usepackage{fullpage}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{latexsym}
+\usepackage[leqno]{amsmath}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[displaymath, mathlines]{lineno}
+\usepackage{authblk}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{trees,positioning,shapes} 
+% for listing source code files
+\usepackage{listings}
+
+%----------------------------
+%			TITLE
+%----------------------------
+\title{ABSoNeS: Agent Based Social Network Simulation}
+\author[1]{Simone Ciccolella}
+\author[2]{Daniele Bellani}
+\affil[1]{email}
+\affil[2]{email}
+\date{\today}
+\setcounter{Maxaffil}{0}
+\renewcommand\Affilfont{\itshape\small}
+%----------------------------
+%	DEFINITIONS
+%----------------------------
+\newtheorem{defnn}{Definition}
+
+%----------------------------
+%	DOCUMENT SETTINGS
+%----------------------------
+\setlength\linenumbersep{20pt}
+\renewcommand\linenumberfont{\normalfont\footnotesize\color{gray}}
+
+
+
+%% Rimuovere per la sottomissione
+ \linenumbers
+\usepackage{textcomp}\usepackage{xcolor}
+\newcommand{\notaestesa}[2]{%
+  \marginpar{\color{red!75!black}\textbf{\texttimes}}%
+  {\color{red!75!black}%
+    [\,\textbullet\,\textsf{\textbf{#1:}} %
+    \textsf{\footnotesize#2}\,\textbullet\,]}%
+}
+\newcommand{\SC}[1]{\notaestesa{SC}{#1}}
+\newcommand{\DB}[1]{\notaestesa{DB}{#1}}
+%% Fine rimozione
+
+%Key-words
+\usepackage{xspace} 
+\newcommand{\cukeyword}[1]{%
+{\fontfamily{cmtt}\selectfont #1}}  
+
+
+
+
+\begin{document}
+\maketitle
+%\begin{multicols}{2}                                                
+
+\section*{TO DO}
+\begin{itemize}
+\item Questione \textbf{omofilia}
+\item Definire costati di proporzione
+\item Definire alta e bassa probabilit\`a e attivit\`a
+\end{itemize}
+
+
+\input{modellazione}
+
+
+
+%\end{multicols}
+\end{document}

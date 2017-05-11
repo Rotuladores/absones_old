@@ -1,0 +1,222 @@
+\newcommand{\activity}{\cukeyword{activity}}
+\newcommand{\topic}{\cukeyword{topic}}
+\newcommand{\PI}{\cukeyword{PI}}
+\newcommand{\TZ}{\cukeyword{TZ}}
+\newcommand{\followers}{\cukeyword{followers}}
+\newcommand{\following}{\cukeyword{following}}
+\newcommand{\FOV}{\cukeyword{FOV}}
+\newcommand{\dtag}{\cukeyword{dtag}}
+\newcommand{\attach}{\cukeyword{attachment}}
+\newcommand{\twt}{\cukeyword{tweet}}
+\newcommand{\retwt}{\cukeyword{retweet}}
+\newcommand{\lika}{\cukeyword{likability}}
+\newcommand{\disla}{\cukeyword{dislikability}}
+\newcommand{\interest}{\cukeyword{interest}}
+
+\section{Modellazione}
+\label{sec:model}
+Per la creazione del modello deriviamo delle costanti che saranno
+sempre vere:
+
+\begin{description}
+  \item[Fasi Temporali (FT)] Dividiamo la giornata in 12 fasi che 
+    rappresentano 2 ore l'una in cui ogni utente ha un personale
+    valore di \activity{} che rappresenta il suo utilizzo di Twitter.
+    Tali fasi sono cos\`i suddivise:
+    \begin{itemize}
+      \item 4 fasi con \activity{} pari a 0 corrispondente a 8
+      ore di sonno, ovvero la quantit\`a consigliata (e quasi mai 
+      rispettata).
+      \item 4 fasi con \activity{} bassa, corrispondente a 8 ore di 
+      lavoro
+      \item 4 fasi con \activity{} elevata che rappresenta 8 ore di 
+      tempo libero in cui l'utente ha una attivit\`a maggiore su 
+      Twitter
+    \end{itemize} 
+    Al momento ignoramo il weekend, ma cercheremo di definirlo e 
+     implementarlo nelle prossime versioni.
+     \SC{definire BASSA e ELEVATA attivit\`a}
+  \item[Topic] ovvero i possibili argomenti di interesse esistenti 
+    nel modello perci\`o abbiamo una lista \topic{} 
+    $ = (t_1, \dots , t_n) $ definiti a priori e immutabili. 
+    Non vengono mai utilizzati direttamente, ma vengono utilizzati 
+    come indici di riferimento dunque non \`e necessario 
+    implementarli realmente.
+\end{description}
+
+
+
+\subsection{Utenti}
+\label{subsec:users}
+Gli utenti sono rappresentati dai nodi della rete. Vediamo ora dunque
+in che modo viene generato ogni nodo:
+
+\begin{description}
+  \item[Personal Interest (PI)] \`e una lista \PI{} 
+    $=(p_1, \dots, p_n)$ dove $p_i \in [0, 1]$ 
+    \SC{valutare inclusione degli estremi}
+    indica la probabilit\`a di interesse del nodo rispetto al 
+    \topic{} $i$ generata casualmente. Al momento tale valore \`e immutabile.
+    \SC{modellare valore variabile}
+  \item[Timezone (TZ)] ovvero una lista \TZ{} $=(tz_1, \dots, tz_12) $
+  dove i $tz_i$ sono generati in accordo con le \textbf{FT} generati 
+  come segue:
+  \begin{itemize}
+    \item Genero $1\leq i \leq 12$ casualmente
+    \item Imposto le ore di sonno $tz_j = 0$ per $j = i, \dots , i+3$
+    \item Imposto le ore di lavoro $tz_j$ = bassa \activity{} per 
+      $j = i+4, \dots , i+7$ \SC{definire}
+    \item Imposto le ore di tempo libero $tz_j$ = alta \activity{}
+      per $j = i+8, \dots , i+11$ \SC{definire}
+  \end{itemize}
+  Tutte le precedenti operazioni di indici sono da considerarsi 
+  $mod \quad 12$.
+\end{description}
+
+Per poter fare operazioni sugli utenti abbiamo inoltre bisogno delle 
+seguenti definizioni:
+
+\begin{description}
+  \item[Followers] per ogni utente U definiamo come \followers{}(U) 
+  l'insieme dei followers di U.
+  \item[Following] similmente \following{}(U) indica
+  l'insieme degli utenti seguiti da U.
+  \item[Direct TAG (dtag)] \dtag{}(U) \`e l'insieme dei tweets che
+  contengo un tag all'utente U. Sar\'a spiegato meglio nella sezione
+  riguardante i tweet [\ref{subsec:social}].
+  \item[Interessi] per ogni utente U \interest{}(U) \`e l'insieme
+  dei \topic{} che interessano a U.
+  \item[Field Of View (FOV)] \FOV{}(U) rappresenta l'insieme dei
+  delle notizie visualizzate dall'utente U, con 
+  \FOV{} $\subseteq$ \following{}(U) $\cup$ \dtag{}(U)
+  Questo insieme \`e definito sia per una questione
+  computazionale, ma anche per un motivo reale in quanto \`e 
+  difficile che un utente nell'arco della giornata riesca a vedere
+  tutti i tweets e i retweets degli utenti che segue e i tweet che
+  in cui risulta direttamente \textit{taggato}. Questa affermazione
+  diventa sempre pi\`u ragionevole al crescere della popolarit\`a 
+  di un utente.
+  
+\end{description}
+
+Le relazioni tra gli utenti sono descritti dagli archi tra di essi.
+\begin{description}
+  \item[Edges] un arco tra due utenti $U_1$ e $U_2$, scritto come
+  $(U_1 ,U_2)$ rappresenta la relazione di following tra il primo 
+  ed il secondo. Di conseguenza, ovviamente, 
+  risulta che $U_1 \in $  \followers{}($U_2$) e simmetricamente
+   $U_2 \in $  \following{}($U_1$)
+   \item[Attachment] ad un arco $e_j \in U\times U$ \`e associato un 
+   valore \attach{}($U_1, U_2$) $ \in [0,1]$ che rappresenta l' 
+   \textit{attaccamento} di $U_1$ a $U_2$, pi\`u questo valore si 
+   avvicina a 0 pi\`u la probabilit\`a che $U_1$ smetta di seguire
+   $U_2$ aumenta e viceversa. Quando il nodo viene creato il valore
+   di \attach{} \`e relativamente alto ($\sim 0.8$) in quanto ci si 
+   aspetta che un utente non smetta di seguire un altro utente
+   poco dopo aver iniziato a seguirlo.
+\end{description}
+
+\subsection{Probabilit\`a}
+\label{subsec:prob}
+
+In tutto il modello sono definite globalmente le 
+probabilit\`a di compiere una determinata azione.
+
+\begin{description}
+  \item[Tweet] ogni utente U ad ogni tempo T ha la possibilit\`a
+  di creare un tweet secondo la seguente probabilit\`a:
+  \begin{equation*}
+    P_{tweet} = \alpha PI(T) followers(U)
+  \end{equation*}
+  Questo perch\`e ci si aspetta che un utente popolare sia pi\`u 
+  attivo di uno sconosciuto, per mantenere il suo livello di 
+  popolarit\`a.
+  \item[Retweet] similmente al precedente un utente U al tempo T
+  ha una possibilit\`a di effettuare un retweet come:
+    \begin{equation*}
+        P_{tweet} = \beta PI(T) followers(U)
+    \end{equation*}
+    Risulta da valutare la possibilit\`a che un utente possa fare 
+    pi\`u  retweet rispetto al numero dei tweet, in quanto essa \`e
+    un'operazione decisamente meno impegnativa e perci\`o,
+    ,intuitivamente,
+    con una pi\`u elevata probabilit\`a di accadere.
+  \item[Tag] ogni tweet ha una possibilit\`a di contenere un tag 
+  diretto ad un altro utente V con probabilit\`a
+  \begin{equation*}
+    P_{tweet} = \gamma follower(U) followers(V)
+  \end{equation*} 
+  Ovvero ci si aspetta che il \dtag{} sia proporzionale alla 
+  popolarit\`a di entrambi gli utenti coinvolti.
+\end{description}
+
+\subsection{Attivit\`a sociali}
+\label{subsec:social}
+
+Per prima cosa definiamo gli oggetti che riguardano le attivit\`a 
+sociali:
+
+\begin{description}
+  \item[Tweet] Il tweet dell'utente U al tempo T \`e definito come
+  \twt{}(U,T) = ($j$, \lika{}, \disla{}, \dtag, U) dove:
+  \begin{itemize}
+    \item $j$ \`e il \topic{} su cui il tweet verte
+    \item \lika{} $\in [0,1]$ indica la probabilit\`a di quanto
+    il tweet possa piacere agli utenti a cui interessa il 
+    \topic{} $j$. 
+    \item \disla{} rappresenta la probabilit\`a di quanto il tweet 
+    possa non piacere a chi non \`e interessato all'argomento
+    \item \dtag{} indica l'utente V taggato nel tweet. Tale valore 
+    pu\`o anche essere nullo.
+    \item U \`e l'utente che ha effettuato il tweet. 
+    Necessario per l'implementazione.
+  \end{itemize}
+  \item[Retweet] Il retweet effettuato dall'utente U al tempo T
+  del tweet di V al tempo $\overline{T}$, definito come:
+  \retwt{}(U, T) = \twt{}(V, $\overline{T}$)
+\end{description}
+
+In base agli oggetti definiti in precedenza possiamo definire le 
+azioni di:
+
+\begin{description}
+  \item[Post] Nel momento in cui l'utente U \`e abilitato alla 
+  creazione di un tweet allora viene generato casualmente un 
+  \topic{} $j$ su cui verter\`a il tweet in modo tale che un topic 
+  di interesse per U sia selezionato con maggiore probabilit\`a.
+  Una volta scelto il topic $j$:
+  \begin{itemize}
+    \item se $j$ \`e di interesse per U (U.\PI{}($j$) $\geq 0.5$)
+     allora il \twt{} risultante
+    avr\`a una \lika{} elevata mentre la \disla{} sar\`a casuale.
+    \item viceversa il \twt{} generato avr\`a una \disla{} alta ed
+    una \lika{} casuale.
+  \end{itemize}
+  \item[Unfollow] Un utente U pu\`o decidere di smettere di seguire 
+  un utente V, grazie alla variabile \attach{} che li lega, e 
+  all'ultimo \twt{} di V con probabilit\`a 
+  \begin{equation*}
+    P_{unfollow}(U, V) = P(dislakability|attachment)
+  \end{equation*}
+  Nel caso in cui U decida di continuare a seguire V allora 
+  \attach{}(U,V) = $P_{unfollow}(U, V)$ aggiornando dunque la
+  probabilit\`a di unfollow a quella appena calcolata.
+  Risulta dunque che la probabilit\`a di unfollow dipende solo dallo 
+  stato precedente di \attach{}. \SC{Hidden Markov Model?}
+  \item[Follow] Esistono diversi tipi di possibili modalit\`a di 
+  following:
+    \begin{description}
+      \item[By Retweet (BR)] By retweet Ancora da definire. 
+      Probabilit\`a simmetrica a \textbf{Unfollow}. \SC{definire}
+      \item[Outside Factor (OF)] avviene quando un utente U comincia
+      a seguire un nodo V per fattori esterni al Social Network, 
+      quali ad esempio nuova amicizia nella vita reale, nuovo
+      follow su altri mezzi di comunicazioni online, ecc.
+      \SC{prob da definire}
+      \item[Active Search (AS)] un utente U ricerca un qualunque 
+      altro utente V tramite la rete sociale anche se non ha 
+      collegamenti con esso. Tale ricerca ha senso secondo il
+      modello di omofilia \SC{definire}.
+       
+    \end{description}
+\end{description}

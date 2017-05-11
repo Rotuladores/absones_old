@@ -60,4 +60,8 @@ flycheck_*.el
 # directory configuration
 .dir-locals.el
 
-# End of https://www.gitignore.io/api/emacs
+# VIM #
+##################
+*~
+*.swp
+*.swo

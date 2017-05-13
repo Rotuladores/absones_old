@@ -58,7 +58,7 @@ in che modo viene generato ogni nodo:
     indica la probabilit\`a di interesse del nodo rispetto al 
     \topic{} $i$ generata casualmente. Al momento tale valore \`e immutabile.
     \SC{modellare valore variabile}
-  \item[Timezone (TZ)] ovvero una lista \TZ{} $=(tz_1, \dots, tz_12) $
+  \item[Timezone (TZ)] ovvero una lista \TZ{} $=(tz_1, \dots, tz_{12}) $
   dove i $tz_i$ sono generati in accordo con le \textbf{FT} generati 
   come segue:
   \begin{itemize}
@@ -70,7 +70,8 @@ in che modo viene generato ogni nodo:
       per $j = i+8, \dots , i+11$ \SC{definire}
   \end{itemize}
   Tutte le precedenti operazioni di indici sono da considerarsi 
-  $mod \quad 12$.
+  $mod \quad 12$. Il motivo di questa scelta \`e quello di simulare
+  sia diversi orari per le persone, sia diversi fusi orari.
 \end{description}
 
 Per poter fare operazioni sugli utenti abbiamo inoltre bisogno delle 
@@ -81,14 +82,18 @@ seguenti definizioni:
   l'insieme dei followers di U.
   \item[Following] similmente \following{}(U) indica
   l'insieme degli utenti seguiti da U.
-  \item[Direct TAG (dtag)] \dtag{}(U) \`e l'insieme dei tweets che
-  contengo un tag all'utente U. Sar\'a spiegato meglio nella sezione
+  \item[Direct Tag (dtag)] \dtag{}(U, T) \`e l'insieme dei tweets che
+  contengo un tag all'utente U generati al tempo T. 
+  Sar\'a spiegato meglio nella sezione
   riguardante i tweet [\ref{subsec:social}].
   \item[Interessi] per ogni utente U \interest{}(U) \`e l'insieme
   dei \topic{} che interessano a U.
-  \item[Field Of View (FOV)] \FOV{}(U) rappresenta l'insieme dei
-  delle notizie visualizzate dall'utente U, con 
-  \FOV{} $\subseteq$ \following{}(U) $\cup$ \dtag{}(U)
+  \item[Field Of View (FOV)] \FOV{}(U, T) rappresenta l'insieme dei
+  delle notizie visualizzate dall'utente U al tempo T, con 
+  \FOV{} $\subseteq$ \twt{}(\following{}(U), $T_i$) $\cup$ 
+  \retwt{}(\following{}(U), $T_j$) $\cup$ \dtag{}(U, $T_l$) 
+  per $T_{i,j,l} \in \overline{T}$ lista di
+  tempi non maggiori al tempo attuale T.
   Questo insieme \`e definito sia per una questione
   computazionale, ma anche per un motivo reale in quanto \`e 
   difficile che un utente nell'arco della giornata riesca a vedere
@@ -125,27 +130,32 @@ probabilit\`a di compiere una determinata azione.
 \begin{description}
   \item[Tweet] ogni utente U ad ogni tempo T ha la possibilit\`a
   di creare un tweet secondo la seguente probabilit\`a:
-  \begin{equation*}
-    P_{tweet} = \alpha PI(T) followers(U)
-  \end{equation*}
+    \begin{equation}
+    \label{eq:ptwt}
+      P_{tweet} = \alpha TZ(T) \dfrac{|followers(U)|}{|Users|}
+    \end{equation}
   Questo perch\`e ci si aspetta che un utente popolare sia pi\`u 
   attivo di uno sconosciuto, per mantenere il suo livello di 
   popolarit\`a.
+  
   \item[Retweet] similmente al precedente un utente U al tempo T
   ha una possibilit\`a di effettuare un retweet come:
-    \begin{equation*}
-        P_{tweet} = \beta PI(T) followers(U)
-    \end{equation*}
+    \begin{equation}
+    \label{eq:pretwt}
+        P_{retweet} = \beta TZ(T) \dfrac{|followers(U)|}{|Users|}
+    \end{equation}
     Risulta da valutare la possibilit\`a che un utente possa fare 
     pi\`u  retweet rispetto al numero dei tweet, in quanto essa \`e
     un'operazione decisamente meno impegnativa e perci\`o,
     ,intuitivamente,
     con una pi\`u elevata probabilit\`a di accadere.
+    
   \item[Tag] ogni tweet ha una possibilit\`a di contenere un tag 
   diretto ad un altro utente V con probabilit\`a
-  \begin{equation*}
-    P_{tweet} = \gamma follower(U) followers(V)
-  \end{equation*} 
+  \begin{equation}
+  \label{eq:ptag}
+    P_{tag} = \gamma \dfrac{follower(U) followers(V)}{{|Users|^2}}
+  \end{equation} 
   Ovvero ci si aspetta che il \dtag{} sia proporzionale alla 
   popolarit\`a di entrambi gli utenti coinvolti.
 \end{description}
@@ -171,15 +181,19 @@ sociali:
     \item U \`e l'utente che ha effettuato il tweet. 
     Necessario per l'implementazione.
   \end{itemize}
+  
   \item[Retweet] Il retweet effettuato dall'utente U al tempo T
   del tweet di V al tempo $\overline{T}$, definito come:
   \retwt{}(U, T) = \twt{}(V, $\overline{T}$)
+  
+  \item[Dtag]
 \end{description}
 
 In base agli oggetti definiti in precedenza possiamo definire le 
 azioni di:
 
 \begin{description}
+
   \item[Post] Nel momento in cui l'utente U \`e abilitato alla 
   creazione di un tweet allora viene generato casualmente un 
   \topic{} $j$ su cui verter\`a il tweet in modo tale che un topic 
@@ -192,17 +206,46 @@ azioni di:
     \item viceversa il \twt{} generato avr\`a una \disla{} alta ed
     una \lika{} casuale.
   \end{itemize}
+  Una volta definito il tweet viene generata la probabilit\`a di 
+  avere un \dtag{} ad un altro utente V in base alla eq. 
+  \ref{eq:ptag}. Se tale tag viene generato allora il \twt{} avr\`a
+  un tag all'utente V, altrimenti il post non avr\`a alcun \dtag{}.
+  
+  \item[Repost] Per ogni utente U viene scelta casualmente una lista 
+  di $k$ \twt{} $\overline{w} \in$ \FOV{}(U)$^k$, successivamente
+  per ogni $\overline{w}_i \in \overline{w}$ viene valutata la 
+  possibilit\`a di retweet di $\overline{w}_i$ secondo l' equazione
+  \ref{eq:pretwt}, in caso favorevole viene prodotto \retwt{}(U, T) 
+  che sar\`a una lista di retweet effettuati da U al tempo T.
+  
   \item[Unfollow] Un utente U pu\`o decidere di smettere di seguire 
   un utente V, grazie alla variabile \attach{} che li lega, e 
-  all'ultimo \twt{} di V con probabilit\`a 
+  all'ultimo \twt{} $W$ di V con probabilit\`a 
   \begin{equation*}
-    P_{unfollow}(U, V) = P(dislakability|attachment)
+    P_{unfollow}(U, V) = P(W[dislikability] \mid attachment(U, V))
   \end{equation*}
   Nel caso in cui U decida di continuare a seguire V allora 
   \attach{}(U,V) = $P_{unfollow}(U, V)$ aggiornando dunque la
   probabilit\`a di unfollow a quella appena calcolata.
   Risulta dunque che la probabilit\`a di unfollow dipende solo dallo 
-  stato precedente di \attach{}. \SC{Hidden Markov Model?}
+  stato precedente di \attach{}. \SC{Markov Chain?}
+  
+  \item[Continue Follow] Un utente U pu\`o avere il desiderio di 
+  continuare a seguire un altro utente V, se V ha pubblicato un tweet
+  riguardante un topic di suo gradimento. Tuttavia tale post ha una
+  sua \lika{} che potrebbe pregiudicare, sia in positivo che in 
+  negativo, l'\attach{}(U,V) che perci\`o a seguito del nuovo \twt{} 
+  W di V risulta che
+  \attach{}(U,V) = $P(W[likability] \mid attachment(U,V))$
+  
+  \item[Nota:] Per le due azioni precedenti di \textbf{Unfollow} e
+  \textbf{Continue Follow} bisogna considerare il caso in cui
+  la valutazione venga effettuata rispetto ad un retweet e non ad
+  un tweet dell'utente seguito V. 
+  \SC{Che si fa? Si ignorano i retweet o li si considera come se 
+  fossero tweet di V, in quanto se retweetta condivide la loro
+  opinione?}
+  
   \item[Follow] Esistono diversi tipi di possibili modalit\`a di 
   following:
     \begin{description}
@@ -216,7 +259,56 @@ azioni di:
       \item[Active Search (AS)] un utente U ricerca un qualunque 
       altro utente V tramite la rete sociale anche se non ha 
       collegamenti con esso. Tale ricerca ha senso secondo il
-      modello di omofilia \SC{definire}.
-       
+      modello di omofilia \SC{definire}.       
     \end{description}
 \end{description}
+
+\subsection{Step Simulazione}
+\label{subsec:step}
+
+Usando il modello definito in precedenza possiamo ora descrivere gli 
+step che avvengono nella simulazione al tempo T.
+
+\begin{description}
+  \item[Tweet Step (TS)] Per ogni utente U viene generato una 
+  probabilit\`a casuale $P_t(U,T)$ che rappresenta la sua 
+  inclinazione di produrre un \twt{} al tempo T. Se $P_t(U,T)$
+  risulta conforme \SC{conforme mi fa schifo. Qual \`e il termine
+  giusto?} alla probabilit\`a $P_{tweet}$ [eq. \ref{eq:ptwt}] allora
+  viene generato il \twt{}(U, T) come descritto in \textbf{Post}.
+  
+  \item[Retweet Step (RS)] Similmente alla fase precedente,
+  per ogni utente U viene generato una 
+  probabilit\`a casuale $P_r(U,T)$ che rappresenta la sua 
+  inclinazione di produrre un \retwt{} al tempo T. Se $P_r(U,T)$
+  risulta conforme \SC{conforme mi fa schifo. Qual \`e il termine
+  giusto?} alla probabilit\`a $P_{retweet}$ [eq. \ref{eq:pretwt}] 
+  allora viene generato il \retwt{}(U, T) come descritto in 
+  \textbf{Repost}.
+  
+  \item[Evaluation Step (ES)] Dopo che tutti i \twt{} e i \retwt{}
+  sono stati creati al tempo T, per ogni utente U viene generato
+  il \FOV{}(U, T) e per ogni $f_i \in$ \FOV{}(U, T) viene valutato 
+  l' \attach{}(U, V), dove V \`e l'autore di $f_i$. In base alle 
+  probabilit\`a e azioni precedentemente descritte, l'utente U decide
+  se smettere di seguire V (secondo \textbf{Unfollow}) o di
+  continuare a seguire a seguire, modificando l'\attach{} come
+  descritto in \textbf{Continue Follow}. \SC{modificare in base alla cosiderazione dei retweet}
+  Nel caso in cui U stia valutando un retweet di un utente W che non 
+  segue, allora valuta la probabilit\`a di seguirlo in base al 
+  \textbf{Following BR}.
+  Infine viene valutata la possibilit\`a di creare un nuovo follow 
+  per \textbf{OF} e \textbf{AS}.
+\end{description}
+
+Le azioni descritte in precedenza devono necessariamente essere 
+eseguite sequenzialmente una dopo l'altra, tuttavia i singoli step 
+possono essere facilmente parallelizzati, senza problemi di 
+concorrenza, in quanto il post di un tweet \`e indipendente per ogni
+utente; lo stesso vale per il retweet e infine l'aggiornamento dell'
+\attach{} \`e  dipendente dai tweet e i retweet effettuati 
+\textbf{TS} e \textbf{RS}, ma i singoli aggiornamenti sono 
+indipendenti tra gli utenti. Per questo motivo l'idea \`e quella di
+fare in modo che le azioni contenute in un step di simulazione 
+vengano effettuate con pi\`u thread, ma comunque rispettando l'ordine
+descritto.

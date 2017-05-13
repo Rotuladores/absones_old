@@ -8,6 +8,7 @@ import scipy as sp
 import numpy as np
 import networkx as nx
 import math
+import argparse
 import pycxsimulator
 
 rd.seed()
@@ -89,10 +90,27 @@ def skl_d(p,q):
 ##=====================================
 ## Section 5: Import and Run GUI
 ##=====================================
+def get_args():
+    parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
+
+    #change all the defaults
+
+    parser.add_argument('-u', '--users', action='store', type=int, default=5,
+        help='specifies the number of total users.')
+    parser.add_argument('-t', '--topic', action='store', type=int, default=10,
+        help='specifies the number of total topics.')
+    parser.add_argument('-d', '--threads', action='store', type=int, default=2,
+        help='specifies the number of total threads used by the program.')
+    return parser.parse_args()
+    
+
 def main():
+    global args
+    print(args)
     pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
     # 'title', 'interval' and 'parameterSetters' are optional
 
 if __name__ == "__main__":
+    args = get_args()
     main()
 

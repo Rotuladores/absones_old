@@ -2,32 +2,21 @@
 import matplotlib
 matplotlib.use('TkAgg')
 
-##=====================================
-## Section 1: Import Modules
-##=====================================
-
 import pylab as pl
 import random as rd
 import scipy as sp
+import numpy as np
 import networkx as nx
 import math
 
-##=====================================
-## Section 2: Define Model Parameters
-##=====================================
-
 rd.seed()
-
-##=====================================
-## Section 3: Define Three Functions
-##=====================================
 
 def init():
     global time, network, network_r, maxNodeID, positions, colors, dims, sharing
 
     time = 0
 
-    network = nx.gnm_random_graph(250,200,directed=True)
+    network = nx.gnm_random_graph(5,10,directed=True)
     network_r = nx.DiGraph()
     network_r.add_nodes_from(network)
 
@@ -36,39 +25,65 @@ def init():
     dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
 
     sharing = []
+
+    for n in network.nodes():
+        network.node[n]['interest'] = genProbVec(5)
 def draw():
+     colors = [network.degree().get(node) for node in network.nodes()]
+     dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
+
      pl.subplot(1,2,1)
      pl.cla()
      nx.draw(network, pos = positions, node_color = colors, node_size = dims)
      pl.axis('image')
-     pl.title('t = ' + str(time))
+     pl.title('t = ' + str(time) + ' edges = ' + str(len(network.edges())))
 
      pl.subplot(1,2,2)
      pl.cla()
-     nx.draw(network_r, pos = positions, node_color = colors, node_size = dims)
+     nx.draw(network_r, pos = positions, node_color = 'w', node_size = dims, with_labels=True)
      pl.axis('image')
      pl.title('t = ' + str(time))
 def step():
     global network_r, network, sharing, time
     network_r.remove_edges_from(sharing)
-    a1 = rd.randint(1,200)
-    a2 = a1+5
-    b1 = rd.randint(1,200)
-    b2 = b1+5
+    l = network.nodes()
+    a1 = rd.choice(l)
+    l.remove(a1)
+    a2 = rd.choice(l)
+    l.remove(a2)
+    b1 = rd.choice(l)
+    l.remove(b1)
+    b2 = rd.choice(l)
     network_r.add_edge(u=a1,v=a2)
     network_r.add_edge(u=b1,v=b2)
     sharing = [(a1,a2),(b1,b2)]
     time += 1
 
+    for e in sharing:
+        skl = skl_d(network.node[e[0]]['interest'],network.node[e[1]]['interest'])
+        print("%d,%d skl= %f" % (e[0],e[1],skl))
+        if skl > 0.5:
+            network.add_edge(u=e[0],v=e[1])
+    print(network.edges())
+
 ##=====================================
 ## Section 4: [Optional] Create Setter/Getter Functions for Model Parameters
 ##=====================================
 
-#def setSomeParameter (newValue=someParameter):
-#    """ The comment will appear in GUI control """
-#    global someParameter
-#    someParameter = newValue
-#    return someParameter
+def genProbVec(k):
+    p = rd.sample(range(1,100),k)
+    sp = sum(p)
+    return map(lambda x: float(x)/sp,p)
+
+def skl_d(p,q):
+	kl1 = 0
+	for i in range(0, len(p)):
+		kl1 = kl1 + p[i]*np.log2(p[i]/q[i])
+	kl2 = 0
+	for j in range(0, len(q)):
+		kl2 = kl2 + q[j]*np.log2(q[j]/p[j])
+	return np.mean([kl1,kl2])
+
 
 ##=====================================
 ## Section 5: Import and Run GUI
@@ -77,3 +92,4 @@ def step():
 import pycxsimulator
 pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
 # 'title', 'interval' and 'parameterSetters' are optional
+

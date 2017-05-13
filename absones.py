@@ -8,6 +8,7 @@ import scipy as sp
 import numpy as np
 import networkx as nx
 import math
+import pycxsimulator
 
 rd.seed()
 
@@ -88,8 +89,10 @@ def skl_d(p,q):
 ##=====================================
 ## Section 5: Import and Run GUI
 ##=====================================
+def main():
+    pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
+    # 'title', 'interval' and 'parameterSetters' are optional
 
-import pycxsimulator
-pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
-# 'title', 'interval' and 'parameterSetters' are optional
+if __name__ == "__main__":
+    main()
 

@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 
 import pylab as pl
-import random as rd
+import random as rd #non usare questo una np
 import scipy as sp
 import numpy as np
 import networkx as nx
@@ -15,6 +15,7 @@ rd.seed()
 
 def init():
     global time, network, network_r, maxNodeID, positions, colors, dims, sharing
+    global args
 
     time = 0
 
@@ -30,6 +31,7 @@ def init():
 
     for n in network.nodes():
         network.node[n]['interest'] = genProbVec(5)
+
 def draw():
      colors = [network.degree().get(node) for node in network.nodes()]
      dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
@@ -45,6 +47,7 @@ def draw():
      nx.draw(network_r, pos = positions, node_color = 'w', node_size = dims, with_labels=True)
      pl.axis('image')
      pl.title('t = ' + str(time))
+
 def step():
     global network_r, network, sharing, time
     network_r.remove_edges_from(sharing)
@@ -86,6 +89,32 @@ def skl_d(p,q):
 		kl2 = kl2 + q[j]*np.log2(q[j]/p[j])
 	return np.mean([kl1,kl2])
 
+def create_user_attr():
+    global args
+    attr = {}
+
+    # personal interest
+    attr['pi'] = np.random.random_sample((1,args.topic)).tolist()[0]
+
+    #timezone (refer to documentation)
+    tz = np.zeros(12)
+    i = np.random.randint(13) + 4
+    i = i % 12
+    print(i)
+
+    # low activity
+    for k in range(4):
+        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0]
+    i = (i + 4) % 12
+    # high activity
+    for k in range(4):
+        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0] -5
+
+    attr['tz'] = tz.tolist()
+
+    return attr
+
+
 
 ##=====================================
 ## Section 5: Import and Run GUI
@@ -105,12 +134,12 @@ def get_args():
     
 
 def main():
-    global args
-    print(args)
+    # global args
     pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
     # 'title', 'interval' and 'parameterSetters' are optional
 
 if __name__ == "__main__":
     args = get_args()
+    # print(create_user_attr())
     main()
 

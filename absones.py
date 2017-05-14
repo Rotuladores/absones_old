@@ -24,7 +24,7 @@ dtag = {}
 
 def init():
     global time, network, network_r, maxNodeID, positions, colors, dims, sharing
-    global args
+    global sim
 
     time = 0
 
@@ -39,7 +39,8 @@ def init():
     sharing = []
 
     for n in network.nodes():
-        network.node[n]['interest'] = genProbVec(5)
+        sim.generate_new_user(network.node[n])
+        print(network.node[n])
 
 def draw():
      colors = [network.degree().get(node) for node in network.nodes()]
@@ -122,6 +123,6 @@ def main():
 if __name__ == "__main__":
     args = get_args()
     sim = Simulation(args.topic, args.users)
-    print(sim.generate_new_user())
+    print()
     main()
 

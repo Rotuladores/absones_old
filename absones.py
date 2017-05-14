@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import matplotlib
 matplotlib.use('TkAgg')
 
@@ -13,7 +14,7 @@ import pycxsimulator
 
 ### absones utilities 
 sys.path.append(os.path.abspath(os.getcwd() + '/utils'))
-from users import *
+from simulation import *
 
 rd.seed()
 
@@ -83,11 +84,6 @@ def step():
 ## Section 4: [Optional] Create Setter/Getter Functions for Model Parameters
 ##=====================================
 
-def genProbVec(k):
-    p = rd.sample(range(1,100),k)
-    sp = sum(p)
-    return map(lambda x: float(x)/sp,p)
-
 def skl_d(p,q):
 	kl1 = 0
 	for i in range(0, len(p)):
@@ -106,7 +102,6 @@ def skl_d(p,q):
 ##=====================================
 def get_args():
     parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
-
     #change all the defaults
     parser.add_argument('-u', '--users', action='store', type=int, default=5,
         help='specifies the number of total users.')
@@ -116,8 +111,7 @@ def get_args():
         help='specifies the number of total threads used by the program.')
     ret = parser.parse_args()
 
-    usr_copy_args(ret)
-    return args
+    return ret
     
 
 def main():
@@ -127,6 +121,7 @@ def main():
 
 if __name__ == "__main__":
     args = get_args()
-    print(create_user_attr(args))
+    sim = Simulation(args.topic, args.users)
+    print(sim.generate_new_user())
     main()
 

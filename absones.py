@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 
 import pylab as pl
-import random as rd #non usare questo una np
+import random as rd #non usare questo usa np
 import scipy as sp
 import numpy as np
 import networkx as nx
@@ -12,6 +12,10 @@ import argparse
 import pycxsimulator
 
 rd.seed()
+
+tweets = {}
+retweets = {}
+dtag = {}
 
 def init():
     global time, network, network_r, maxNodeID, positions, colors, dims, sharing
@@ -93,25 +97,32 @@ def create_user_attr():
     global args
     attr = {}
 
-    # personal interest
+    ##### personal interest
     attr['pi'] = np.random.random_sample((1,args.topic)).tolist()[0]
 
-    #timezone (refer to documentation)
+    ##### timezone (refer to documentation)
     tz = np.zeros(12)
     i = np.random.randint(13) + 4
     i = i % 12
-    print(i)
-
-    # low activity
+    
+    ## low activity - CHANGE
     for k in range(4):
         tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0]
     i = (i + 4) % 12
-    # high activity
+    ## high activity - CHANGE
     for k in range(4):
-        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0] -5
+        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0] - 5
 
     attr['tz'] = tz.tolist()
+    attr['followers'] = []
+    attr['following'] = []
 
+    interest = []
+    for j in range(len(attr['pi'])):
+        if attr['pi'][j] > 0.5:
+            interest.append(j)
+    attr['interest'] = interest
+    
     return attr
 
 
@@ -140,6 +151,6 @@ def main():
 
 if __name__ == "__main__":
     args = get_args()
-    # print(create_user_attr())
+    print(create_user_attr())
     main()
 

@@ -75,7 +75,7 @@ def step():
     time += 1
 
     for e in sharing:
-        skl = skl_d(network.node[e[0]]['interest'],network.node[e[1]]['interest'])
+        skl = skl_d(network.node[e[0]]['pi'],network.node[e[1]]['pi'])
         print("%d,%d skl= %f" % (e[0],e[1],skl))
         if skl > 0.5:
             network.add_edge(u=e[0],v=e[1])

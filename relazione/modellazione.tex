@@ -168,7 +168,7 @@ sociali:
 
 \begin{description}
   \item[Tweet] Il tweet dell'utente U al tempo T \`e definito come
-  \twt{}(U,T) = ($j$, \lika{}, \disla{}, \dtag, U) dove:
+  \twt{}(U,T) = ($j$, \lika{}, \disla{}, \dtag, U, T) dove:
   \begin{itemize}
     \item $j$ \`e il \topic{} su cui il tweet verte
     \item \lika{} $\in [0,1]$ indica la probabilit\`a di quanto
@@ -178,8 +178,9 @@ sociali:
     possa non piacere a chi non \`e interessato all'argomento
     \item \dtag{} indica l'utente V taggato nel tweet. Tale valore 
     pu\`o anche essere nullo.
-    \item U \`e l'utente che ha effettuato il tweet. 
-    Necessario per l'implementazione.
+    \item U \`e l'utente che ha effettuato il tweet, e T il tempo in
+    cui \`e stato creato.
+    Necessari per l'implementazione.
   \end{itemize}
   
   \item[Retweet] Il retweet effettuato dall'utente U al tempo T

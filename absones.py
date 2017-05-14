@@ -8,8 +8,12 @@ import scipy as sp
 import numpy as np
 import networkx as nx
 import math
-import argparse
+import argparse, sys, os
 import pycxsimulator
+
+### absones utilities 
+sys.path.append(os.path.abspath(os.getcwd() + '/utils'))
+from users import *
 
 rd.seed()
 
@@ -93,37 +97,7 @@ def skl_d(p,q):
 		kl2 = kl2 + q[j]*np.log2(q[j]/p[j])
 	return np.mean([kl1,kl2])
 
-def create_user_attr():
-    global args
-    attr = {}
 
-    ##### personal interest
-    attr['pi'] = np.random.random_sample((1,args.topic)).tolist()[0]
-
-    ##### timezone (refer to documentation)
-    tz = np.zeros(12)
-    i = np.random.randint(13) + 4
-    i = i % 12
-    
-    ## low activity - CHANGE
-    for k in range(4):
-        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0]
-    i = (i + 4) % 12
-    ## high activity - CHANGE
-    for k in range(4):
-        tz[(k + i) % 12] = np.random.random_sample((1,1)).tolist()[0][0] - 5
-
-    attr['tz'] = tz.tolist()
-    attr['followers'] = []
-    attr['following'] = []
-
-    interest = []
-    for j in range(len(attr['pi'])):
-        if attr['pi'][j] > 0.5:
-            interest.append(j)
-    attr['interest'] = interest
-    
-    return attr
 
 
 
@@ -134,14 +108,16 @@ def get_args():
     parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
 
     #change all the defaults
-
     parser.add_argument('-u', '--users', action='store', type=int, default=5,
         help='specifies the number of total users.')
     parser.add_argument('-t', '--topic', action='store', type=int, default=10,
         help='specifies the number of total topics.')
     parser.add_argument('-d', '--threads', action='store', type=int, default=2,
         help='specifies the number of total threads used by the program.')
-    return parser.parse_args()
+    ret = parser.parse_args()
+
+    usr_copy_args(ret)
+    return args
     
 
 def main():
@@ -151,6 +127,6 @@ def main():
 
 if __name__ == "__main__":
     args = get_args()
-    print(create_user_attr())
+    print(create_user_attr(args))
     main()
 

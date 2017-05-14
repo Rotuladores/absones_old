@@ -28,7 +28,7 @@ def init():
 
     time = 0
 
-    network = nx.gnm_random_graph(5,10,directed=True)
+    network = nx.gnm_random_graph(sim.total_users,sim.total_users*2,directed=True)
     network_r = nx.DiGraph()
     network_r.add_nodes_from(network)
 
@@ -104,7 +104,7 @@ def skl_d(p,q):
 def get_args():
     parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
     #change all the defaults
-    parser.add_argument('-u', '--users', action='store', type=int, default=5,
+    parser.add_argument('-u', '--users', action='store', type=int, default=10,
         help='specifies the number of total users.')
     parser.add_argument('-t', '--topic', action='store', type=int, default=10,
         help='specifies the number of total topics.')

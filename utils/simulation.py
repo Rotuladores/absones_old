@@ -8,6 +8,7 @@ class Simulation:
 		self.retweet = {}
 		self.dtag = {}
 		self.id = 1
+		self.total_users = total_users
 
 	def generate_new_user(self, node):
 		
@@ -46,6 +47,7 @@ class Simulation:
 		# return attr
 
 	def post(self, user, time):
+
 		return True
 
 	def repost(self, user, time):

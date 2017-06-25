@@ -48,11 +48,15 @@ class Simulation:
 
 	def post(self, user, time):
 
-		return True
+
+
+		twt = True
+		self.tweet[user, time] = twt
+		# return True
 
 	def repost(self, user, time):
 
 		return True
 
-	def generate_fov(self, user, time):
+	def generate_fov(self, user, time, k):
 		return True

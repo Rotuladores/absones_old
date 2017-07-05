@@ -23,63 +23,63 @@ retweets = {}
 dtag = {}
 
 def init():
-    global time, network, network_r, maxNodeID, positions, colors, dims, sharing
-    global sim
+	global time, network, network_r, maxNodeID, positions, colors, dims, sharing
+	global sim
 
-    time = 0
+	time = 0
 
-    network = nx.gnm_random_graph(sim.total_users,sim.total_users*2,directed=True)
-    network_r = nx.DiGraph()
-    network_r.add_nodes_from(network)
+	network = nx.gnm_random_graph(sim.total_users,sim.total_users*2,directed=True)
+	network_r = nx.DiGraph()
+	network_r.add_nodes_from(network)
 
-    positions = nx.random_layout(network)
-    colors = [network.degree().get(node) for node in network.nodes()]
-    dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
+	positions = nx.random_layout(network)
+	colors = [network.degree().get(node) for node in network.nodes()]
+	dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
 
-    sharing = []
+	sharing = []
 
-    for n in network.nodes():
-        sim.generate_new_user(network.node[n])
-        print(network.node[n])
+	for n in network.nodes():
+		sim.generate_new_user(network.node[n])
+		print(network.node[n])
 
 def draw():
-     colors = [network.degree().get(node) for node in network.nodes()]
-     dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
+	colors = [network.degree().get(node) for node in network.nodes()]
+	dims = list(map(lambda x: float(x+1)*80, [network.in_degree().get(node) for node in network.nodes()]))
 
-     pl.subplot(1,2,1)
-     pl.cla()
-     nx.draw(network, pos = positions, node_color = colors, node_size = dims)
-     pl.axis('image')
-     pl.title('t = ' + str(time) + ' edges = ' + str(len(network.edges())))
+	pl.subplot(1,2,1)
+	pl.cla()
+	nx.draw(network, pos = positions, node_color = colors, node_size = dims)
+	pl.axis('image')
+	pl.title('t = ' + str(time) + ' edges = ' + str(len(network.edges())))
 
-     pl.subplot(1,2,2)
-     pl.cla()
-     nx.draw(network_r, pos = positions, node_color = 'w', node_size = dims, with_labels=True)
-     pl.axis('image')
-     pl.title('t = ' + str(time))
+	pl.subplot(1,2,2)
+	pl.cla()
+	nx.draw(network_r, pos = positions, node_color = 'w', node_size = dims, with_labels=True)
+	pl.axis('image')
+	pl.title('t = ' + str(time))
 
 def step():
-    global network_r, network, sharing, time
-    network_r.remove_edges_from(sharing)
-    l = network.nodes()
-    a1 = rd.choice(l)
-    l.remove(a1)
-    a2 = rd.choice(l)
-    l.remove(a2)
-    b1 = rd.choice(l)
-    l.remove(b1)
-    b2 = rd.choice(l)
-    network_r.add_edge(u=a1,v=a2)
-    network_r.add_edge(u=b1,v=b2)
-    sharing = [(a1,a2),(b1,b2)]
-    time += 1
+	global network_r, network, sharing, time
+	network_r.remove_edges_from(sharing)
+	l = network.nodes()
+	a1 = rd.choice(l)
+	l.remove(a1)
+	a2 = rd.choice(l)
+	l.remove(a2)
+	b1 = rd.choice(l)
+	l.remove(b1)
+	b2 = rd.choice(l)
+	network_r.add_edge(u=a1,v=a2)
+	network_r.add_edge(u=b1,v=b2)
+	sharing = [(a1,a2),(b1,b2)]
+	time += 1
 
-    for e in sharing:
-        skl = skl_d(network.node[e[0]]['pi'],network.node[e[1]]['pi'])
-        print("%d,%d skl= %f" % (e[0],e[1],skl))
-        if skl > 0.5:
-            network.add_edge(u=e[0],v=e[1])
-    print(network.edges())
+	for e in sharing:
+		skl = skl_d(network.node[e[0]]['pi'],network.node[e[1]]['pi'])
+		print("%d,%d skl= %f" % (e[0],e[1],skl))
+		if skl > 0.5:
+			network.add_edge(u=e[0],v=e[1])
+		print(network.edges())
 
 ##=====================================
 ## Section 4: [Optional] Create Setter/Getter Functions for Model Parameters
@@ -102,27 +102,27 @@ def skl_d(p,q):
 ## Section 5: Import and Run GUI
 ##=====================================
 def get_args():
-    parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
-    #change all the defaults
-    parser.add_argument('-u', '--users', action='store', type=int, default=10,
-        help='specifies the number of total users.')
-    parser.add_argument('-t', '--topic', action='store', type=int, default=10,
-        help='specifies the number of total topics.')
-    parser.add_argument('-d', '--threads', action='store', type=int, default=2,
-        help='specifies the number of total threads used by the program.')
-    ret = parser.parse_args()
+	parser = argparse.ArgumentParser(description='ABSoNeS', add_help=True)
+	#change all the defaults
+	parser.add_argument('-u', '--users', action='store', type=int, default=10,
+		help='specifies the number of total users.')
+	parser.add_argument('-t', '--topic', action='store', type=int, default=10,
+		help='specifies the number of total topics.')
+	parser.add_argument('-d', '--threads', action='store', type=int, default=2,
+		help='specifies the number of total threads used by the program.')
+	ret = parser.parse_args()
 
-    return ret
-    
+	return ret
+
 
 def main():
-    # global args
-    pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
-    # 'title', 'interval' and 'parameterSetters' are optional
+	# global args
+	pycxsimulator.GUI(title='SocialNetwork',interval=0, parameterSetters = []).start(func=[init,draw,step])
+	# 'title', 'interval' and 'parameterSetters' are optional
 
 if __name__ == "__main__":
-    args = get_args()
-    sim = Simulation(args.topic, args.users)
-    print()
-    main()
+	args = get_args()
+	sim = Simulation(args.topic, args.users)
+	print()
+	main()
 

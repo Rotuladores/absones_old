@@ -1,62 +1,155 @@
 import numpy as np
-
+from user import User
 
 class Simulation:
-	def __init__(self, topic, total_users):
-		self.topic = topic
+	def __init__(self, topics, total_users):
+		self.topics = topics
 		self.tweet = {}
 		self.retweet = {}
 		self.dtag = {}
-		self.id = 1
+		self.user_id = 1
 		self.total_users = total_users
+		self.users = {}
+		self.now = 0
 
-	def generate_new_user(self, node):
+		# Iper-parameters
+		self.alpha = 0.8
+		self.beta = 0.6
+		self.gamma = 0.4
 		
-		node['id'] = self.id
-		self.id += 1
-
-		##### personal interest
-		pi = np.random.random_integers(100, size=(1,self.topic))[0].tolist()
-		sumpi = sum(pi)
-		fpi = map(lambda x: float(x)/sumpi, pi)
-		node['pi'] = fpi
-		node['pi_average'] = np.average(fpi)
-
-		##### timezone (refer to documentation)
-		tz = np.zeros(12)
-		i = np.random.randint(13) + 4
-		i = i % 12
-
-		## low activity
-		for k in range(4):
-		    tz[(k + i) % 12] = np.random.triangular(0, 0.25, 0.6)
-		i = (i + 4) % 12
-		## high activity
-		for k in range(4):
-		    tz[(k + i) % 12] = np.random.triangular(0.4, 0.75, 1)
-
-		node['tz'] = tz.tolist()
-		node['followers'] = []
-		node['following'] = []
-
-		interest = []
-		for j in range(self.topic):
-		    if node['pi'][j] > 0.5:
-		        interest.append(j)
-		node['interest'] = interest
-		# return attr
-
+	def add_user(self, user):
+		self.users[user.id] = user
+		
 	def post(self, user, time):
+		j = np.random.choice(self.topics, 1, p=user.pi)[0]
+		print(j)
+
+		if user.pi[j] >= user.pi_average:
+			likability = Simulation.random_high(0.7)
+			dislakability = np.random.random()
+		else:
+			dislakability = Simulation.random_high(0.7)
+			likability = np.random.random()
+
+		dtag = self.generate_dtag(user)
+		if dtag:
+			self.get_user(dtag).add_dtag(self.now, user)
+		
+		self.tweet[user.id, time] = [j, likability, dislakability, dtag]
 
 
-
-		twt = True
-		self.tweet[user, time] = twt
-		# return True
-
+	def generate_dtag(self, user):
+		# TODO
+		return None
+		
 	def repost(self, user, time):
+		# TODO
+		return None
 
+	#user1 -follow-> user2
+	def new_follow(self, user1, user2):
+		self.get_user(user1).add_following(user2)
+		self.get_user(user2).add_follower(user1)
+
+		# change attachment to random-high
+		self.get_user(user1).attachment[user2] = Simulation.random_high(0.8)
+
+	def get_user(self, id):
+		return self.users[id]
+
+	def step_tweet(self):
+		for u in self.users.keys():
+			# Calculate probability of TWEET
+			user = self.get_user(u)
+			prob = self.alpha * \
+				   user.tz[self.now % 12] * \
+				   len(user.followers) / \
+				   self.total_users
+			#print(prob)
+
+			# Tweet if possibile
+			if np.random.random() <= prob:
+				print('%d tweets' % u)
+				self.post(user, self.now)
+			
+
+	def step_retweet(self):
+		# TODO
 		return True
 
-	def generate_fov(self, user, time, k):
+	def step_evaluation(self):
+		for u in self.users.keys():
+			#Get FOV of U
+			user = self.get_user(u)
+			fov = user.generate_fov(self.now, self.tweet, self.retweet)
+			print('fov:')
+			print(fov)
+			for twt in fov[0]:
+				#Evaluate attachment
+				print("EVALUATION")
+				print(twt)
+				
+
+			for rtwt in fov[1]:
+				#TODO EVALUATE RETWEET
+				pass
+
+			for dtag in fov[2]:
+				#TODO EVALUATE DTAG
+				pass
+			
+			
+			
 		return True
+	
+	@staticmethod
+	def random_high(mean):
+		return np.random.triangular(0.4, mean, 1)
+
+	@staticmethod
+	def random_low(mean):
+		return np.random.triangular(0, mean, 0.6)
+
+	
+
+def test():
+	import networkx as nx
+	sim = Simulation(10,50)
+	network = nx.gnm_random_graph(sim.total_users, \
+								  sim.total_users, \
+								  directed=True)
+
+	# generate users
+	print('Generation')
+	print('='*20)
+	for n in network.nodes():
+		u1 = User(n, sim.topics)
+		sim.add_user(u1)
+		print(sim.get_user(n))
+
+	# add follow
+	print('Follow')
+	print('='*20)
+	for n in network.nodes():
+		sim.new_follow(n, (n+1) % sim.total_users)
+		sim.new_follow(n, (n+2) % sim.total_users)
+		sim.new_follow(n, (n+3) % sim.total_users)
+		sim.new_follow(n, (n+4) % sim.total_users)
+		sim.new_follow(n, (n+5) % sim.total_users)
+		sim.new_follow(n, (n+6) % sim.total_users)
+		print(sim.get_user(n).get_attachment(n+1))
+
+	print('Simulation')
+	print('='*20)
+
+	while(True):
+		print('Time: %d' % sim.now)
+		sim.step_tweet()
+		sim.step_evaluation()
+		sim.now += 1
+
+#	sim.get_user(0).generate_fov(0, sim.tweet, sim.retweet)
+
+	
+if __name__ == '__main__':
+	test()

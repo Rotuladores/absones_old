@@ -24,7 +24,7 @@ class Simulation:
 
     def post(self, user, time):
         j = np.random.choice(self.topics, 1, p=user.pi)[0]
-        print(j)
+        #print(j)
 
         if user.pi[j] >= user.pi_average:
             likability = Simulation.random_high(0.7)
@@ -79,20 +79,20 @@ class Simulation:
                 if np.random.random() <= thresh:
                     self.retweet[user.id, time] = t
                 if t[0] not in user.followings:
-                    print("#########################")
-                    print("#                       #")
-                    print("#                       #")
-                    print("#        giggity        #")
-                    print("#                       #")
-                    print("#                       #")
-                    print("#########################")
+                    # print("#########################")
+                    # print("#                       #")
+                    # print("#                       #")
+                    # print("#        giggity        #")
+                    # print("#                       #")
+                    # print("#                       #")
+                    # print("#########################")
                     #e = 8/0
                     a = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == t[0] and key[1] >= time-20]
-                    print(a)
+                    # print(a)
                     if a:
                         hist, bins=np.histogram(a,bins=list(range(0,self.topics+1)),density=True)
                         kl = self.omofilia(np.array(user.pi),np.array(hist))
-                        if kl > 0.97:
+                        if kl > 0.99:
                             self.new_follow(user.id,t[0])
                         # print(np.array(user.pi))
                         # print(np.array(hist))
@@ -118,10 +118,11 @@ class Simulation:
         for u in l:
             # Calculate probability of TWEET
             user = self.get_user(u)
+            ratiof = (float(len(user.followings)) / len(l))
             p_rt = user.tz[self.now % 12] * \
-				(float(len(user.followers)) / len(l))
+				(1*ratiof+0)
             p_nrt = (1 - user.tz[self.now % 12]) * \
-				(1 - (float(len(user.followers)) / len(l)))
+				(1 - (1*ratiof+0))
             #print('probabbile: ' + str(user.followers))
             alpha = p_rt + p_nrt
             # prob = self.alpha * \
@@ -139,14 +140,16 @@ class Simulation:
                 self.post(user, self.now)
 
     def step_retweet(self):
-        print(self.users.keys())
+        #print(self.users.keys())
         l = self.users.keys()
         for u in l:
             user = self.get_user(u)
-            p_rt = user.tz[self.now % 12] * \
-				(float(len(user.followings)) / len(l))
+            ratiof = (float(len(user.followings)) / len(l))
+            p_rt = float(user.tz[self.now % 12]) * \
+				(1*ratiof+0)
             p_nrt = (1 - user.tz[self.now % 12]) * \
-				(1 - (float(len(user.followings)) / len(l)))
+				(1 - (1*ratiof+0))
+            #print(str(p_rt) + ' ##### ' + str(p_nrt))
             alpha = p_rt + p_nrt
             prob = (user.tz[self.now % 12] *
                     len(user.followings) /

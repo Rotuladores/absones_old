@@ -33,7 +33,11 @@ def init():
     for n in network.nodes():
         u1 = User(n, sim.topics)
         sim.add_user(u1)
-        print(sim.get_user(n))
+        #print(sim.get_user(n))
+        for y in range(0,int(math.floor(20.0*network.in_degree().get(n)/max(network.in_degree().values())))):
+            sim.post(sim.get_user(n),-y-1)
+        # for y in range(0,int(math.floor(20.0*network.in_degree().get(n)/max(network.in_degree().values())))):
+        #     sim.repost(sim.get_user(n),-y-1)
 
     # add follow
     print('Follow')
@@ -43,11 +47,18 @@ def init():
 
     evo = []
 
+    for n in network.nodes():
+        # for y in range(0,int(math.floor(20.0*network.in_degree().get(n)/max(network.in_degree().values())))):
+        #     sim.post(sim.get_user(n),-y-1)
+        for y in range(0,int(math.floor(20.0*network.in_degree().get(n)/max(network.in_degree().values())))):
+            sim.repost(sim.get_user(n),-y-1)
+    
+    print(sim.retweet)
 
 def draw():
     global sim, positions
     colors = [sim.network.degree().get(node) for node in sim.network.nodes()]
-    dims = list(map(lambda x: float(x+1)*80, [sim.network.in_degree().get(node) for node in sim.network.nodes()]))
+    dims = list(map(lambda x: float(x+1)*8, [sim.network.in_degree().get(node) for node in sim.network.nodes()]))
 
     pl.subplot(1,2,1)
     pl.cla()
@@ -100,7 +111,7 @@ def main():
 if __name__ == "__main__":
     args = get_args()
     network = nx.gnm_random_graph(args.users,
-                                  args.users,
+                                  round((float(args.users)*((float(args.users)-1)/100))/2),
                                   directed=True)
     positions = nx.random_layout(network)
     sim = Simulation(args.topic, args.users, network)

@@ -50,7 +50,11 @@ class User:
 
         # Generate tweets
         #usrs_choice = np.random.choice(f + 1, f/4)
-        time_choice = np.random.choice(time + 1, 1)
+        if time >= 0:
+            ## solo questa riga
+            time_choice = np.random.choice(time + 1, 1)
+        else:
+            time_choice = -1*np.random.choice(-time + 1, 1)
 
         twts = []
         for i in range(fings):

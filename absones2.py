@@ -26,7 +26,7 @@ retweets = {}
 dtag = {}
 
 def init():
-    global sim
+    global sim, evo
 
     print('Generation')
     print('=' * 20)
@@ -41,23 +41,33 @@ def init():
     for e in network.edges():
         sim.new_follow(e[0],e[1])
 
+    evo = []
+
 
 def draw():
     global sim, positions
     colors = [sim.network.degree().get(node) for node in sim.network.nodes()]
     dims = list(map(lambda x: float(x+1)*80, [sim.network.in_degree().get(node) for node in sim.network.nodes()]))
 
+    pl.subplot(1,2,1)
     pl.cla()
     nx.draw(sim.network, pos = positions, node_color = colors, node_size = dims)
     pl.axis('image')
-    pl.title('t = ' + str(sim.now) + ' edges = ' + str(len(sim.network.edges())))
+    pl.title('t = ' + str(sim.now) + ' edges = ' + str(len(sim.network.edges())) + ' tweets = ' + str(len(sim.tweet))  + ' retweets = ' + str(len(sim.retweet)))
+
+    pl.subplot(1,2,2)
+    pl.cla()
+    pl.plot(evo)
+    pl.axis('on')
+    pl.title('edges')
 
 def step():
-    global sim
+    global sim, evo
 
     sim.step_tweet()
     sim.step_retweet()
     sim.now += 1
+    evo.append(len(sim.network.edges()))
 
 ##=====================================
 ## Section 4: [Optional] Create Setter/Getter Functions for Model Parameters

@@ -85,6 +85,12 @@ class User:
     def add_following(self, following):
         self.followings.append(following)
 
+    def rm_follower(self, follower):
+        self.followers.remove(follower)
+
+    def rm_following(self, following):
+        self.followings.remove(following)
+
     def get_attachment(self, u):
         try:
             return self.attachment[u]

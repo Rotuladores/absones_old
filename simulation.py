@@ -69,12 +69,14 @@ class Simulation:
         fov = user.generate_fov(time,self.tweet,self.retweet)
         if (not(not fov[0] and not fov[1] and not fov[2])):
             for t in fov[0]:
-                avg = (user.pi[t[2]] + t[3]) / 2
+                #avg = (user.pi[t[2]] + t[3]) / 2
+                avg = 0.2*user.pi[t[2]] + 0.4*(1-t[3]) + 0.4*t[4]  
                 thresh = avg
                 if np.random.random() <= thresh:
                     self.retweet[user.id, time] = t
             for t in fov[1]:
-                avg = (user.pi[t[2]] + t[3]) / 2
+                #avg = (user.pi[t[2]] + t[3]) / 2
+                avg = 0.2*user.pi[t[2]] + 0.4*(1-t[3]) + 0.4*t[4]
                 thresh = avg
                 if np.random.random() <= thresh:
                     self.retweet[user.id, time] = t
@@ -105,7 +107,11 @@ class Simulation:
         self.get_user(user2).add_follower(user1)
 
         # change attachment to random-high
-        self.get_user(user1).attachment[user2] = Simulation.random_high(0.8)
+        att = Simulation.random_high(0.8)
+        if att >= 0.5:
+            self.get_user(user1).attachment[user2] = att
+        else:
+            self.get_user(user1).attachment[user2] = 0.5
 
         self.network.add_edge(u=user1,v=user2)
         # print('Edges: %d' % len(self.network.edges()))
@@ -146,9 +152,9 @@ class Simulation:
             user = self.get_user(u)
             ratiof = (float(len(user.followings)) / len(l))
             p_rt = float(user.tz[self.now % 12]) * \
-				(1*ratiof+0)
+				(0.75*ratiof+0.25)
             p_nrt = (1 - user.tz[self.now % 12]) * \
-				(1 - (1*ratiof+0))
+				(1 - (0.75*ratiof+0.25))
             #print(str(p_rt) + ' ##### ' + str(p_nrt))
             alpha = p_rt + p_nrt
             prob = (user.tz[self.now % 12] *
@@ -159,6 +165,19 @@ class Simulation:
                 print('%d retweets' % u)
                 self.repost(user, self.now)
         return True
+
+    def attachment_eval(self):
+        print('dimensione rete: %d' % len(self.network.edges()))
+
+        for e in self.network.edges():
+            self.get_user(e[0]).attachment[e[1]] = self.get_user(e[0]).attachment[e[1]]
+            if self.get_user(e[0]).attachment[e[1]] < 0.5:
+                self.get_user[e[0]].attachment.pop(e[1],None)
+
+                self.get_user(user1).rm_following(user2)
+                self.get_user(user2).rm_follower(user1)
+
+                self.network.remove_edge(u=user1,v=user2)
 
     def step_evaluation(self):
         for u in self.users.keys():

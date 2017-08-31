@@ -1,6 +1,6 @@
 import numpy as np
 from user import User
-
+from scipy import spatial
 
 class Simulation:
     def __init__(self, topics, total_users,network):
@@ -91,10 +91,17 @@ class Simulation:
                     #e = 8/0
                     a = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == t[0] and key[1] >= time-20]
                     # print(a)
-                    if a:
+                    ratiof = (float(len(user.followings)) / len(self.users.keys()))
+                    f_thresh = (-(np.log(ratiof+4)/np.log(ratiof+2))+2) ** 1.08
+                    #f_thresh = np.cbrt(np.log2(ratiof+1))
+                    if a and np.random.random() >= f_thresh:
                         hist, bins=np.histogram(a,bins=list(range(0,self.topics+1)),density=True)
-                        kl = self.omofilia(np.array(user.pi),np.array(hist))
-                        if kl > 0.99:
+                        # print('##########')
+                        # print('cosine similarity ' + str(user.id) + ' ' + str(t[0]))
+                        # print(spatial.distance.cosine(np.array(user.pi),np.array(hist)))
+                        #kl = self.omofilia(np.array(user.pi),np.array(hist))
+                        cs = spatial.distance.cosine(np.array(user.pi),np.array(hist))
+                        if np.random.random() <= cs:
                             self.new_follow(user.id,t[0])
                         # print(np.array(user.pi))
                         # print(np.array(hist))
@@ -126,9 +133,11 @@ class Simulation:
             user = self.get_user(u)
             ratiof = (float(len(user.followings)) / len(l))
             p_rt = user.tz[self.now % 12] * \
-				(1*ratiof+0)
+				(-(np.log(ratiof+4)/np.log(ratiof+2))+2)
+                #(1*ratiof+0)
             p_nrt = (1 - user.tz[self.now % 12]) * \
-				(1 - (1*ratiof+0))
+				(1 - (-(np.log(ratiof+4)/np.log(ratiof+2))+2))
+                #(1 - (1*ratiof+0))
             #print('probabbile: ' + str(user.followers))
             alpha = p_rt + p_nrt
             # prob = self.alpha * \
@@ -152,9 +161,11 @@ class Simulation:
             user = self.get_user(u)
             ratiof = (float(len(user.followings)) / len(l))
             p_rt = float(user.tz[self.now % 12]) * \
-				(0.75*ratiof+0.25)
+				(-(np.log(ratiof+4)/np.log(ratiof+2))+2)
+                #(0.75*ratiof+0.25)
             p_nrt = (1 - user.tz[self.now % 12]) * \
-				(1 - (0.75*ratiof+0.25))
+				(1 - (-(np.log(ratiof+4)/np.log(ratiof+2))+2))
+                #(1 - (0.75*ratiof+0.25))
             #print(str(p_rt) + ' ##### ' + str(p_nrt))
             alpha = p_rt + p_nrt
             prob = (user.tz[self.now % 12] *
@@ -170,14 +181,20 @@ class Simulation:
         print('dimensione rete: %d' % len(self.network.edges()))
 
         for e in self.network.edges():
-            self.get_user(e[0]).attachment[e[1]] = self.get_user(e[0]).attachment[e[1]]
-            if self.get_user(e[0]).attachment[e[1]] < 0.5:
-                self.get_user[e[0]].attachment.pop(e[1],None)
+            a = [(1-self.tweet[key][4]) for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+            b = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+            c = [self.tweet[key][3] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+            la = len(a)
+            lb = len(b)
+            lc = len(c)
+            self.get_user(e[0]).attachment[e[1]] = (self.get_user(e[0]).attachment[e[1]] + sum(a) + sum(b) + sum(c)) / (la + lb + lc + 1)
+            if self.get_user(e[0]).attachment[e[1]] < 0.15:
+                self.get_user(e[0]).attachment.pop(e[1],None)
 
-                self.get_user(user1).rm_following(user2)
-                self.get_user(user2).rm_follower(user1)
+                self.get_user(e[0]).rm_following(e[1])
+                self.get_user(e[1]).rm_follower(e[0])
 
-                self.network.remove_edge(u=user1,v=user2)
+                self.network.remove_edge(u=e[0],v=e[1])
 
     def step_evaluation(self):
         for u in self.users.keys():

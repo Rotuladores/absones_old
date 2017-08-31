@@ -42,7 +42,7 @@ class User:
                 interest.append(j)
         self.interest = interest
 
-    def generate_fov(self, time, tweets, retweets):
+    def generate_fov(self, time, tweets, retweets, d_tags):
         fings = len(self.followings)
         fers = len(self.followers)
         #t = len(tweets)
@@ -76,6 +76,12 @@ class User:
         # Generate DTAGs
         # TODO
         dtags = []
+        for i in range(fings):
+            for t in range(time_choice, time + 1):
+                try:
+                    dtags.append(d_tags[self.followings[i], t])
+                except:
+                    pass
 
         return (twts, rtwts, dtags)
 

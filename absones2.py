@@ -77,6 +77,7 @@ def step():
 
     sim.step_tweet()
     sim.step_retweet()
+    #sim.attachment_eval()
     sim.now += 1
     evo.append(len(sim.network.edges()))
 
@@ -111,7 +112,7 @@ def main():
 if __name__ == "__main__":
     args = get_args()
     network = nx.gnm_random_graph(args.users,
-                                  round((float(args.users)*((float(args.users)-1)/100))/2),
+                                  round((float(args.users)*((float(args.users)-1)/10))/2),
                                   directed=True)
     positions = nx.random_layout(network)
     sim = Simulation(args.topic, args.users, network)

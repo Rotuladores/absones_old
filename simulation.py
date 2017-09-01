@@ -151,7 +151,7 @@ class Simulation:
 
             # Tweet if possibile
             if np.random.random() <= prob:
-                print('%d tweets' % u)
+                #print('%d tweets' % u)
                 self.post(user, self.now)
 
     def step_retweet(self):
@@ -173,28 +173,61 @@ class Simulation:
                     self.total_users) / alpha
 
             if np.random.random() <= prob:
-                print('%d retweets' % u)
+                #print('%d retweets' % u)
                 self.repost(user, self.now)
         return True
 
     def attachment_eval(self):
-        print('dimensione rete: %d' % len(self.network.edges()))
+        # print('dimensione rete: %d' % len(self.network.edges()))
 
-        for e in self.network.edges():
-            a = [(1-self.tweet[key][4]) for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
-            b = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
-            c = [self.tweet[key][3] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
-            la = len(a)
-            lb = len(b)
-            lc = len(c)
-            self.get_user(e[0]).attachment[e[1]] = (self.get_user(e[0]).attachment[e[1]] + sum(a) + sum(b) + sum(c)) / (la + lb + lc + 1)
-            if self.get_user(e[0]).attachment[e[1]] < 0.15:
-                self.get_user(e[0]).attachment.pop(e[1],None)
+        # for e in self.network.edges():
+        #     a = [(1-self.tweet[key][4]) for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+        #     b = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+        #     c = [self.tweet[key][3] for key in self.tweet.keys() if key[0] == e[1] and key[1] >= self.now-20]
+        #     la = len(a)
+        #     lb = len(b)
+        #     lc = len(c)
+        #     self.get_user(e[0]).attachment[e[1]] = (self.get_user(e[0]).attachment[e[1]] + sum(a) + sum(b) + sum(c)) / (la + lb + lc + 1)
+        #     if self.get_user(e[0]).attachment[e[1]] < 0.15:
+        #         self.get_user(e[0]).attachment.pop(e[1],None)
 
-                self.get_user(e[0]).rm_following(e[1])
-                self.get_user(e[1]).rm_follower(e[0])
+        #         self.get_user(e[0]).rm_following(e[1])
+        #         self.get_user(e[1]).rm_follower(e[0])
 
-                self.network.remove_edge(u=e[0],v=e[1])
+        #         self.network.remove_edge(u=e[0],v=e[1])
+
+        num_unfers = np.random.poisson(lam=15.0)
+        unfollowers = np.random.choice(range(self.total_users),size=num_unfers)
+        print(unfollowers)
+
+        for u in unfollowers:
+            user = self.get_user(u)
+            fov = user.generate_fov(self.now, self.tweet, self.retweet, self.dtag)
+            for t in fov[0]:
+                if user.pi[t[2]] >= user.pi_average:
+                    if t[0] in user.attachment:
+                        user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
+                else:
+                    if t[0] in user.attachment:
+                        user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2
+            for t in fov[1]:
+                if user.pi[t[2]] >= user.pi_average:
+                    if t[0] in user.attachment:
+                        user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
+                    if t[6] in user.attachment:
+                        user.attachment[t[6]] = (user.attachment[t[6]] + t[3]) / 2
+                else:
+                    if t[0] in user.attachment:
+                        user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2 
+                    if t[6] in user.attachment:
+                        user.attachment[t[6]] = (user.attachment[t[6]] + t[4]) / 2
+            
+            try:
+                choosen = min(user.attachment, key=user.attachment.get)
+                self.network.remove_edge(u=user.id,v=choosen)
+                user.attachment.pop(choosen,None)
+            except:
+                pass
 
     def step_evaluation(self):
         for u in self.users.keys():

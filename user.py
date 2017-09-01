@@ -69,7 +69,7 @@ class User:
         for i in range(fings):
             for t in range(time_choice, time + 1):
                 try:
-                    rtwts.append(retweets[self.followings[i], t])
+                    rtwts.append(retweets[self.followings[i], t]+[self.followings[i]])
                 except:
                     pass
 

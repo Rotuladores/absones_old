@@ -66,7 +66,7 @@ class Simulation:
         return 1-somma
 
     def repost(self, user, time):
-        fov = user.generate_fov(time,self.tweet,self.retweet)
+        fov = user.generate_fov(time,self.tweet,self.retweet,self.dtag)
         if (not(not fov[0] and not fov[1] and not fov[2])):
             for t in fov[0]:
                 #avg = (user.pi[t[2]] + t[3]) / 2

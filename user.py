@@ -13,7 +13,7 @@ class User:
         # personal interest
         pi = np.random.random_integers(100, size=(1, topic))[0].tolist()
         sumpi = sum(pi)
-        fpi = map(lambda x: float(x) / sumpi, pi)
+        fpi = list(map(lambda x: float(x) / sumpi, pi))
         self.pi = fpi
         self.pi_average = np.average(fpi)
 
@@ -52,10 +52,10 @@ class User:
         #usrs_choice = np.random.choice(f + 1, f/4)
         if time >= 0:
             ## solo questa riga
-            time_choice = np.random.choice(time + 1, 1)
+            time_choice = np.random.choice(time + 1, 1)[0]
         else:
-            time_choice = -1*np.random.choice(-time + 1, 1)
-
+            time_choice = -1*np.random.choice(-time + 1, 1)[0]
+        
         twts = []
         for i in range(fings):
             for t in range(time_choice, time + 1):

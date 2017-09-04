@@ -34,7 +34,7 @@ class User:
         self.tz = tz.tolist()
         self.followers = []
         self.followings = []
-        self.dtag = []
+        self.dtag = {}
 
         interest = []
         for j in range(topic):
@@ -75,15 +75,19 @@ class User:
 
         # Generate DTAGs
         # TODO
-        dtags = []
-        for i in range(fings):
-            for t in range(time_choice, time + 1):
-                try:
-                    dtags.append(d_tags[self.followings[i], t])
-                except:
-                    pass
+        # for i in range(fings):
+        #     for t in range(time_choice, time + 1):
+        #         try:
+        #             rtwts.append(self.d_tags[t])
+        #         except:
+        #             pass
+        try:
+            for x in self.dtags[time_choice]:
+                rtwts.append(x)
+        except:
+            pass
 
-        return (twts, rtwts, dtags)
+        return (twts, rtwts)
 
     def add_follower(self, follower):
         self.followers.append(follower)
@@ -110,7 +114,7 @@ class User:
             return None
 
     def add_dtag(self, time, tweet):
-        if self.get_dtag[time]:
+        if self.get_dtag(time):
             self.dtag[time].append(tweet)
         else:
             self.dtag[time] = [tweet]

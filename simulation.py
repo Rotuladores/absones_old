@@ -40,8 +40,13 @@ class Simulation:
         self.tweet[user.id, time] = [user.id, time, j, likability, dislakability, dtag]
 
     def generate_dtag(self, user):
-        # TODO
-        return None
+        if np.random.random() > 0.8:
+            x = np.random.randint(len(self.users))
+            self.users[x].add_dtag(self.now, [user.id, self.now])
+            return x
+            # return None
+        else:
+            return None
 
     def skl_d(self,p,q):
         kl1 = 0
@@ -67,7 +72,7 @@ class Simulation:
 
     def repost(self, user, time):
         fov = user.generate_fov(time,self.tweet,self.retweet,self.dtag)
-        if (not(not fov[0] and not fov[1] and not fov[2])):
+        if (not(not fov[0] and not fov[1])):
             for t in fov[0]:
                 #avg = (user.pi[t[2]] + t[3]) / 2
                 avg = 0.2*user.pi[t[2]] + 0.4*(1-t[3]) + 0.4*t[4]  

@@ -33,9 +33,9 @@ sempre vere:
       tempo libero in cui l'utente ha una attivit\`a maggiore su 
       Twitter
     \end{itemize} 
-    Al momento ignoramo il weekend, ma cercheremo di definirlo e 
+    Al momento ignoramo il weekend, ma valuteremo una possibilit\`a
+     di definirlo e 
      implementarlo nelle prossime versioni.
-     \SC{definire BASSA e ELEVATA attivit\`a}
   \item[Topic] ovvero i possibili argomenti di interesse esistenti 
     nel modello perci\`o abbiamo una lista \topic{} 
     $ = (t_1, \dots , t_n) $ definiti a priori e immutabili. 
@@ -53,11 +53,9 @@ in che modo viene generato ogni nodo:
 
 \begin{description}
   \item[Personal Interest (PI)] \`e una lista \PI{} 
-    $=(p_1, \dots, p_n)$ dove $p_i \in [0, 1]$ 
-    \SC{valutare inclusione degli estremi}
+    $=(p_1, \dots, p_n)$ dove $p_i \in (0, 1)$ 
     indica la probabilit\`a di interesse del nodo rispetto al 
     \topic{} $i$ generata casualmente. Al momento tale valore \`e immutabile.
-    \SC{modellare valore variabile}
   \item[Timezone (TZ)] ovvero una lista \TZ{} $=(tz_1, \dots, tz_{12}) $
   dove i $tz_i$ sono generati in accordo con le \textbf{FT} generati 
   come segue:
@@ -65,9 +63,9 @@ in che modo viene generato ogni nodo:
     \item Genero $1\leq i \leq 12$ casualmente
     \item Imposto le ore di sonno $tz_j = 0$ per $j = i, \dots , i+3$
     \item Imposto le ore di lavoro $tz_j$ = bassa \activity{} per 
-      $j = i+4, \dots , i+7$ \SC{definire}
+      $j = i+4, \dots , i+7$
     \item Imposto le ore di tempo libero $tz_j$ = alta \activity{}
-      per $j = i+8, \dots , i+11$ \SC{definire}
+      per $j = i+8, \dots , i+11$
   \end{itemize}
   Tutte le precedenti operazioni di indici sono da considerarsi 
   $mod \quad 12$. Il motivo di questa scelta \`e quello di simulare
@@ -147,8 +145,10 @@ probabilit\`a di compiere una determinata azione.
     Risulta da valutare la possibilit\`a che un utente possa fare 
     pi\`u  retweet rispetto al numero dei tweet, in quanto essa \`e
     un'operazione decisamente meno impegnativa e perci\`o,
-    ,intuitivamente,
-    con una pi\`u elevata probabilit\`a di accadere.
+    intuitivamente,
+    con una pi\`u elevata probabilit\`a di accadere. 
+    \NB{Stiamo valutando la possibilit\`a di inserire un 
+    condizionamento sull'interesse per l'argomento del tweet}
     
   \item[Tag] ogni tweet ha una possibilit\`a di contenere un tag 
   diretto ad un altro utente V con probabilit\`a
@@ -168,7 +168,9 @@ sociali:
 
 \begin{description}
   \item[Tweet] Il tweet dell'utente U al tempo T \`e definito come
-  \twt{}(U,T) = ($j$, \lika{}, \disla{}, \dtag, U, T) dove:
+  \twt{}(U,T) = ($j$, \lika{}, \disla{}, \dtag
+  %, U, T
+  ) dove:
   \begin{itemize}
     \item $j$ \`e il \topic{} su cui il tweet verte
     \item \lika{} $\in [0,1]$ indica la probabilit\`a di quanto
@@ -178,16 +180,20 @@ sociali:
     possa non piacere a chi non \`e interessato all'argomento
     \item \dtag{} indica l'utente V taggato nel tweet. Tale valore 
     pu\`o anche essere nullo.
-    \item U \`e l'utente che ha effettuato il tweet, e T il tempo in
-    cui \`e stato creato.
-    Necessari per l'implementazione.
+%    \item U \`e l'utente che ha effettuato il tweet, e T il tempo in
+%    cui \`e stato creato.
+%    Necessari per l'implementazione.
   \end{itemize}
   
   \item[Retweet] Il retweet effettuato dall'utente U al tempo T
   del tweet di V al tempo $\overline{T}$, definito come:
   \retwt{}(U, T) = \twt{}(V, $\overline{T}$)
   
-  \item[Dtag]
+  \item[Dtag] Il tag diretto di un utente U ad un altro utente V al 
+  tempo T \`e definito come \dtag{}(U, V, T) = tweet(U, T) e 
+  rappresenta il caso in cui l' utente U ha ``taggato'' V con un 
+  \textit{@U}. Questo permette all'utente V di vedere un tweet 
+  di U, anche nel caso in cui non lo seguisse.
 \end{description}
 
 In base agli oggetti definiti in precedenza possiamo definire le 
@@ -218,7 +224,6 @@ azioni di:
   possibilit\`a di retweet di $\overline{w}_i$ secondo l' equazione
   \ref{eq:pretwt}, in caso favorevole viene prodotto \retwt{}(U, T) 
   che sar\`a una lista di retweet effettuati da U al tempo T.
-  
   \item[Unfollow] Un utente U pu\`o decidere di smettere di seguire 
   un utente V, grazie alla variabile \attach{} che li lega, e 
   all'ultimo \twt{} $W$ di V con probabilit\`a 
@@ -229,8 +234,8 @@ azioni di:
   \attach{}(U,V) = $P_{unfollow}(U, V)$ aggiornando dunque la
   probabilit\`a di unfollow a quella appena calcolata.
   Risulta dunque che la probabilit\`a di unfollow dipende solo dallo 
-  stato precedente di \attach{}. \SC{Markov Chain?}
-  
+  stato precedente di \attach{}.
+    
   \item[Continue Follow] Un utente U pu\`o avere il desiderio di 
   continuare a seguire un altro utente V, se V ha pubblicato un tweet
   riguardante un topic di suo gradimento. Tuttavia tale post ha una
@@ -242,25 +247,31 @@ azioni di:
   \item[Nota:] Per le due azioni precedenti di \textbf{Unfollow} e
   \textbf{Continue Follow} bisogna considerare il caso in cui
   la valutazione venga effettuata rispetto ad un retweet e non ad
-  un tweet dell'utente seguito V. 
-  \SC{Che si fa? Si ignorano i retweet o li si considera come se 
-  fossero tweet di V, in quanto se retweetta condivide la loro
-  opinione?}
+  un tweet. In questo caso viene comunque effettuata la valutazione
+  descritta in precedenza, eventualmente con un influenza minore. 
   
   \item[Follow] Esistono diversi tipi di possibili modalit\`a di 
   following:
     \begin{description}
-      \item[By Retweet (BR)] By retweet Ancora da definire. 
-      Probabilit\`a simmetrica a \textbf{Unfollow}. \SC{definire}
+      \item[By Retweet (BR)] By retweet 
+      Nel caso in cui nel FOV compaia un retweet di un utente non 
+      seguito, si pu\`o decidere di seguirlo attraverso la seguente 
+      valutazione: si considerano gli ultimi $n$ \twt{} e \retwt{} 
+      dell'utente target e da questi si inferiscono i suoi interessi.
+      Si calcola quindi l'omofilia e, qualora sia minore di una 
+      certa soglia, si comincia a seguirlo.  
       \item[Outside Factor (OF)] avviene quando un utente U comincia
       a seguire un nodo V per fattori esterni al Social Network, 
       quali ad esempio nuova amicizia nella vita reale, nuovo
       follow su altri mezzi di comunicazioni online, ecc.
-      \SC{prob da definire}
+      \NB{Probabilit\`a da definire}
+      
       \item[Active Search (AS)] un utente U ricerca un qualunque 
       altro utente V tramite la rete sociale anche se non ha 
       collegamenti con esso. Tale ricerca ha senso secondo il
-      modello di omofilia \SC{definire}.       
+      modello di omofilia oppure in modo totalmente casuale.
+      \NB{Ancora da definire}
+            
     \end{description}
 \end{description}
 
@@ -274,16 +285,14 @@ step che avvengono nella simulazione al tempo T.
   \item[Tweet Step (TS)] Per ogni utente U viene generato una 
   probabilit\`a casuale $P_t(U,T)$ che rappresenta la sua 
   inclinazione di produrre un \twt{} al tempo T. Se $P_t(U,T)$
-  risulta conforme \SC{conforme mi fa schifo. Qual \`e il termine
-  giusto?} alla probabilit\`a $P_{tweet}$ [eq. \ref{eq:ptwt}] allora
+  risulta minore alla probabilit\`a $P_{tweet}$ [eq. \ref{eq:ptwt}] allora
   viene generato il \twt{}(U, T) come descritto in \textbf{Post}.
   
   \item[Retweet Step (RS)] Similmente alla fase precedente,
   per ogni utente U viene generato una 
   probabilit\`a casuale $P_r(U,T)$ che rappresenta la sua 
   inclinazione di produrre un \retwt{} al tempo T. Se $P_r(U,T)$
-  risulta conforme \SC{conforme mi fa schifo. Qual \`e il termine
-  giusto?} alla probabilit\`a $P_{retweet}$ [eq. \ref{eq:pretwt}] 
+  risulta minore alla probabilit\`a $P_{retweet}$ [eq. \ref{eq:pretwt}] 
   allora viene generato il \retwt{}(U, T) come descritto in 
   \textbf{Repost}.
   
@@ -294,8 +303,8 @@ step che avvengono nella simulazione al tempo T.
   probabilit\`a e azioni precedentemente descritte, l'utente U decide
   se smettere di seguire V (secondo \textbf{Unfollow}) o di
   continuare a seguire a seguire, modificando l'\attach{} come
-  descritto in \textbf{Continue Follow}. \SC{modificare in base alla cosiderazione dei retweet}
-  Nel caso in cui U stia valutando un retweet di un utente W che non 
+  descritto in \textbf{Continue Follow}.
+    Nel caso in cui U stia valutando un retweet di un utente W che non 
   segue, allora valuta la probabilit\`a di seguirlo in base al 
   \textbf{Following BR}.
   Infine viene valutata la possibilit\`a di creare un nuovo follow 

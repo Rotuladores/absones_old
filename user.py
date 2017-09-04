@@ -47,7 +47,7 @@ class User:
         fers = len(self.followers)
         #t = len(tweets)
         #r = len(retweets)
-
+        
         # Generate tweets
         #usrs_choice = np.random.choice(f + 1, f/4)
         if time >= 0:

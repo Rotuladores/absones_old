@@ -12,9 +12,11 @@ tweets = {}
 retweets = {}
 dtag = {}
 
-network = nx.gnm_random_graph(1000, round((float(1000)*((float(1000)-1)/5))/2), directed=True)
+num_nodes = 1000
+
+network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 positions = nx.random_layout(network)
-sim = Simulation(10, 1000, network)
+sim = Simulation(10, num_nodes, network)
 
 print('Generation')
 print('=' * 20)
@@ -39,11 +41,12 @@ for n in network.nodes():
 print(sim.retweet)
 
 for step in range(1,1080):
+    evo = open('evolution.csv','a')
     print('')
     print("#" * 40)
     print('# Step ' + str(step))
     print('# Numero di archi ' + str(len(sim.network.edges())))
-    print('# Grado di completamento ' + str(len(sim.network.edges())*100/(1000**2 - 1000)))
+    print('# Grado di completamento ' + str(len(sim.network.edges())*100/(num_nodes**2 - num_nodes)))
     print('# Tweets = ' + str(len(sim.tweet)))
     print('# Retweets = ' + str(len(sim.retweet)))
     print("#" * 40)
@@ -51,4 +54,5 @@ for step in range(1,1080):
     sim.step_retweet()
     sim.attachment_eval()
     sim.now = step
-    evo.append(len(sim.network.edges()))
+    evo.write(str(len(sim.network.edges()))+'\n')
+    evo.close()

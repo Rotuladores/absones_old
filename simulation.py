@@ -92,9 +92,9 @@ class Simulation:
                     a = [self.tweet[key][2] for key in self.tweet.keys() if key[0] == t[0] and key[1] >= time-20]
                     # print(a)
                     ratiof = (float(len(user.followings)) / len(self.users.keys()))
-                    f_thresh = (-(np.log(ratiof+4)/np.log(ratiof+2))+2) ** 1.08
+                    #f_thresh = (-(np.log(ratiof+4)/np.log(ratiof+2))+2) ** 1.08
                     #f_thresh = np.cbrt(np.log2(ratiof+1))
-                    if a and np.random.random() >= f_thresh:
+                    if a:# and np.random.random() >= f_thresh:
                         hist, bins=np.histogram(a,bins=list(range(0,self.topics+1)),density=True)
                         # print('##########')
                         # print('cosine similarity ' + str(user.id) + ' ' + str(t[0]))
@@ -196,7 +196,7 @@ class Simulation:
 
         #         self.network.remove_edge(u=e[0],v=e[1])
 
-        num_unfers = np.random.poisson(lam=15.0)
+        num_unfers = np.random.poisson(lam=7.0)
         unfollowers = np.random.choice(range(self.total_users),size=num_unfers)
         print(unfollowers)
 

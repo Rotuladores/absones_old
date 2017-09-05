@@ -149,11 +149,11 @@ class Simulation:
             # 	   user.tz[self.now % 12] * \
             # 	   len(user.followers) / \
             # 	   self.total_users
-            prob = (user.tz[self.now % 12] *
-                    len(user.followers) /
-                    self.total_users) / alpha
+            # prob = (user.tz[self.now % 12] *
+            #         len(user.followers) /
+            #         self.total_users) / alpha
             # print(prob)
-
+            prob = p_rt / alpha
             # Tweet if possibile
             if np.random.random() <= prob:
                 #print('%d tweets' % u)
@@ -173,10 +173,10 @@ class Simulation:
                 #(1 - (0.75*ratiof+0.25))
             #print(str(p_rt) + ' ##### ' + str(p_nrt))
             alpha = p_rt + p_nrt
-            prob = (user.tz[self.now % 12] *
-                    len(user.followings) /
-                    self.total_users) / alpha
-
+            # prob = (user.tz[self.now % 12] *
+            #         len(user.followings) /
+            #         self.total_users) / alpha
+            prob = p_rt / alpha
             if np.random.random() <= prob:
                 #print('%d retweets' % u)
                 self.repost(user, self.now)

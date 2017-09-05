@@ -1,5 +1,6 @@
 import random as rd #non usare questo usa np
 import scipy as sp
+import pandas as pd
 import numpy as np
 import networkx as nx
 import math
@@ -40,7 +41,31 @@ for n in network.nodes():
 
 print(sim.retweet)
 
+graph = open('graph_init.csv','w')
+graph.write('id,weight\n')
+for n in sim.network.nodes():
+    graph.write(str(n) + ',' + str(network.in_degree().get(n)) + '\n')
+graph.close()
+
+edg = open('edges_init.csv','w')
+edg.write('Source,Target\n')
+for e in sim.network.edges():
+    edg.write(str(e[0]) + ',' + str(e[1]) + '\n')
+edg.close()
+
+df = pd.DataFrame(columns=list(range(1000)))
+
 for step in range(1,1080):
+
+    classification = open('classification.csv','a')
+    dd = sim.network.in_degree()
+    dds = sorted(dd, key=dd.get, reverse=True)
+    classification.write(str(step) + ',' + ','.join(str(v) for v in dds[0:50]) + '\n')
+    classification.close()
+
+    dft = pd.DataFrame([list(sim.network.in_degree().values())], columns=list(range(1000)))
+    df = df.append(dft, ignore_index=True)
+
     evo = open('evolution.csv','a')
     print('')
     print("#" * 40)
@@ -56,3 +81,17 @@ for step in range(1,1080):
     sim.now = step
     evo.write(str(len(sim.network.edges()))+'\n')
     evo.close()
+
+df.to_csv(path_or_buf='class_complete.csv',sep=",",header=True, index=True)
+
+graph = open('graph_end.csv','w')
+graph.write('id,weight\n')
+for n in sim.network.nodes():
+    graph.write(str(n) + ',' + str(network.in_degree().get(n)) + '\n')
+graph.close()
+
+edg = open('edges_end.csv','w')
+edg.write('Source,Target\n')
+for e in sim.network.edges():
+    edg.write(str(e[0]) + ',' + str(e[1]) + '\n')
+edg.close()

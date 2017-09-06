@@ -242,6 +242,8 @@ class Simulation:
                 choosen = min(user.attachment, key=user.attachment.get)
                 self.network.remove_edge(u=user.id,v=choosen)
                 user.attachment.pop(choosen,None)
+                user.rm_following(choosen)
+                self.get_user(choosen).rm_follower(user.id)
             except:
                 pass
 

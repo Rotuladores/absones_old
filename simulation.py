@@ -181,6 +181,17 @@ class Simulation:
                 #print('%d retweets' % u)
                 self.repost(user, self.now)
         return True
+    
+    def personal_follow(self):
+        num_fers = np.random.poisson(lam=7.0)
+        followers = np.random.choice(range(self.total_users),size=num_fers)
+
+        for u in followers:
+            user = self.get_user(u)
+            target = np.random.choice(range(self.total_users),size=1)[0]
+            while target in user.followings or target == user.id:
+                target = np.random.choice(range(self.total_users),size=1)[0]
+            self.new_follow(u,target)
 
     def attachment_eval(self):
         # print('dimensione rete: %d' % len(self.network.edges()))

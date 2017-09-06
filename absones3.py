@@ -75,6 +75,7 @@ for step in range(1,1080):
     print('# Tweets = ' + str(len(sim.tweet)))
     print('# Retweets = ' + str(len(sim.retweet)))
     print("#" * 40)
+    sim.personal_follow()
     sim.step_tweet()
     sim.step_retweet()
     sim.attachment_eval()

@@ -183,15 +183,18 @@ class Simulation:
         return True
     
     def personal_follow(self):
-        num_fers = np.random.poisson(lam=7.0)
-        followers = np.random.choice(range(self.total_users),size=num_fers)
+        #num_fers = np.random.poisson(lam=7.0)
+        #followers = np.random.choice(range(self.total_users),size=num_fers)
 
-        for u in followers:
-            user = self.get_user(u)
-            target = np.random.choice(range(self.total_users),size=1)[0]
-            while target in user.followings or target == user.id:
+        #for u in followers:
+        sample = np.random.random(size=self.total_users)
+        for u in range(self.total_users):
+            if sample[u] <= 0.005:
+                user = self.get_user(u)
                 target = np.random.choice(range(self.total_users),size=1)[0]
-            self.new_follow(u,target)
+                while target in user.followings or target == user.id:
+                    target = np.random.choice(range(self.total_users),size=1)[0]
+                self.new_follow(u,target)
 
     def attachment_eval(self):
         # print('dimensione rete: %d' % len(self.network.edges()))
@@ -212,31 +215,34 @@ class Simulation:
 
         #         self.network.remove_edge(u=e[0],v=e[1])
 
-        num_unfers = np.random.poisson(lam=7.0)
-        unfollowers = np.random.choice(range(self.total_users),size=num_unfers)
-        print(unfollowers)
+        #num_unfers = np.random.poisson(lam=7.0)
+        #unfollowers = np.random.choice(range(self.total_users),size=num_unfers)
+        #print(unfollowers)
 
-        for u in unfollowers:
-            user = self.get_user(u)
-            fov = user.generate_fov(self.now, self.tweet, self.retweet, self.dtag)
-            for t in fov[0]:
-                if user.pi[t[2]] >= user.pi_average:
-                    if t[0] in user.attachment:
-                        user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
-                else:
-                    if t[0] in user.attachment:
-                        user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2
-            for t in fov[1]:
-                if user.pi[t[2]] >= user.pi_average:
-                    if t[0] in user.attachment:
-                        user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
-                    if t[6] in user.attachment:
-                        user.attachment[t[6]] = (user.attachment[t[6]] + t[3]) / 2
-                else:
-                    if t[0] in user.attachment:
-                        user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2 
-                    if t[6] in user.attachment:
-                        user.attachment[t[6]] = (user.attachment[t[6]] + t[4]) / 2
+        #for u in unfollowers:
+        sample = np.random.random(size=self.total_users)
+        for u in range(self.total_users):
+            if sample[u] <= 0.005:
+                user = self.get_user(u)
+                fov = user.generate_fov(self.now, self.tweet, self.retweet, self.dtag)
+                for t in fov[0]:
+                    if user.pi[t[2]] >= user.pi_average:
+                        if t[0] in user.attachment:
+                            user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
+                    else:
+                        if t[0] in user.attachment:
+                            user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2
+                for t in fov[1]:
+                    if user.pi[t[2]] >= user.pi_average:
+                        if t[0] in user.attachment:
+                            user.attachment[t[0]] = (user.attachment[t[0]] + t[3]) / 2
+                        if t[6] in user.attachment:
+                            user.attachment[t[6]] = (user.attachment[t[6]] + t[3]) / 2
+                    else:
+                        if t[0] in user.attachment:
+                            user.attachment[t[0]] = (user.attachment[t[0]] + t[4]) / 2 
+                        if t[6] in user.attachment:
+                            user.attachment[t[6]] = (user.attachment[t[6]] + t[4]) / 2
             
             try:
                 choosen = min(user.attachment, key=user.attachment.get)

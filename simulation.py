@@ -246,14 +246,14 @@ class Simulation:
                         if t[6] in user.attachment:
                             user.attachment[t[6]] = (user.attachment[t[6]] + t[4]) / 2
             
-            try:
-                choosen = min(user.attachment, key=user.attachment.get)
-                self.network.remove_edge(u=user.id,v=choosen)
-                user.attachment.pop(choosen,None)
-                user.rm_following(choosen)
-                self.get_user(choosen).rm_follower(user.id)
-            except:
-                pass
+                try:
+                    choosen = min(user.attachment, key=user.attachment.get)
+                    self.network.remove_edge(u=user.id,v=choosen)
+                    user.attachment.pop(choosen,None)
+                    user.rm_following(choosen)
+                    self.get_user(choosen).rm_follower(user.id)
+                except:
+                    pass
 
     def step_evaluation(self):
         for u in self.users.keys():

@@ -190,6 +190,7 @@ class Simulation:
         sample = np.random.random(size=self.total_users)
         for u in range(self.total_users):
             if sample[u] <= 0.005:
+                print("personal")
                 user = self.get_user(u)
                 target = np.random.choice(range(self.total_users),size=1)[0]
                 while target in user.followings or target == user.id:
@@ -223,6 +224,7 @@ class Simulation:
         sample = np.random.random(size=self.total_users)
         for u in range(self.total_users):
             if sample[u] <= 0.005:
+                print("unfollow")
                 user = self.get_user(u)
                 fov = user.generate_fov(self.now, self.tweet, self.retweet, self.dtag)
                 for t in fov[0]:

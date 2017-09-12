@@ -1,12 +1,23 @@
 import multiprocessing
+from simulation import Simulation
 import numpy as np
+import threading
 
 def multi_chunks(l, n):
-		for i in range(n):
-			yield [i*int(l/n), (i+1)*int(l/n)]
+	for i in range(n):
+		yield [i*int(l/n), (i+1)*int(l/n)]
 
 def mp_start_process(target_name, sim, chunks):
-	processes = [multiprocessing.Process(target=target_name, args=(sim, x)) for x in chunks]
+	# manager = Manager()
+	# counter = manager.Simulation(sim)
+	# pool = multiprocessing.Pool(len(chunks))
+	# for x in chunks:
+	# 	pool.apply(func=target_name, args=(counter, x))
+	# pool.close()
+	# pool.join()
+
+	# processes = [multiprocessing.Process(target=target_name, args=(sim, x)) for x in chunks]
+	processes = [threading.Thread(target=target_name, args=(sim, x)) for x in chunks]
 	for p in processes:
 		p.start()
 	for p in processes:

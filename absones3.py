@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import random as rd #non usare questo usa np
 import scipy as sp
 import pandas as pd
@@ -9,6 +10,7 @@ import argparse, sys, os
 from user import User
 from simulation import *
 
+
 tweets = {}
 retweets = {}
 dtag = {}
@@ -17,7 +19,7 @@ num_nodes = 1000
 
 network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 positions = nx.random_layout(network)
-sim = Simulation(10, num_nodes, network)
+sim = Simulation(topics, num_nodes, network)
 
 print('Generation')
 print('=' * 20)
@@ -55,7 +57,7 @@ edg.close()
 
 df = pd.DataFrame(columns=list(range(1000)))
 
-for step in range(1,1080):
+for step in range(1, 1080):
 
     classification = open('classification.csv','a')
     dd = sim.network.in_degree()

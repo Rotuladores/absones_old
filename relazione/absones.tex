@@ -13,22 +13,75 @@
 \usepackage{multicol}
 \usepackage{tikz}
 
+% FANCY TITLE AND ABSTRACT IS LIT
+\usepackage{lipsum}
+\usepackage{authblk}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{fancyhdr}
+%
+\pagestyle{fancy}
+%
+\renewenvironment{abstract}
+{\begin{quote}
+\noindent \rule{\linewidth}{.5pt}\par{\bfseries \abstractname.}}
+{\medskip\noindent \rule{\linewidth}{.5pt}
+\end{quote}
+}
+%
+\makeatletter
+\renewcommand\@maketitle{%
+\hfill
+\begin{minipage}{0.95\textwidth}
+\vskip 2em
+\let\footnote\thanks 
+{\LARGE \@title \par }
+\vskip 1.5em
+{
+  \begin{minipage}{.5\textwidth}
+    \textbf{Simone Ciccolella} \\
+    s.ciccolella@campus.unimib.it \\
+    \textit{Mat. 762234}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \textbf{Daniele Bellani} \\
+    d.bellani1@campus.unimib.it \\
+    \textit{Mat. 780675}
+  \end{minipage}
+}
+\end{minipage}
+\vskip 1em \par
+}
+\makeatother
+%
+\begin{document}
+%%
+
 \title{ABSONES: Agent Based SOcial NEtwork Simulator}
 
-\author[1]{Simone Ciccolella}
-\author[2]{Daniele Bellani}
-\affil[1]{s.ciccolella@campus.unimib.it}
-\affil[2]{d.bellani1@campus.unimib.it}
-\setcounter{Maxaffil}{0}
-
-\date{\today}
-
-\begin{document}
 \maketitle
-
+%
 \begin{abstract}
 In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, in modo 
 \end{abstract}
+
+%\title{ABSONES: Agent Based SOcial NEtwork Simulator}
+%
+%\author[1]{Simone Ciccolella}
+%\author[2]{Daniele Bellani}
+%\affil[1]{s.ciccolella@campus.unimib.it}
+%\affil[2]{d.bellani1@campus.unimib.it}
+%\setcounter{Maxaffil}{0}
+
+%\date{\today}
+
+%\begin{document}
+%\maketitle
+%
+%\begin{abstract}
+%In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, in modo 
+%\end{abstract}
+
+
 \tableofcontents
 \section{Introduction 5 lines to max 1/2 page}
 \label{sec:introduction}

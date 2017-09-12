@@ -19,7 +19,7 @@ num_nodes = 1000
 
 network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 positions = nx.random_layout(network)
-sim = Simulation(topics, num_nodes, network)
+sim = Simulation(10, num_nodes, network)
 
 print('Generation')
 print('=' * 20)

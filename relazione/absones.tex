@@ -61,7 +61,7 @@
 \maketitle
 %
 \begin{abstract}
-In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, in modo 
+In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, così da simulare, in modo quanto più fedele, il comportamento della vera rete sociale. Con il modello così costruito, è possibile studiare fenomeni sociologici usando scenari simulati nel modo più attinente possibile alla realtà. In particolare, abbiamo provato a simulare il ``salto" di popolarità di un individuo poco conosciuto in seguito all'interazione con un utente più ``in vista", traendo ispirazione da quanto avvenuto nel 2012 tra l'On. Maurizio Gasparri e l'utente Daniele Termite. 
 \end{abstract}
 
 %\title{ABSONES: Agent Based SOcial NEtwork Simulator}
@@ -81,18 +81,19 @@ In questo progetto proponiamo un modello per la simulazione di social network, i
 %In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, in modo 
 %\end{abstract}
 
-
+\newpage
 \tableofcontents
-\section{Introduction 5 lines to max 1/2 page}
+\newpage
+\section{Introduzione}
 \label{sec:introduction}
 
-Explain the context of the experiment here. Why is condensed matter physics interesting or important?
-Optional things you could talk about (but don't have to -- this is up to you): transistors, computers, Quantum computers, fundamental knowledge (e.g. the resistance quantum).
-
-Briefly explain what methods you will use in the experiment, and what values you will extract from the data.
-
-For this section and all following sections: If you refer to an equation, previous result or theory that is not regarded as common knowledge, then cite the source (article or book) where you found this. For example, you can cite the Nano 3 Lecture notes \cite{nano3}.
-
+I social network sono uno strumento che è diventato parte integrante della vita di tutti. Nel giugno 2017 la piattaforma Facebook ha passato la soglia dei due miliardi di utenti attivi su base mensile \cite{facebook}; nel frattempo, Twitter si è imposto come mezzo di comunicazione principale tra i cosiddetti ``influencer", con un grosso impatto sull'opinione pubblica (per esempio, giocando un ruolo fondamentale nell'elezione di Donald Trump \cite{twitter}). L'aspetto principale di questa forma di comunicazione è la produzione, da parte degli utenti, di un'enorme mole di dati: le acquisizioni di YouTube da parte di Google e di LinkedIn da parte di Microsoft testimoniano l'interesse delle grandi aziende per queste sorgenti di dati. L'analisi di questi ultimi aiuta a determinare strategie di mercato, a personalizzare raccomandazioni di prodotti, studiare e prevedere il sentimento su un evento o un prodotto, oppure condurre studi di stampo sociologico. 
+\\
+\\
+Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono rilasciati in formato aperto (Open Data). Inoltre, le loro enormi proporzioni ne rendono difficile l'analisi e la gestione. Da qui la necessità di svolgere delle simulazioni \textit{in-silico} con modelli sviluppati in modo da essere il più possibile veritieri. L'attendibilità di queste simulazioni dipende dal modello e dalle inevitabili assunzioni che sono state fatte durante la costruzione.
+\\
+\\
+Negli ultimi anni sono stati proposti alcuni modelli per la simulazione di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcuni dei modelli proposti, dopoichè passeremo all'illustrazione del nostro modello e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo i risultati delle simulazioni e ne commenteremo le implicazioni.
 \section{Theory 2-3 pages}
 \label{sec:theory}
 
@@ -204,10 +205,12 @@ You can make lists with automatic numbering \dots
 We hope you find write\LaTeX\ useful, and please let us know if you have any feedback using the help menu above.
 
 \begin{thebibliography}{9}
-\bibitem{nano3}
-  K. Grove-Rasmussen og Jesper Nygård,
-  \emph{Kvantefænomener i Nanosystemer}.
-  Niels Bohr Institute \& Nano-Science Center, Københavns Universitet
+\bibitem{facebook}
+  Welch, Chris (June 27, 2017). "Facebook crosses 2 billion monthly users". \textit{The Verge. Vox Media.} Retrieved June 27, 2017.
+  
+\bibitem{twitter}
+  Bulman, May (November 28, 2016). ``Donald Trump's 'celebrity-style' tweets helped him win US presidential election, says data scientist".
+\textit{The Independent} Retrieved November 28, 2016.
 
 \end{thebibliography}
 \end{document}

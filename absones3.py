@@ -57,7 +57,7 @@ edg.close()
 
 df = pd.DataFrame(columns=list(range(1000)))
 
-for step in range(1, 1080):
+for step in range(1, 400):
 
 	classification = open('classification.csv','a')
 	dd = sim.network.in_degree()

@@ -75,13 +75,13 @@ class Simulation:
 		if (not(not fov[0] and not fov[1])):
 			for t in fov[0]:
 				#avg = (user.pi[t[2]] + t[3]) / 2
-				avg = 0.2*user.pi[t[2]] + 0.4*(1-t[3]) + 0.4*t[4]  
+				avg = 0.2*user.pi[t[2]] + 0.4*(1-t[4]) + 0.4*t[3]  
 				thresh = avg
 				if np.random.random() <= thresh:
 					self.retweet[user.id, time] = t
 			for t in fov[1]:
 				#avg = (user.pi[t[2]] + t[3]) / 2
-				avg = 0.2*user.pi[t[2]] + 0.4*(1-t[3]) + 0.4*t[4]
+				avg = 0.2*user.pi[t[2]] + 0.4*(1-t[4]) + 0.4*t[3]
 				thresh = avg
 				if np.random.random() <= thresh:
 					self.retweet[user.id, time] = t

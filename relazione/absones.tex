@@ -12,6 +12,7 @@
 \usepackage{authblk}
 \usepackage{multicol}
 \usepackage{tikz}
+\usepackage{hyperref}
 
 % FANCY TITLE AND ABSTRACT IS LIT
 \usepackage{lipsum}
@@ -90,10 +91,10 @@ In questo progetto proponiamo un modello per la simulazione di social network, i
 I social network sono uno strumento che è diventato parte integrante della vita di tutti. Nel giugno 2017 la piattaforma Facebook ha passato la soglia dei due miliardi di utenti attivi su base mensile \cite{facebook}; nel frattempo, Twitter si è imposto come mezzo di comunicazione principale tra i cosiddetti ``influencer", con un grosso impatto sull'opinione pubblica (per esempio, giocando un ruolo fondamentale nell'elezione di Donald Trump \cite{twitter}). L'aspetto principale di questa forma di comunicazione è la produzione, da parte degli utenti, di un'enorme mole di dati: le acquisizioni di YouTube da parte di Google e di LinkedIn da parte di Microsoft testimoniano l'interesse delle grandi aziende per queste sorgenti di dati. L'analisi di questi ultimi aiuta a determinare strategie di mercato, a personalizzare raccomandazioni di prodotti, studiare e prevedere il sentimento su un evento o un prodotto, oppure condurre studi di stampo sociologico. 
 \\
 \\
-Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono rilasciati in formato aperto (Open Data). Inoltre, le loro enormi proporzioni ne rendono difficile l'analisi e la gestione. Da qui la necessità di svolgere delle simulazioni \textit{in-silico} con modelli sviluppati in modo da essere il più possibile veritieri. L'attendibilità di queste simulazioni dipende dal modello e dalle inevitabili assunzioni che sono state fatte durante la costruzione.
+Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono rilasciati in formato aperto (Open Data). Inoltre, le loro enormi proporzioni ne rendono difficile l'analisi e la gestione. Da qui la necessità di svolgere delle simulazioni \textit{in-silico} con modelli sviluppati in modo da essere il più possibile veritieri. L'attendibilità di queste simulazioni dipende dal modello su cui vengono eseguite e dalle inevitabili assunzioni che sono state fatte durante la sua costruzione. L'obiettivo è quindi produrre sistemi artificiali che siano repliche fedeli di sistemi complessi reali. Una possibile strada è quella dei \textit{sistemi multi-agente}. Questi si basano sulla definizione di \textit{agente} (vedi sezione \ref{sec:mas}), un entità virtuale \cite{ferber} capace di compiere azioni ed interagire con altri agenti all'interno di un ambiente (\textit{environment}). Si può ottenere una rappresentazione multi-agente di una rete sociale rappresentando l'ambiente come un grafo (connesso o non connesso) e gli agenti come nodi di questo grafo. Gli archi rappresentano le interazioni tra i vari agenti, siano esse relazioni di ``amicizia" (es. Facebook), oppure di ``subscription" (es. Twitter).
 \\
 \\
-Negli ultimi anni sono stati proposti alcuni modelli per la simulazione di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcune delle metodologie proposte, dopoichè passeremo all'illustrazione della nostra soluzione e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo gli esperimenti condotti e ne commenteremo i risultati.
+Negli ultimi anni sono stati proposti alcuni modelli per la simulazione multi-agente di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcune delle metodologie proposte, dopoichè passeremo all'illustrazione della nostra soluzione e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo gli esperimenti condotti e ne commenteremo i risultati.
 \section{Letteratura correlata}
 \label{sec:letteratura}
 Un primo lavoro degno di nota è quello pubblicato da Hamill e Gilbert \cite{gilbert}. In primo luogo, gli autori stabiliscono quali sono le caratteristiche che una rete sociale simulata dovrebbe avere, tra cui:
@@ -110,7 +111,8 @@ Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in let
 \item[Small world network] Basato sul modello \textit{regular lattice}, aggiunge o riarrangia collegamenti in modo casuale
 \item[Scale-free network] Descritta per la prima volta da Barabási \& Bonabeau \cite{scalefree}, prevede che pochi nodi abbiano molti collegamenti.
 \end{description}
-\section{Experiment 1-2 pages}
+\section{Visione multi-agente}
+\label{sec:mas}
 \subsection{Fabrication}
 Explain a step-by-step recipe for fabrication here. How long did you etch and why? What is an Ohmic contact?
 \subsection{Experimental set-up}
@@ -224,5 +226,10 @@ We hope you find write\LaTeX\ useful, and please let us know if you have any fee
   
 \bibitem{scalefree}
   Barabási, B. A. L., \& Bonabeau, E. (2003). Scale-free. Scientific American, 288(5), 50-59.
+  
+\bibitem{ferber}
+  Ferber, J. (1999). Multi-agent systems: an introduction to distributed artificial intelligence (Vol. 1). Reading: Addison-Wesley.
+ISO 690	
+
 \end{thebibliography}
 \end{document}

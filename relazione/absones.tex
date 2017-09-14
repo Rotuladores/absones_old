@@ -55,8 +55,8 @@
 %
 \begin{document}
 %%
-
-\title{ABSONES: Agent Based SOcial NEtwork Simulator}
+\font\myfont=cmr12 at 19pt
+\title{\myfont ABSONES: Agent Based SOcial NEtwork Simulator}
 
 \maketitle
 %
@@ -93,19 +93,23 @@ I social network sono uno strumento che è diventato parte integrante della vita
 Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono rilasciati in formato aperto (Open Data). Inoltre, le loro enormi proporzioni ne rendono difficile l'analisi e la gestione. Da qui la necessità di svolgere delle simulazioni \textit{in-silico} con modelli sviluppati in modo da essere il più possibile veritieri. L'attendibilità di queste simulazioni dipende dal modello e dalle inevitabili assunzioni che sono state fatte durante la costruzione.
 \\
 \\
-Negli ultimi anni sono stati proposti alcuni modelli per la simulazione di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcuni dei modelli proposti, dopoichè passeremo all'illustrazione del nostro modello e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo i risultati delle simulazioni e ne commenteremo le implicazioni.
-\section{Theory 2-3 pages}
-\label{sec:theory}
-
-\subsection{Two-dimensional Electron Gas}
-Here, explain the concept of a 2-DEG in GaAs/AlGaAs. What is a 2-DEG and why does it arise?
-
-\subsection{Hall Effect}
-Explain the classical Hall effect in your own words. What do I measure at $B=0$? And what happens if $B>0$? Which effect gives rise to the voltage drop in the vertical direction?
-
-\subsection{Quantum Hall Effect}
-Explain the IQHE in your own words. What does the density of states look like in a 2-DEG when $B=0$? What are Landau levels and how do they arise? What are edge states? What does the electron transport look like when you change the magnetic field? What do you expect to measure?
-
+Negli ultimi anni sono stati proposti alcuni modelli per la simulazione di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcune delle metodologie proposte, dopoichè passeremo all'illustrazione della nostra soluzione e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo gli esperimenti condotti e ne commenteremo i risultati.
+\section{Letteratura correlata}
+\label{sec:letteratura}
+Un primo lavoro degno di nota è quello pubblicato da Hamill e Gilbert \cite{gilbert}. In primo luogo, gli autori stabiliscono quali sono le caratteristiche che una rete sociale simulata dovrebbe avere, tra cui:
+\begin{description}
+\item[Bassa densità di rete] La densità di una rete \cite{gilbert} (\textit{network density}) è definita come il rapporto tra il numero di archi esistenti e il numero massimo di archi possibili. Un utente medio è collegato con un numero di utenti dell'ordine delle centinaia o poche migliaia, numero che, se confrontato con le centinaia di milioni di utenti (se non miliardi) di tutto il sistema, risulta essere piuttosto basso. 
+\item[Assortatività positiva] Con questo termine, gli autori indicano la tendenza dei nodi con più connessioni ad essere collegati con altri nodi molto connessi. 
+\item[Presenza di comunità] Ovvero, la tendenza a formare \textit{clusters}, gruppi di nodi fortemente connessi tra di loro ma debolmente connessi con il resto del sistema.
+\item[Lunghezza ridotta dei cammini] Un cammino (\textit{path}) \cite{barabasi} tra i nodi $v_0$ e $v_n$ è una lista ordinata di archi $P = \{(v_0,v_1),(v_1,v_2),...,(v_{n-1},v_n)\}$, e $n$ corrisponde alla lunghezza di questo cammino. Secondo gli autori, in media si può raggiungere un utente di un social network partendo da un qualsiasi altro nodo compiendo solo pochi passi, ovvero percorrendo un cammino ridotto. La lunghezza dipende dalle proporzioni della rete.
+\end{description}
+Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in letteratura:
+\begin{description}
+\item[Regular lattice] Ogni nodo è collegato ad un numero fisso di suoi vicini
+\item[Random network] Ogni nodo è collegato in media ad un certo numero di altri nodi
+\item[Small world network] Basato sul modello \textit{regular lattice}, aggiunge o riarrangia collegamenti in modo casuale
+\item[Scale-free network] Descritta per la prima volta da Barabási \& Bonabeau \cite{scalefree}, prevede che pochi nodi abbiano molti collegamenti.
+\end{description}
 \section{Experiment 1-2 pages}
 \subsection{Fabrication}
 Explain a step-by-step recipe for fabrication here. How long did you etch and why? What is an Ohmic contact?
@@ -206,11 +210,19 @@ We hope you find write\LaTeX\ useful, and please let us know if you have any fee
 
 \begin{thebibliography}{9}
 \bibitem{facebook}
-  Welch, Chris (June 27, 2017). "Facebook crosses 2 billion monthly users". \textit{The Verge. Vox Media.} Retrieved June 27, 2017.
+  Welch, Chris (2017). "Facebook crosses 2 billion monthly users". \textit{The Verge. Vox Media.} Retrieved June 27, 2017.
   
 \bibitem{twitter}
-  Bulman, May (November 28, 2016). ``Donald Trump's 'celebrity-style' tweets helped him win US presidential election, says data scientist".
+  Bulman, May (2016). ``Donald Trump's 'celebrity-style' tweets helped him win US presidential election, says data scientist".
 \textit{The Independent} Retrieved November 28, 2016.
 
+\bibitem{gilbert}
+  Hamill, L., \& Gilbert, N. (2010). Simulating large social networks in agent-based models: A social circle model. Emergence: Complexity and Organization, 12(4), 78.
+
+\bibitem{barabasi}
+  Barabási, A. L. (2016). Network science. Cambridge university press.
+  
+\bibitem{scalefree}
+  Barabási, B. A. L., \& Bonabeau, E. (2003). Scale-free. Scientific American, 288(5), 50-59.
 \end{thebibliography}
 \end{document}

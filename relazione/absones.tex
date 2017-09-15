@@ -62,7 +62,7 @@
 \maketitle
 %
 \begin{abstract}
-In questo progetto proponiamo un modello per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, così da simulare, in modo quanto più fedele, il comportamento della vera rete sociale. Con il modello così costruito, è possibile studiare fenomeni sociologici usando scenari simulati nel modo più attinente possibile alla realtà. In particolare, abbiamo provato a simulare il ``salto" di popolarità di un individuo poco conosciuto in seguito all'interazione con un utente più ``in vista", traendo ispirazione da quanto avvenuto nel 2012 tra l'On. Maurizio Gasparri e l'utente Daniele Termite. 
+In questo progetto proponiamo un modello multi-agente per la simulazione di social network, in particolare la piattaforma di microblogging Twitter. Il nostro approccio prevede la rappresentazione del sistema come un grafo diretto e l'identificazione degli utenti come agenti di tale sistema complesso, che si attivano e compiono azioni sulla base di probabilità ed estrazioni di tipo Monte Carlo. Gli obiettivi che ci siamo posti sono stati la prevenzione del \textit{completamento} della rete e il mantenimento del principio di \textit{invarianza di scala}, così da simulare, in modo quanto più fedele, il comportamento della vera rete sociale. Con il modello così costruito, è possibile studiare fenomeni sociologici usando scenari simulati nel modo più attinente possibile alla realtà. In particolare, abbiamo provato a simulare il ``salto" di popolarità di un individuo poco conosciuto in seguito all'interazione con un utente più ``in vista", traendo ispirazione da quanto avvenuto nel 2012 tra l'On. Maurizio Gasparri e l'utente Daniele Termite. 
 \end{abstract}
 
 %\title{ABSONES: Agent Based SOcial NEtwork Simulator}
@@ -101,7 +101,7 @@ Un primo lavoro degno di nota è quello pubblicato da Hamill e Gilbert \cite{gil
 \begin{description}
 \item[Bassa densità di rete] La densità di una rete \cite{gilbert} (\textit{network density}) è definita come il rapporto tra il numero di archi esistenti e il numero massimo di archi possibili. Un utente medio è collegato con un numero di utenti dell'ordine delle centinaia o poche migliaia, numero che, se confrontato con le centinaia di milioni di utenti (se non miliardi) di tutto il sistema, risulta essere piuttosto basso. 
 \item[Assortatività positiva] Con questo termine, gli autori indicano la tendenza dei nodi con più connessioni ad essere collegati con altri nodi molto connessi. 
-\item[Presenza di comunità] Ovvero, la tendenza a formare \textit{clusters}, gruppi di nodi fortemente connessi tra di loro ma debolmente connessi con il resto del sistema.
+\item[Presenza di comunità] Ovvero, la tendenza a formare \textit{clusters}, gruppi di nodi fortemente connessi tra di loro ma debolmente connessi con il resto del sistema. Viene introdotto, a questo proposito, il \textit{coefficiente di clustering} (\textit{clustering coefficient}, vedi sezione \ref{sec:exp}) 
 \item[Lunghezza ridotta dei cammini] Un cammino (\textit{path}) \cite{barabasi} tra i nodi $v_0$ e $v_n$ è una lista ordinata di archi $P = \{(v_0,v_1),(v_1,v_2),...,(v_{n-1},v_n)\}$, e $n$ corrisponde alla lunghezza di questo cammino. Secondo gli autori, in media si può raggiungere un utente di un social network partendo da un qualsiasi altro nodo compiendo solo pochi passi, ovvero percorrendo un cammino ridotto. La lunghezza dipende dalle proporzioni della rete.
 \end{description}
 Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in letteratura:
@@ -111,6 +111,10 @@ Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in let
 \item[Small world network] Basato sul modello \textit{regular lattice}, aggiunge o riarrangia collegamenti in modo casuale
 \item[Scale-free network] Descritta per la prima volta da Barabási \& Bonabeau \cite{scalefree}, prevede che pochi nodi abbiano molti collegamenti.
 \end{description}
+Gli autori indicano la costruzione \textit{scale-free} come la migliore tra le quattro, in quanto presenta tutte le caratteristiche elencate in precedenza, con l'eccezione dell'\textit{assortatività}, non particolarmente riflessa nel modello. Passano quindi all'esposizione della loro proposta, un modello ad agenti basato sul concetto di \textit{social circles} \cite{gilbert}: ogni agente può stabilire un ``link" con un altro agente solo se quest'ultimo può fare altrettanto. Quest'idea di \textit{reciprocità} si adatta bene alla modellazione di alcune piattaforme (es. Facebook), mentre si adatta meno su altre: un esempio è Twitter, dove per stabilire un collegamento, il fatto che due utenti si conoscano direttamente è poco rilevante. 
+\\
+\\
+Un altro lavoro che abbiamo recuperato è quello di Liben-Nowell \& Kleinberg \cite{link}. Il problema da loro affrontato è quello della previsione di collegamenti (\textit{link prediction}) nei social network, ovvero prevedere, dato lo stato del sistema in un dato istante di tempo, la formazione di nuovi collegamenti negli istanti immediatamente successivi. Un aspetto fondamentale in questo caso è il criterio con cui viene valutata la similarità tra i nodi del grafo; nell'articolo viene fatta una rassegna dei metodi principali:
 \section{Visione multi-agente}
 \label{sec:mas}
 \subsection{Fabrication}
@@ -230,6 +234,9 @@ We hope you find write\LaTeX\ useful, and please let us know if you have any fee
 \bibitem{ferber}
   Ferber, J. (1999). Multi-agent systems: an introduction to distributed artificial intelligence (Vol. 1). Reading: Addison-Wesley.
 ISO 690	
+
+\bibitem{link}
+  Liben-Nowell, D., \& Kleinberg, J. (2007). The link-prediction problem for social networks. journal of the Association for Information Science and Technology, 58(7), 1019-1031.
 
 \end{thebibliography}
 \end{document}

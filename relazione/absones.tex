@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,12pt]{article}
 
 \usepackage[italian]{babel}
 \usepackage[utf8]{inputenc}
@@ -97,6 +97,7 @@ Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono 
 Negli ultimi anni sono stati proposti alcuni modelli per la simulazione multi-agente di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcune delle metodologie proposte, dopoichè passeremo all'illustrazione della nostra soluzione e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo gli esperimenti condotti e ne commenteremo i risultati.
 \section{Letteratura correlata}
 \label{sec:letteratura}
+La letteratura riguardante modellazione multi-agente di social network è relativamente scarsa. Nonostante la pubblicazione in formato open di dati provenienti da alcune piattaforme, risulta comunque molto difficile avere una visione generale di ciò che accade in sistemi così ampi e complessi. \\
 Un primo lavoro degno di nota è quello pubblicato da Hamill e Gilbert \cite{gilbert}. In primo luogo, gli autori stabiliscono quali sono le caratteristiche che una rete sociale simulata dovrebbe avere, tra cui:
 \begin{description}
 \item[Bassa densità di rete] La densità di una rete \cite{gilbert} (\textit{network density}) è definita come il rapporto tra il numero di archi esistenti e il numero massimo di archi possibili. Un utente medio è collegato con un numero di utenti dell'ordine delle centinaia o poche migliaia, numero che, se confrontato con le centinaia di milioni di utenti (se non miliardi) di tutto il sistema, risulta essere piuttosto basso. 
@@ -114,9 +115,22 @@ Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in let
 Gli autori indicano la costruzione \textit{scale-free} come la migliore tra le quattro, in quanto presenta tutte le caratteristiche elencate in precedenza, con l'eccezione dell'\textit{assortatività}, non particolarmente riflessa nel modello. Passano quindi all'esposizione della loro proposta, un modello ad agenti basato sul concetto di \textit{social circles} \cite{gilbert}: ogni agente può stabilire un ``link" con un altro agente solo se quest'ultimo può fare altrettanto. Quest'idea di \textit{reciprocità} si adatta bene alla modellazione di alcune piattaforme (es. Facebook), mentre si adatta meno su altre: un esempio è Twitter, dove per stabilire un collegamento, il fatto che due utenti si conoscano direttamente è poco rilevante. 
 \\
 \\
-Un altro lavoro che abbiamo recuperato è quello di Liben-Nowell \& Kleinberg \cite{link}. Il problema da loro affrontato è quello della previsione di collegamenti (\textit{link prediction}) nei social network, ovvero prevedere, dato lo stato del sistema in un dato istante di tempo, la formazione di nuovi collegamenti negli istanti immediatamente successivi. Un aspetto fondamentale in questo caso è il criterio con cui viene valutata la similarità tra i nodi del grafo; nell'articolo viene fatta una rassegna dei metodi principali:
+Un altro lavoro che abbiamo recuperato è quello di Liben-Nowell \& Kleinberg \cite{link}. Il problema da loro affrontato è quello della previsione di collegamenti (\textit{link prediction}) nei social network, ovvero prevedere, dato lo stato del sistema in un dato istante di tempo, la formazione di nuovi collegamenti negli istanti immediatamente successivi. Un aspetto fondamentale in questo caso è il criterio con cui viene valutata la similarità tra i nodi del grafo, ovvero come viene assegnato e valutato uno \textit{score} a una coppia di nodi (arco); nell'articolo viene fatta una rassegna dei metodi principali:
+\begin{description}
+\item[]
+\end{description}
+\section{Descrizione modello}
+\label{sec:mod}
 \section{Visione multi-agente}
 \label{sec:mas}
+\section{Accenni teoria dei grafi}
+\label{sec:graph}
+\section{Esperimenti}
+\label{sec:esp}
+\section{Conclusione}
+\label{sec:end}
+\section{Sviluppi futuri}
+\label{sec:future}
 \subsection{Fabrication}
 Explain a step-by-step recipe for fabrication here. How long did you etch and why? What is an Ohmic contact?
 \subsection{Experimental set-up}

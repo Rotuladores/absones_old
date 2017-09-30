@@ -115,10 +115,15 @@ Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in let
 Gli autori indicano la costruzione \textit{scale-free} come la migliore tra le quattro, in quanto presenta tutte le caratteristiche elencate in precedenza, con l'eccezione dell'\textit{assortatività}, non particolarmente riflessa nel modello. Passano quindi all'esposizione della loro proposta, un modello ad agenti basato sul concetto di \textit{social circles} \cite{gilbert}: ogni agente può stabilire un ``link" con un altro agente solo se quest'ultimo può fare altrettanto. Quest'idea di \textit{reciprocità} si adatta bene alla modellazione di alcune piattaforme (es. Facebook), mentre si adatta meno su altre: un esempio è Twitter, dove per stabilire un collegamento, il fatto che due utenti si conoscano direttamente è poco rilevante. 
 \\
 \\
-Un altro lavoro che abbiamo recuperato è quello di Liben-Nowell \& Kleinberg \cite{link}. Il problema da loro affrontato è quello della previsione di collegamenti (\textit{link prediction}) nei social network, ovvero prevedere, dato lo stato del sistema in un dato istante di tempo, la formazione di nuovi collegamenti negli istanti immediatamente successivi. Un aspetto fondamentale in questo caso è il criterio con cui viene valutata la similarità tra i nodi del grafo, ovvero come viene assegnato e valutato uno \textit{score} a una coppia di nodi (arco); nell'articolo viene fatta una rassegna dei metodi principali:
+Un altro lavoro che abbiamo recuperato è quello di Liben-Nowell \& Kleinberg \cite{link}. Il problema da loro affrontato è quello della previsione di collegamenti (\textit{link prediction}) nei social network, ovvero prevedere, dato lo stato del sistema in un dato istante di tempo, la formazione di nuovi collegamenti negli istanti immediatamente successivi. Un aspetto fondamentale in questo caso è il criterio con cui viene valutata la \textit{similarità} tra i nodi del grafo, ovvero come viene assegnato uno \textit{score} a una coppia di nodi (arco) in modo che ne misuri la \textit{``distanza"} rispetto ad una particolare proprietà o caratteristica. Nodi simili ma non ancora collegati avranno infatti un'alta probabilità di stabilire un collegamento negli istanti di tempo più prossimi. \\
+Nell'articolo viene fatta una rassegna dei metodi principali; l'obiettivo di questi metodi è costruire la matrice di similarità :
 \begin{description}
-\item[]
+\item[Neighborhood-based methods] Di questa categoria fanno parte tutti quei metodi che si basano sul \textit{vicinato} (\textit{neighborhood}) dei nodi di cui si vuole calcolare la similarità. La misura di distanza può essere il numero di nodi adiacenti in comune, oppure la probabilità che i due nodi in esame abbiano un vicino in comune, per esempio usando la \textit{distanza di Jaccard}. In alternativa, questa probabilità può essere calcolata in modo proporzionale alla dimensione dei vicinati dei due nodi candidati, per esempio moltiplicandone la cardinalità.
+\item[Paths-based methods] Anche la distanza intesa come lunghezza di un cammino tra due nodi può essere intesa come misura di similarità; per esempio, in \cite{katz} viene descritta una metrica che prende in considerazione la lunghezza tutti i cammini esistenti tra due nodi per quantificarne la similarità. Anche alcuni celebri algoritmi, come il \textit{PageRank} di Google \cite{google}, fanno parte di questa categoria.
 \end{description}
+Altre tecniche possono essere usate in congiunzione con i metodi sopra elencati, per semplificarne la computazione oppure per irrobustirne la previsione. Procedure di \textit{clustering} o \textit{matrix factorization} possono aiutare ad eliminare i collegamenti meno significativi prima dell'effettivo calcolo delle metriche. \\
+\\
+Essendo il nostro obiettivo la simulazione di una \textit{social} network, non si può ignorare la (forte) componente sociale del sistema considerato. Ogni nodo rappresenta un utente, e dunque ne eredita le caratteristiche personali come interessi e carattere. La letteratura specializzata in \textit{social sciences} ha da tempo definito il concetto di \textit{omofilia} (\textit{homophily}) \cite{homo}, inteso come la tendenza di ogni individuo a stringere legami con altri individui dalle caratteristiche simili. Nel computo della misura di similarità (o dissimilarità) bisognerebbe quindi tenere conto di tali caratteristiche e trovare quindi il modo di rappresentarle nel sistema. 
 \section{Descrizione modello}
 \label{sec:mod}
 \section{Visione multi-agente}
@@ -251,6 +256,14 @@ ISO 690
 
 \bibitem{link}
   Liben-Nowell, D., \& Kleinberg, J. (2007). The link-prediction problem for social networks. journal of the Association for Information Science and Technology, 58(7), 1019-1031.
+  
+\bibitem{katz}
+  Katz, L. (1953). A new status index derived from sociometric analysis. Psychometrika, 18(1), 39-43.
 
+\bibitem{google}
+  Brin, S., \& Page, L. (2012). Reprint of: The anatomy of a large-scale hypertextual web search engine. Computer networks, 56(18), 3825-3833.
+
+\bibitem{homo}
+  McPherson, M., Smith-Lovin, L., \& Cook, J. M. (2001). Birds of a feather: Homophily in social networks. Annual review of sociology, 27(1), 415-444.
 \end{thebibliography}
 \end{document}

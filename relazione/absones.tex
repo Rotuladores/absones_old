@@ -95,6 +95,7 @@ Sorgono però alcune difficoltà. In primo luogo, raramente questi dati vengono 
 \\
 \\
 Negli ultimi anni sono stati proposti alcuni modelli per la simulazione multi-agente di social network, con risultati alterni e non definitivi, dovuti alla complessità del tema. Da questi abbiamo tratto ispirazione per il nostro modello. Nella prima sezione esamineremo alcune delle metodologie proposte, dopoichè passeremo all'illustrazione della nostra soluzione e della visione agent-based dello stesso. Nelle ultime due sezioni esporremo gli esperimenti condotti e ne commenteremo i risultati.
+
 \section{Letteratura correlata}
 \label{sec:letteratura}
 La letteratura riguardante modellazione multi-agente di social network è relativamente scarsa. Nonostante la pubblicazione in formato open di dati provenienti da alcune piattaforme, risulta comunque molto difficile avere una visione generale di ciò che accade in sistemi così ampi e complessi. \\
@@ -103,7 +104,7 @@ Un primo lavoro degno di nota è quello pubblicato da Hamill e Gilbert \cite{gil
 \item[Bassa densità di rete] La densità di una rete \cite{gilbert} (\textit{network density}) è definita come il rapporto tra il numero di archi esistenti e il numero massimo di archi possibili. Un utente medio è collegato con un numero di utenti dell'ordine delle centinaia o poche migliaia, numero che, se confrontato con le centinaia di milioni di utenti (se non miliardi) di tutto il sistema, risulta essere piuttosto basso. 
 \item[Assortatività positiva] Con questo termine, gli autori indicano la tendenza dei nodi con più connessioni ad essere collegati con altri nodi molto connessi. 
 \item[Presenza di comunità] Ovvero, la tendenza a formare \textit{clusters}, gruppi di nodi fortemente connessi tra di loro ma debolmente connessi con il resto del sistema. Viene introdotto, a questo proposito, il \textit{coefficiente di clustering} (\textit{clustering coefficient}, vedi sezione \ref{sec:exp}) 
-\item[Lunghezza ridotta dei cammini] Un cammino (\textit{path}) \cite{barabasi} tra i nodi $v_0$ e $v_n$ è una lista ordinata di archi $P = \{(v_0,v_1),(v_1,v_2),...,(v_{n-1},v_n)\}$, e $n$ corrisponde alla lunghezza di questo cammino. Secondo gli autori, in media si può raggiungere un utente di un social network partendo da un qualsiasi altro nodo compiendo solo pochi passi, ovvero percorrendo un cammino ridotto. La lunghezza dipende dalle proporzioni della rete.
+\item[Lunghezza ridotta dei cammini] Secondo gli autori, in media si può raggiungere un utente di un social network partendo da un qualsiasi altro nodo compiendo solo pochi passi, ovvero percorrendo un cammino ridotto. La lunghezza dipende dalle proporzioni della rete.
 \end{description}
 Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in letteratura:
 \begin{description}
@@ -132,12 +133,30 @@ dove $s_i$ indica il numero medio di \textit{amicizie} (\textit{friendships}) ch
 Esistono altri modelli, esposti per esempio in \cite{red} e \cite{det}; entrambi usano una rete \textit{scale-free} come ambiente per gli agenti (il primo orientata, la seconda non orientata), ed entrambi regolano gli eventi che accadono nel sistema e le azioni degli agenti secondo degli spazi di probabilità, che si aggiornano dinamicamente. Queste probabilità sono in funzione dell'\textit{in-degree} di ogni nodo e della \textit{similarità} tra ogni coppia di nodi. \\
 \\
 Un'ultima risorsa da noi sfruttata è stata la relazione stilata da Marco Comi e Marco Gravina che, come noi e prima di noi, si sono cimentati nella simulazione del social network Twitter. Abbiamo preso spunto dalle loro soluzioni e dalle criticità del loro modello per sviluppare la nostra proposta.
+\section{Riferimenti matematici}
+Di seguito descriviamo brevemente alcuni concetti matematici fondamentali per la comprensione delle sezioni successive.
+\label{sec:mat}
+\subsection{Cosine similarity}
+\label{subsec:cos}
+Il \textit{coseno di similitudine} (\textit{cosine similarity}) \cite{ir} è una misura di similarità tra due vettori $v_1$ e $v_2$, definita in questo modo:
+\begin{equation}
+sim(v_1,v_2) = \dfrac{v_1v_2}{|v_1||v_2|}
+\end{equation}
+dove il numeratore rappresenta il \textit{prodotto scalare} tra i due vettori, mentra il denominatore rappresenta il prodotto dei moduli.
+\subsection{Teoria dei grafi}
+\label{subsec:graph}
+Un \textit{grafo orientato} $G$ \cite{cormen} è una coppia $(V,E)$, dove $V$ (insieme dei \textit{vertici}) è un insieme finito ed $E$ è una relazione binaria in $V$.\\
+Se $(u,v)$ è un arco \cite{cormen} di un grafo $G = (V,E)$ diciamo che il vertice $v$ è \textit{adiacente} al vertice $u$.\\
+Dato un grafo $G$ orientato \cite{cormen}, il \textit{grado uscente} (\textit{out-degree}) di un vertice è il numero di archi che escono dal vertice; il \textit{grado entrante} (\textit{in-degree}) è il numero i archi che entrano nel vertice. \\
+Un cammino (\textit{path}) \cite{barabasi} da un vertice $v_0$ a un vertice $v_n$ è una lista ordinata di archi $P = \{(v_0,v_1),(v_1,v_2),...,(v_{n-1},v_n)\}$, e $n$ corrisponde alla lunghezza di questo cammino. \\
+\\
+Un grafo orientato $G$ si dice \textit{completo} \cite{barabasi} quando ogni coppia di vertici è collegata da una coppia simmetrica di archi. La definizione è analoga al caso in cui il grafo sia non orientato, con la differenza che, in quest'ultimo, ogni coppia di archi opposti situata tra due nodi è sostituita da un solo arco non orientato. Il numero di archi \cite{barabasi} in un grafo \textit{non orientato completo} è pari a $\tfrac{N(N-1)}{2}$, dove $N$ è il numero di vertici del grafo. Se si escludono i \textit{cappi} (\textit{self-loops}), allora un grafo \textit{orientato completo} è composto da $N(N-1)$ archi. \\
+\\
+
 \section{Descrizione modello}
 \label{sec:mod}
 \section{Visione multi-agente}
 \label{sec:mas}
-\section{Accenni teoria dei grafi}
-\label{sec:graph}
 \section{Esperimenti}
 \label{sec:esp}
 \section{Conclusione}
@@ -187,5 +206,11 @@ ISO 690
   
 \bibitem{det}
   Singer, H. M., Singer, I., \& Herrmann, H. J. (2009). Agent-based model for friendship in social networks. Physical Review E, 80(2), 026113.
+
+\bibitem{ir}
+  Manning, C. D., Raghavan, P., \& Schütze, H. (2008). Introduction to information retrieval. Cambridge University Press.
+  
+\bibitem{cormen}
+  Cormen, T. H., Leiserson, C. E., Rivest, R. L., \& Stein, C. (2001). Introduction to algorithms second edition. McGraw-Hill.
 \end{thebibliography}
 \end{document}

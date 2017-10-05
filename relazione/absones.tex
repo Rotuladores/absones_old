@@ -113,6 +113,11 @@ Vengono esposti inoltre diversi tipi di rete, emersi nel corso degli anni in let
 \item[Small world network] Basato sul modello \textit{regular lattice}, aggiunge o riarrangia collegamenti in modo casuale
 \item[Scale-free network] Descritta per la prima volta da Barabási \& Bonabeau \cite{scalefree}, prevede che pochi nodi abbiano molti collegamenti.
 \end{description}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{images/Hamill_Gilbert11.png}
+\caption{I quattro modelli di rete descritti in \cite{gilbert}}
+\end{figure}
 Gli autori indicano la costruzione \textit{scale-free} come la migliore tra le quattro, in quanto presenta tutte le caratteristiche elencate in precedenza, con l'eccezione dell'\textit{assortatività}, non particolarmente riflessa nel modello. Passano quindi all'esposizione della loro proposta, un modello ad agenti basato sul concetto di \textit{social circles} \cite{gilbert}: ogni agente può stabilire un ``link" con un altro agente solo se quest'ultimo può fare altrettanto. Quest'idea di \textit{reciprocità} si adatta bene alla modellazione di alcune piattaforme (es. Facebook), mentre si adatta meno su altre: un esempio è Twitter, dove per stabilire un collegamento, il fatto che due utenti si conoscano direttamente è poco rilevante. 
 \\
 \\
@@ -124,7 +129,7 @@ Nell'articolo viene fatta una rassegna dei metodi principali; l'obiettivo di que
 \end{description}
 Altre tecniche possono essere usate in congiunzione con i metodi sopra elencati, per semplificarne la computazione oppure per irrobustirne la previsione. Procedure di \textit{clustering} o \textit{matrix factorization} possono aiutare ad eliminare i collegamenti meno significativi prima dell'effettivo calcolo delle metriche. \\
 \\
-Essendo il nostro obiettivo la simulazione di una \textit{social} network, non si può ignorare la (forte) componente sociale del sistema considerato. Ogni nodo rappresenta un utente, e dunque ne eredita le caratteristiche personali come interessi e carattere. La letteratura specializzata in \textit{social sciences} ha da tempo definito il concetto di \textit{omofilia} (\textit{homophily}) \cite{homo}, inteso come la tendenza di ogni individuo a stringere legami con altri individui dalle caratteristiche simili. Nel computo della misura di similarità (o dissimilarità) bisognerebbe quindi tenere conto di tali caratteristiche e trovare quindi il modo di rappresentarle nel sistema. In \cite{group}, per esempio, gli autori hanno tentato di tradurre in linguaggio matematico l'idea di omofilia, in particolare per quanto riguarda l'aggregazione di individui in base al gruppo di appartenenza. Dopo aver effettuato un'etichettatura degli individui in base a questi raggruppamenti, hanno definito un indice  $H_i$ per l'omofilia:
+Essendo il nostro obiettivo la simulazione di una \textit{social} network, non si può ignorare la (forte) componente sociale del sistema considerato. Ogni nodo rappresenta un utente, e dunque ne eredita le caratteristiche personali come interessi e carattere. La letteratura specializzata in \textit{social sciences} ha da tempo definito il concetto di \textit{omofilia} (\textit{homophily}) \cite{homo} \cite{newman}, inteso come la tendenza di ogni individuo a stringere legami con altri individui dalle caratteristiche simili. Nel computo della misura di similarità (o dissimilarità) bisognerebbe quindi tenere conto di tali caratteristiche e trovare quindi il modo di rappresentarle nel sistema. In \cite{group}, per esempio, gli autori hanno tentato di tradurre in linguaggio matematico l'idea di omofilia, in particolare per quanto riguarda l'aggregazione di individui in base al gruppo di appartenenza. Dopo aver effettuato un'etichettatura degli individui in base a questi raggruppamenti, hanno definito un indice  $H_i$ per l'omofilia:
 \begin{equation}
 H_i = \dfrac{s_i}{s_i + d_i}
 \end{equation}
@@ -152,8 +157,12 @@ Un cammino (\textit{path}) \cite{barabasi} da un vertice $v_0$ a un vertice $v_n
 \\
 Un grafo orientato $G$ si dice \textit{completo} \cite{barabasi} quando ogni coppia di vertici è collegata da una coppia simmetrica di archi. La definizione è analoga al caso in cui il grafo sia non orientato, con la differenza che, in quest'ultimo, ogni coppia di archi opposti situata tra due nodi è sostituita da un solo arco non orientato. Il numero di archi \cite{barabasi} in un grafo \textit{non orientato completo} è pari a $\tfrac{N(N-1)}{2}$, dove $N$ è il numero di vertici del grafo. Se si escludono i \textit{cappi} (\textit{self-loops}), allora un grafo \textit{orientato completo} è composto da $N(N-1)$ archi. \\
 \\
-
-\section{Descrizione modello}
+Il \textit{coefficiente di clustering} (\textit{clustering coefficient}) \cite{barabasi}, in un grafo \textit{non orientato}, cerca di esprimere il grado con cui i vicini di un dato nodo sono collegati tra di loro. Questo fornisce un'idea della compattezza del gruppo in cui è inserito quello specifico nodo. E' possibile inoltre avere una misura globale della tendenza dei nodi a ``raggrupparsi" calcolando il \textit{coefficiente di clustering medio} (\textit{average clustering coefficient}). Nei grafi orientati  \cite{newman} è disponibile una misura analoga, chiamata \textit{coefficiente di clustering globale} (\textit{global clustering coefficient}, a volte anche chiamata \textit{ratio of transitive triplets} \cite{barabasi}); la sua definizione è la seguente:
+\begin{equation}
+C_\Delta=\dfrac{3\times NumeroDiTriangoli}{NumberoDelleTripleConnesse}
+\end{equation}
+dove per \textit{triangolo} si intende un insieme di $3$ vertici, ognuno dei quali connesso agli altri due da archi, mentre per \textit{tripla connessa} si intende tre vertici $uvw$ connessi dagli archi $(u,v)$ e $(v,w)$.
+\section{Descrizione modello} 
 \label{sec:mod}
 \section{Visione multi-agente}
 \label{sec:mas}
@@ -212,5 +221,8 @@ ISO 690
   
 \bibitem{cormen}
   Cormen, T. H., Leiserson, C. E., Rivest, R. L., \& Stein, C. (2001). Introduction to algorithms second edition. McGraw-Hill.
+  
+\bibitem{newman}
+  Newman, M. (2010). Networks: an introduction. Oxford university press.
 \end{thebibliography}
 \end{document}

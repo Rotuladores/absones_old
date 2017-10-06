@@ -17,8 +17,8 @@ dtag = {}
 
 num_nodes = 1000
 
-network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
-#network = nx.scale_free_graph(num_nodes)
+#network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
+network = nx.scale_free_graph(num_nodes)
 positions = nx.random_layout(network)
 sim = Simulation(10, num_nodes, network)
 
@@ -70,6 +70,7 @@ for step in range(1, 400):
 	df = df.append(dft, ignore_index=True)
 
 	evo = open('evolution.csv','a')
+	clust = open('clustering.csv','a')
 	print('')
 	print("#" * 40)
 	print('# Step ' + str(step))
@@ -85,6 +86,8 @@ for step in range(1, 400):
 	sim.now = step
 	evo.write(str(len(sim.network.edges()))+'\n')
 	evo.close()
+	clust.write(str(nx.transitivity(sim.network.edges()))+'\n')
+	clust.close()
 
 	if step == 200:
 		top = dds[0]

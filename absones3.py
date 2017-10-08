@@ -19,7 +19,7 @@ num_nodes = 1000
 
 #network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 network = nx.scale_free_graph(num_nodes)
-network = nx.Graph(network)
+network = nx.DiGraph(network)
 positions = nx.random_layout(network)
 sim = Simulation(10, num_nodes, network)
 
@@ -73,7 +73,7 @@ for step in range(1, 400):
 	evo = open('evolution.csv','a')
 	clust = open('clustering.csv','a')
 	assor = open('assortativity.csv','a')
-	spath = open('spath.csv','a')
+	# spath = open('spath.csv','a')
 	print('')
 	print("#" * 40)
 	print('# Step ' + str(step))
@@ -89,12 +89,12 @@ for step in range(1, 400):
 	sim.now = step
 	evo.write(str(len(sim.network.edges()))+'\n')
 	evo.close()
-	clust.write(str(nx.transitivity(sim.network)+'\n'))
+	clust.write(str(nx.transitivity(sim.network))+'\n')
 	clust.close()
-	assor.write(str(nx.degree_assortativity_coefficient(sim.network)+'\n'))
+	assor.write(str(nx.degree_assortativity_coefficient(sim.network))+'\n')
 	assor.close()
-	spath.write(str(nx.average_shortest_path_length(sim.network))+'\n')
-	spath.close()
+	# spath.write(str(nx.average_shortest_path_length(sim.network))+'\n')
+	# spath.close()
 
 	if step == 200:
 		top = dds[0]

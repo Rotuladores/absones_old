@@ -179,10 +179,14 @@ L'equazione 4 è chiamata \textit{power law distribution} e l'esopente $-\gamma$
 \begin{equation}
 \log p_x \sim -\gamma \log p
 \end{equation}
-Se vale l'equazione 5, allora ci si aspetta che $\log p_x$ dipenda linearmente da $\log x$, con inclinazione della retta pari a $\gamma$, come indicato nella figura 2. 
+Se vale l'equazione 5, allora ci si aspetta che $\log p_x$ dipenda linearmente da $\log x$, con inclinazione della retta pari a $\gamma$, come indicato nella figura 2. Assumendo che il grado di un nodo sia una quantità discreta, si può adottare il formalismo per il discreto; in questo modo, l'equazione 4 diventa
+\begin{equation}
+p_x \sim Cx^{-\gamma}
+\end{equation} 
+dove $C$ è una costante.
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.59]{images/powerlaw.png}
+\includegraphics[scale=0.5]{images/powerlaw.png}
 \caption{Distribuzione del WWW misurata nel 1999 \cite{barabasi}. La figura a. rappresenta la distribuzione dei nodi rispetto all'\textit{in-degree}, mentre b. rispetto all'\textit{out-degree}. Entrambe usano una scala logaritmica.}
 \end{figure}
 \section{Descrizione modello} 

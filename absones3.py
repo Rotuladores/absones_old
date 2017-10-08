@@ -19,6 +19,7 @@ num_nodes = 1000
 
 #network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 network = nx.scale_free_graph(num_nodes)
+network = nx.Graph(network)
 positions = nx.random_layout(network)
 sim = Simulation(10, num_nodes, network)
 

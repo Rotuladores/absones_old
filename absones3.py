@@ -72,6 +72,8 @@ for step in range(1, 400):
 
 	evo = open('evolution.csv','a')
 	clust = open('clustering.csv','a')
+	assor = open('assortativity.csv','a')
+	spath = open('spath.csv','a')
 	print('')
 	print("#" * 40)
 	print('# Step ' + str(step))
@@ -87,8 +89,12 @@ for step in range(1, 400):
 	sim.now = step
 	evo.write(str(len(sim.network.edges()))+'\n')
 	evo.close()
-	clust.write(str(nx.transitivity(sim.network.edges()))+'\n')
+	clust.write(str(nx.transitivity(sim.network)+'\n'))
 	clust.close()
+	assor.write(str(nx.degree_assortativity_coefficient(sim.network)+'\n'))
+	assor.close()
+	spath.write(str(nx.average_shortest_path_length(sim.network))+'\n')
+	spath.close()
 
 	if step == 200:
 		top = dds[0]

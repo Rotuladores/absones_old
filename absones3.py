@@ -23,13 +23,18 @@ network = nx.DiGraph(network)
 positions = nx.random_layout(network)
 sim = Simulation(10, num_nodes, network)
 
+attributes = {}
+
 print('Generation')
 print('=' * 20)
 for n in network.nodes():
 	u1 = User(n, sim.topics)
+	attributes[n] = np.argmax(u1.pi)
 	sim.add_user(u1)
 	for y in range(0,int(math.floor(20.0*network.in_degree().get(n)/max(network.in_degree().values())))):
 		sim.post(sim.get_user(n),-y-1)
+
+nx.set_node_attributes(sim.network,'toptopic',attributes)
 
 # add follow
 print('Follow')
@@ -72,8 +77,9 @@ for step in range(1, 400):
 
 	evo = open('evolution.csv','a')
 	clust = open('clustering.csv','a')
-	assor = open('assortativity.csv','a')
-	# spath = open('spath.csv','a')
+	assor = open('deg_assortativity.csv','a')
+	homo = open('homophily.csv','a')
+	spath = open('spath.csv','a')
 	print('')
 	print("#" * 40)
 	print('# Step ' + str(step))
@@ -93,8 +99,13 @@ for step in range(1, 400):
 	clust.close()
 	assor.write(str(nx.degree_assortativity_coefficient(sim.network))+'\n')
 	assor.close()
-	# spath.write(str(nx.average_shortest_path_length(sim.network))+'\n')
-	# spath.close()
+	homo.write(str(nx.attribute_assortativity_coefficient(sim.network,'toptopic'))+'\n')
+	homo.close()
+	if not 0 in list(sim.network.in_degree().values()):
+		spath.write(str(nx.average_shortest_path_length(sim.network))+'\n')
+	else:
+		spath.write('nullo\n')	
+	spath.close()
 
 	if step == 200:
 		top = dds[0]

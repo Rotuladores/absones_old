@@ -124,7 +124,7 @@ def main(users, ntype, max_steps, density, lucky):
 			sim.tweet[bottom, step] = [bottom, step, j, 1, 0, top]
 			sim.retweet[top, step] = [bottom, step, j, 1, 0, top]
 
-			with open("prescelto.txt", "w") as f: 
+			with open("prescelto" + parameters + ".txt", "w") as f: 
 				f.write(str(bottom) + "\n" + str(top)) 
 
 	df.to_csv(path_or_buf='class_complete' + parameters + '.csv',sep=",",header=True, index=True)

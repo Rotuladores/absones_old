@@ -20,10 +20,13 @@ def main(users, ntype, max_steps, density, lucky):
 
 	#network = nx.gnm_random_graph(num_nodes, round((float(num_nodes)*((float(num_nodes)-1)/5))/2), directed=True)
 	network = None
+	parameters = None
 	if ntype == 'sf': 
+		parameters = '_' + str(num_nodes) + '_' + ntype + '_' + str(max_steps) + '_' + str(lucky)
 		network = nx.scale_free_graph(num_nodes)
 		network = nx.DiGraph(network)
 	else:
+		parameters = '_' + str(num_nodes) + '_rnd_' + str(max_steps) + '_' + str(density) + '_' + str(lucky)
 		network = nx.gnm_random_graph(num_nodes, num_nodes*(num_nodes-1)*(density/100), directed=True)
 	positions = nx.random_layout(network)
 	sim = Simulation(10, num_nodes, network)
@@ -55,7 +58,7 @@ def main(users, ntype, max_steps, density, lucky):
 
 	print(sim.retweet)
 
-	parameters = '_' + str(num_nodes) + '_' + ntype + '_' + str(max_steps) + '_' + str(density) + '_' + str(lucky)
+	
 	graph = open('graph_init' + parameters + '.csv','w')
 	graph.write('id,weight\n')
 	for n in sim.network.nodes():

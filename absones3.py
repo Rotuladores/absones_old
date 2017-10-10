@@ -55,13 +55,14 @@ def main(users, ntype, max_steps, density, lucky):
 
 	print(sim.retweet)
 
-	graph = open('graph_init.csv','w')
+	parameters = '_' + str(num_nodes) + '_' + ntype + '_' + str(max_steps) + '_' + str(density) + '_' + str(lucky)
+	graph = open('graph_init' + parameters + '.csv','w')
 	graph.write('id,weight\n')
 	for n in sim.network.nodes():
 		graph.write(str(n) + ',' + str(network.in_degree().get(n)) + '\n')
 	graph.close()
 
-	edg = open('edges_init.csv','w')
+	edg = open('edges_init' + parameters + '.csv','w')
 	edg.write('Source,Target\n')
 	for e in sim.network.edges():
 		edg.write(str(e[0]) + ',' + str(e[1]) + '\n')
@@ -71,7 +72,7 @@ def main(users, ntype, max_steps, density, lucky):
 
 	for step in range(1, max_steps+1):
 
-		classification = open('classification.csv','a')
+		classification = open('classification' + parameters + '.csv','a')
 		dd = sim.network.in_degree()
 		dds = sorted(dd, key=dd.get, reverse=True)
 		classification.write(str(step) + ',' + ','.join(str(v) for v in dds[0:50]) + '\n')
@@ -80,11 +81,11 @@ def main(users, ntype, max_steps, density, lucky):
 		dft = pd.DataFrame([list(sim.network.in_degree().values())], columns=list(range(num_nodes)))
 		df = df.append(dft, ignore_index=True)
 
-		evo = open('evolution.csv','a')
-		clust = open('clustering.csv','a')
-		assor = open('deg_assortativity.csv','a')
-		homo = open('homophily.csv','a')
-		spath = open('spath.csv','a')
+		evo = open('evolution' + parameters + '.csv','a')
+		clust = open('clustering' + parameters + '.csv','a')
+		assor = open('deg_assortativity' + parameters + '.csv','a')
+		homo = open('homophily' + parameters + '.csv','a')
+		spath = open('spath' + parameters + '.csv','a')
 		print('')
 		print("#" * 40)
 		print('# Step ' + str(step))
@@ -123,15 +124,15 @@ def main(users, ntype, max_steps, density, lucky):
 			with open("prescelto.txt", "w") as f: 
 				f.write(str(bottom) + "\n" + str(top)) 
 
-	df.to_csv(path_or_buf='class_complete.csv',sep=",",header=True, index=True)
+	df.to_csv(path_or_buf='class_complete' + parameters + '.csv',sep=",",header=True, index=True)
 
-	graph = open('graph_end.csv','w')
+	graph = open('graph_end' + parameters + '.csv','w')
 	graph.write('id,weight\n')
 	for n in sim.network.nodes():
 		graph.write(str(n) + ',' + str(network.in_degree().get(n)) + '\n')
 	graph.close()
 
-	edg = open('edges_end.csv','w')
+	edg = open('edges_end' + parameters + '.csv','w')
 	edg.write('Source,Target\n')
 	for e in sim.network.edges():
 		edg.write(str(e[0]) + ',' + str(e[1]) + '\n')

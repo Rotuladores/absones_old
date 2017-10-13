@@ -208,14 +208,30 @@ dove $C$ è una costante.
 \label{sec:mas}
 \section{Esperimenti}
 \label{sec:esp}
-In questa sezione esponiamo gli esperimenti e le prove condotte con il nostro modello.\\
-\\
-Il nostro obiettivo è stato quello di produrre un modello ad agenti che simulasse il comportamento del social network Twitter, rispettando il più possibile il vero comportamento del sistema. Più in dettaglio, anche a fronte di quanto espresso in letteratura (vedi sezione \ref{sec:letteratura}), abbiamo fissato due obiettivi principali:
+In questa sezione esponiamo le prove condotte con il nostro modello. 
+Abbiamo organizzato gli esperimenti in due fasi: 
+\begin{description}
+\item[Fase 1] Nella prima fase testiamo la solidità del nostro approccio andando a verificare che la rete rispetti le caratteristiche tipiche di una rete sociale.
+\item[Fase 2] Nella seconda fase osserviamo il cambiamento del sistema all'occorrenza di un particolare evento, in particolare studiamo il ``salto" di popolarità da parte di un utente.
+\end{description}
+Per quanto riguarda la prima fase, considerando quanto prodotto dalla letteratura, abbiamo individuato come parametri principali per valutare l'attendibilità della rete prodotta dal nostro modello le seguenti metriche:
 \begin{enumerate}
-\item Evitare il completamento della rete
-\item Produrre una rete ad invarianza di scala (sezione \ref{sec:mat})
+    \item La \textit{densità} della rete, per monitorare la tendenza del modello al completamento o meno della rete.
+    \item I parametri della \textit{power law} che intercorre sul grado dei nodi, per studiarne l'invarianza di scala.
 \end{enumerate}
-Abbiamo individuato questi due punti come i più cruciali per la riuscita del modello, 
+Altre metriche che abbiamo incluso nell'analisi sono:
+\begin{enumerate}
+    \item Il \textit{coefficiente di clustering}, per valutare la predisposizione alla formazione di gruppi di agenti.
+    \item L'\textit{assortatività per attributo}, per valutare l'omofilia rispetto ai topic caratterizzanti gli utenti
+    \item L'\textit{assortatività per grado}, a supporto del punto 2, per la valutazione dell'omofilia.
+    \item Il \textit{cammino minimo medio} (in caso di reti connesse) per verificare l'ipotesi di \textit{small world}
+\end{enumerate}
+Nella seconda fase simuliamo lo scenario in cui un utente con pochi collegamenti in entrata, ovvero con pochi \textit{follower}, viene ``notato'' da uno degli ``hub", ovvero un utente con molti follower. Per far ciò, forziamo il retweet da parte dell'utente hub di un tweet creato ad-hoc per l'utente meno importante; dopodichè controlliamo la variazione di popolarità  dell'utente prescelto in termini di follower.
+\\
+\\
+Per la realizzazione del modello e la conduzione degli esperimenti la scelta implementativa è ricaduta su \textit{Python} (versione 3) e sulla libreria \textit{networkx} \cite{nx}, un package molto curato e completo per la modellazione di reti. In principio avevamo optato per l'ambiente di simulazione PyCx, che fornisce un'interfaccia per la conduzione di esperimenti e la visualizzazione dei risultati, ma abbiamo riscontrato successivamente una incidenza negativa sulle performances del modello; per cui abbiamo virato su una CLI per l'inserimento dei parametri. La visualizzazione dei grafi è stata effettuata con il software Gephi, mentre i grafici delle metriche con R.
+\subsection{Fase 1}
+\subsection{Fase 2}
 \section{Conclusione}
 \label{sec:end}
 \section{Sviluppi futuri}

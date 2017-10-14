@@ -159,7 +159,9 @@ Se $(u,v)$ è un arco \cite{cormen} di un grafo $G = (V,E)$ diciamo che il verti
 Dato un grafo $G$ orientato \cite{cormen}, il \textit{grado uscente} (\textit{out-degree}) di un vertice è il numero di archi che escono dal vertice; il \textit{grado entrante} (\textit{in-degree}) è il numero i archi che entrano nel vertice. \\
 Un cammino (\textit{path}) \cite{barabasi} da un vertice $v_0$ a un vertice $v_n$ è una lista ordinata di archi $P = \{(v_0,v_1),(v_1,v_2),...,(v_{n-1},v_n)\}$, e $n$ corrisponde alla lunghezza di questo cammino. \\
 \\
-Un grafo orientato $G$ si dice \textit{completo} \cite{barabasi} quando ogni coppia di vertici è collegata da una coppia simmetrica di archi. La definizione è analoga al caso in cui il grafo sia non orientato, con la differenza che, in quest'ultimo, ogni coppia di archi opposti situata tra due nodi è sostituita da un solo arco non orientato. Il numero di archi \cite{barabasi} in un grafo \textit{non orientato completo} è pari a $\tfrac{N(N-1)}{2}$, dove $N$ è il numero di vertici del grafo. Se si escludono i \textit{cappi} (\textit{self-loops}), allora un grafo \textit{orientato completo} è composto da $N(N-1)$ archi. 
+Un grafo orientato $G$ si dice \textit{completo} \cite{barabasi} quando ogni coppia di vertici è collegata da una coppia simmetrica di archi. La definizione è analoga al caso in cui il grafo sia non orientato, con la differenza che, in quest'ultimo, ogni coppia di archi opposti situata tra due nodi è sostituita da un solo arco non orientato. Il numero di archi \cite{barabasi} in un grafo \textit{non orientato completo} è pari a $\tfrac{N(N-1)}{2}$, dove $N$ è il numero di vertici del grafo. Se si escludono i \textit{cappi} (\textit{self-loops}), allora un grafo \textit{orientato completo} è composto da $N(N-1)$ archi. \\
+\\
+Si dice \textit{densità della rete} il rapporto tra il numero di archi esistenti e il numero di archi possibili (es. un grafo con densità al 50\% sarà composto da un numero di archi che è pari alla metà del totale di archi possibili).
 \subsubsection{Coefficiente di clustering}
 Il \textit{coefficiente di clustering} (\textit{clustering coefficient}) \cite{barabasi}, in un grafo \textit{non orientato}, cerca di esprimere il grado con cui i vicini di un dato nodo sono collegati tra di loro. Questo fornisce un'idea della compattezza del gruppo in cui è inserito quello specifico nodo. E' possibile inoltre avere una misura globale della tendenza dei nodi a ``raggrupparsi" calcolando il \textit{coefficiente di clustering medio} (\textit{average clustering coefficient}). Nei grafi orientati  \cite{newman} è disponibile una misura analoga, chiamata \textit{coefficiente di clustering globale} (\textit{global clustering coefficient}, a volte anche chiamata \textit{ratio of transitive triplets} \cite{barabasi}); la sua definizione è la seguente:
 \begin{equation}
@@ -214,7 +216,15 @@ Abbiamo organizzato gli esperimenti in due fasi:
 \item[Fase 1] Nella prima fase testiamo la solidità del nostro approccio andando a verificare che la rete rispetti le caratteristiche tipiche di una rete sociale.
 \item[Fase 2] Nella seconda fase osserviamo il cambiamento del sistema all'occorrenza di un particolare evento, in particolare studiamo il ``salto" di popolarità da parte di un utente.
 \end{description}
-Per quanto riguarda la prima fase, considerando quanto prodotto dalla letteratura, abbiamo individuato come parametri principali per valutare l'attendibilità della rete prodotta dal nostro modello le seguenti metriche:
+Per quanto riguarda la prima fase, uno dei rischi maggiori è produrre un modello incline al \textit{completamento della rete}, ovvero un modello i cui agenti, alla fine della simulazione, sono tutti collegati fra di loro da due archi (essendo un grafo diretto). In un social network reale questa cosa non si verifica, in quanto gli utenti non hanno interesse ad essere collegati con tutti gli altri. Questo è stato uno dei principali obiettivi durante la costruzione del modello, assieme alla conservazione della proprietà di \textit{invarianza di scala} e alla tendenza degli utenti a stabilire collegamenti secondo l'\textit{omofilia}. 
+\\
+\\
+Nella seconda fase simuliamo lo scenario in cui un utente con pochi collegamenti in entrata, ovvero con pochi \textit{follower}, viene ``notato'' da uno degli ``hub", ovvero un utente con molti follower. Per far ciò, forziamo il retweet da parte dell'utente hub di un tweet creato ad-hoc per l'utente meno importante; dopodichè controlliamo la variazione di popolarità  dell'utente prescelto in termini di follower. Questo per simulare quanto avvenuto nel 2012 tra l'On. Maurizio Gasparri e l'utente Daniele Termite \cite{termite} dopo essere stato ``ripreso" su Twitter dall'Onorevole, l'utente Termite ha visto crescere improvvisamente di popolarità il suo account, con un boom di follower nel giro di brevissimo tempo, per poi assestarsi su un numero di circa 10.000 seguaci. La replica \textit{in-silico} di questo fenomeno utilizzando il nostro modello può essere considerata come indica di affidabilità dello stesso.
+\\
+\\
+Per la realizzazione del modello e la conduzione degli esperimenti la scelta implementativa è ricaduta su \textit{Python} (versione 3) e sulla libreria \textit{networkx} \cite{nx}, un package molto curato e completo per la modellazione di reti. In principio avevamo optato per l'ambiente di simulazione PyCx, che fornisce un'interfaccia per la conduzione di esperimenti e la visualizzazione dei risultati, ma abbiamo riscontrato successivamente una incidenza negativa sulle performances del modello; per cui abbiamo virato su una CLI per l'inserimento dei parametri. La visualizzazione dei grafi è stata effettuata con il software Gephi, mentre i grafici delle metriche con R.
+\subsection{Fase 1}
+Per valutare la buona riuscita degli esperimenti, considerando quanto prodotto dalla letteratura, abbiamo individuato come parametri principali per valutare l'attendibilità della rete prodotta dal nostro modello le seguenti metriche:
 \begin{enumerate}
     \item La \textit{densità} della rete, per monitorare la tendenza del modello al completamento o meno della rete.
     \item I parametri della \textit{power law} che intercorre sul grado dei nodi, per studiarne l'invarianza di scala.
@@ -226,11 +236,19 @@ Altre metriche che abbiamo incluso nell'analisi sono:
     \item L'\textit{assortatività per grado}, a supporto del punto 2, per la valutazione dell'omofilia.
     \item Il \textit{cammino minimo medio} (in caso di reti connesse) per verificare l'ipotesi di \textit{small world}
 \end{enumerate}
-Nella seconda fase simuliamo lo scenario in cui un utente con pochi collegamenti in entrata, ovvero con pochi \textit{follower}, viene ``notato'' da uno degli ``hub", ovvero un utente con molti follower. Per far ciò, forziamo il retweet da parte dell'utente hub di un tweet creato ad-hoc per l'utente meno importante; dopodichè controlliamo la variazione di popolarità  dell'utente prescelto in termini di follower.
-\\
-\\
-Per la realizzazione del modello e la conduzione degli esperimenti la scelta implementativa è ricaduta su \textit{Python} (versione 3) e sulla libreria \textit{networkx} \cite{nx}, un package molto curato e completo per la modellazione di reti. In principio avevamo optato per l'ambiente di simulazione PyCx, che fornisce un'interfaccia per la conduzione di esperimenti e la visualizzazione dei risultati, ma abbiamo riscontrato successivamente una incidenza negativa sulle performances del modello; per cui abbiamo virato su una CLI per l'inserimento dei parametri. La visualizzazione dei grafi è stata effettuata con il software Gephi, mentre i grafici delle metriche con R.
-\subsection{Fase 1}
+Abbiamo quindi organizzato una sessione di esperimenti con i seguenti parametri comuni:
+\begin{itemize}
+\item 1000 utenti
+\item 10 topic per utente
+\item 1080 iterazioni (equivalenti a 90 giorni)
+\end{itemize}
+La differenza tra le varie run sta nella diversa istanziazione della rete iniziale; non avendo idea del valore di densità del grafo reale di Twitter, abbiamo optato per due soluzioni principali:
+\begin{itemize}
+\item Istanziazione di una rete scale-free, a densità fissa
+\item Istanziazione di una rete random, a densità variabile
+\end{itemize}
+Il package networkx di Python permette l'istanziazione di una rete scale-free con una densità non modificabile pari a circa $0.1\%$: questo è dovuto al particolare modello usato dalla libreria, descritto in \cite{sfnx}, che per rispetto alla power law non permette la scelta del numero di archi iniziale.
+A questa abbiamo quindi affincato una serie di prove con una random network come configurazione di partenza, avente valori diversi come densità iniziale: nello specifico, i valori sono $0.1\%$, $0.5\%$, $1.0\%$ e $5.0\%$.
 \subsection{Fase 2}
 \section{Conclusione}
 \label{sec:end}
@@ -304,5 +322,11 @@ ISO 690
   
 \bibitem{mixing}
   Newman, M. E. (2003). Mixing patterns in networks. Physical Review E, 67(2), 026126.
+  
+\bibitem{termite}
+  Spotti, V (2012). \# EPICFAILGasparri, i signori Nessuno e gli eroi del giorno ai tempi di Twitter. www.techeconomy.it
+  
+\bibitem{sfnx}
+  Bollobás, B., Borgs, C., Chayes, J., \& Riordan, O. (2003, January). Directed scale-free graphs. In Proceedings of the fourteenth annual ACM-SIAM symposium on Discrete algorithms (pp. 132-139). Society for Industrial and Applied Mathematics.
 \end{thebibliography}
 \end{document}

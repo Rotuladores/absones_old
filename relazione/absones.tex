@@ -233,7 +233,7 @@ Altre metriche che abbiamo incluso nell'analisi sono:
 \begin{enumerate}
     \item Il \textit{coefficiente di clustering}, per valutare la predisposizione alla formazione di gruppi di agenti.
     \item L'\textit{assortatività per attributo}, per valutare l'omofilia rispetto ai topic caratterizzanti gli utenti
-    \item L'\textit{assortatività per grado}, a supporto del punto 2, per la valutazione dell'omofilia.
+    \item L'\textit{assortatività per grado r(out,in)}, a supporto del punto 2, per la valutazione dell'omofilia.
     \item Il \textit{cammino minimo medio} (in caso di reti connesse) per verificare l'ipotesi di \textit{small world}
 \end{enumerate}
 Abbiamo quindi organizzato una sessione di esperimenti con i seguenti parametri comuni:
@@ -242,37 +242,40 @@ Abbiamo quindi organizzato una sessione di esperimenti con i seguenti parametri 
 \item 10 topic per utente
 \item 1080 iterazioni (equivalenti a 90 giorni)
 \end{itemize}
-La differenza tra le varie run sta nella diversa istanziazione della rete iniziale; non avendo idea del valore di densità del grafo reale di Twitter, abbiamo optato per due soluzioni principali:
+La differenza tra le varie run sta nella diversa istanziazione della rete iniziale; non avendo indicazioni sul valore di densità del grafo reale di Twitter, abbiamo optato per due soluzioni principali:
 \begin{itemize}
 \item Istanziazione di una rete scale-free, a densità fissa
 \item Istanziazione di una rete random, a densità variabile
 \end{itemize}
 Il package networkx di Python permette l'istanziazione di una rete scale-free con una densità non modificabile pari a circa $0.1\%$: questo è dovuto al particolare modello usato dalla libreria, descritto in \cite{sfnx}, che per rispetto alla power law non permette la scelta del numero di archi iniziale.
 A questa abbiamo quindi affincato una serie di prove con una random network come configurazione di partenza, avente valori diversi come densità iniziale: nello specifico, i valori sono $0.1\%$, $0.5\%$, $1.0\%$ e $5.0\%$.
-\subsubsection{Scale-free network - densità 0.1\%}
+\subsubsection{Risultati}
+Le figure 3, 4, 5, 6 e 7 mostrano l'andamento dei quattro indici che abbiamo scelto per la valutazione.
 \begin{figure}[h]
 \begin{tabular}{cc}
-  \includegraphics[width=81mm]{images/evolution_1000_sf_1080_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_sf_1080_0.pdf} \\
+  \includegraphics[width=83mm]{images/evolution_1000_sf_1080_0.pdf} &   \includegraphics[width=83mm]{images/clustering_1000_sf_1080_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
- \includegraphics[width=81mm]{images/deg_assortativity_1000_sf_1080_0.pdf} &   \includegraphics[width=81mm]{images/homophily_1000_sf_1080_0.pdf} \\
+ \includegraphics[width=83mm]{images/deg_assortativity_1000_sf_1080_0.pdf} &   \includegraphics[width=83mm]{images/homophily_1000_sf_1080_0.pdf} \\
 c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
+\caption{Indici scale-free network, densità 0.1\%}
 \end{figure}
-\newpage
-\subsubsection{Random network - densità 0.1\%}
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-\begin{figure}[h]
-\begin{tabular}{c}
-  \includegraphics[width=91mm]{images/evolution_1000_rnd_1080_01_0.pdf} \\   \includegraphics[width=91mm]{images/clustering_1000_rnd_1080_01_0.pdf} \\
-%a. Densità & b. Coefficiente di clustering \\[6pt]
- \includegraphics[width=91mm]{images/deg_assortativity_1000_rnd_1080_01_0.pdf} \\   \includegraphics[width=91mm]{images/homophily_1000_rnd_1080_01_0.pdf} \\
-%c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
+Nell'esperimento con istanziazione della rete iniziale a invarianza di scala (figura 3) si può notare come la densità cresca in modo piuttosto contenuto sebbene in modo debolmente esponenziale: da una densità iniziale di circa $0.1\%$ si arriva a circa $0.5\%$. Il coefficiente di clustering invece ha un andamento particolare: decresce fino a poco prima della metà del periodo considerato, per poi iniziare una crescita irregolare fino alla fine dell'esperimento. Una spiegazione di questo fenomeno potrebbe essere il fatto che, in principio, la rete abbia molti nodi senza alcun collegamento in entrata o in uscita; inoltre, una porzione ancora maggiore di questi nodi ha solo pochi collegamenti in uscita verso i due, tre nodi ``hub" che fanno capo alla maggior parte degli archi. \'E plausibile quindi che, fino ad un certo punto, i collegamenti non vadano a rafforzare comunità già presenti, quanto a unire per la prima volta nodi distanti.
+Al contrario, l'assortatività per grado cresce regolarmente fino all'iterazione 750 circa, per poi cominciare a calare leggermente: questo è indice del fatto che a partire da quel momento, l'in-degree medio dei nodi con molti collegamenti cresce in modo più rapido dell'out-degree dei nodi con pochi collegamenti, con effetto negativo sulla misura di assortatività \textit{r(out,in)}. \\
+A differenza degli altri indici, l'assortatività per attributo è molto irregolare: dopo un brusco calo che la porta ad assumere valori negativi, continua ad oscillare in prossimità dello zero, senza mai tornare a valori positivi. Questo è segno che i nodi tendono a formare legami a prescindere dal 
+\begin{figure}[t]
+\begin{tabular}{cc}
+  \includegraphics[width=83mm]{images/evolution_1000_rnd_1080_01_0.pdf} &   \includegraphics[width=83mm]{images/clustering_1000_rnd_1080_01_0.pdf} \\
+a. Densità & b. Coefficiente di clustering \\[6pt]
+ \includegraphics[width=83mm]{images/deg_assortativity_1000_rnd_1080_01_0.pdf} &   \includegraphics[width=83mm]{images/homophily_1000_rnd_1080_01_0.pdf} \\
+c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
+\caption{Indici random network, densità 0.1\%}
 \end{figure}
-\newpage
-\subsubsection{Random network - densità 0.5\%}
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+topic più rappresentativo di ognuno.\\ \\
+L'esperimento successivo (figura 4) condivide con il primo il valore di densità iniziale, mentre differisce per costruzione: è infatti una random network priva, quindi, di nodi ``hub"; esistono nodi con più collegamenti in entrata e in uscita rispetto agli altri, ma la differenza, in questi termini, è molto ridotta. Ciò si rispecchia in una crescita molto più contenuta e lineare della densità (si arriva all'ultima iterazione con circa lo $0.3\%$), con i nodi che, avendo tutti un \textit{field of view} limitato, fanno fatica a stabilire nuovi collegamenti con nodi affini dal punto di vista degli interessi. Da qui si può trarre la conclusione che la presenza di nodi ``popolari" faciliti l'instaurazione di nuovi legami tra nodi meno importanti.
+Inoltre, nell'andamento del coefficiente di clustering, si riscontra lo stesso fenomeno osservato in precedenza sulla scale-free network: dopo un calo iniziale, l'indice torna a crescere, ma in modo sensibilmente più lento rispetto all'altro caso. Da notare anche il valore di partenza, circa cinque volte minore. 
 \begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_05_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_05_0.pdf} \\
@@ -281,9 +284,7 @@ a. Densità & b. Coefficiente di clustering \\[6pt]
 c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \end{figure}
-\newpage
-\subsubsection{Random network - densità 1.0\%}
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 \begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_1_0.pdf} \\
@@ -292,9 +293,7 @@ a. Densità & b. Coefficiente di clustering \\[6pt]
 c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \end{figure}
-\newpage
-\subsubsection{Random network - densità 5.0\%}
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 \begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_5_0.pdf} \\
@@ -303,7 +302,7 @@ a. Densità & b. Coefficiente di clustering \\[6pt]
 c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \end{figure}
-\subsubsection{Commento}
+
 \subsection{Fase 2}
 \section{Conclusione}
 \label{sec:end}

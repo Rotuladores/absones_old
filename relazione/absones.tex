@@ -261,7 +261,7 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \caption{Indici scale-free network, densità 0.1\%}
 \end{figure}
 Nell'esperimento con istanziazione della rete iniziale a invarianza di scala (figura 3) si può notare come la densità cresca in modo piuttosto contenuto sebbene in modo debolmente esponenziale: da una densità iniziale di circa $0.1\%$ si arriva a circa $0.5\%$. Il coefficiente di clustering invece ha un andamento particolare: decresce fino a poco prima della metà del periodo considerato, per poi iniziare una crescita irregolare fino alla fine dell'esperimento. Una spiegazione di questo fenomeno potrebbe essere il fatto che, in principio, la rete abbia molti nodi senza alcun collegamento in entrata o in uscita; inoltre, una porzione ancora maggiore di questi nodi ha solo pochi collegamenti in uscita verso i due, tre nodi ``hub" che fanno capo alla maggior parte degli archi. \'E plausibile quindi che, fino ad un certo punto, i collegamenti non vadano a rafforzare comunità già presenti, quanto a unire per la prima volta nodi distanti.
-Al contrario, l'assortatività per grado cresce regolarmente fino all'iterazione 750 circa, per poi cominciare a calare leggermente: questo è indice del fatto che a partire da quel momento, l'in-degree medio dei nodi con molti collegamenti cresce in modo più rapido dell'out-degree dei nodi con pochi collegamenti, con effetto negativo sulla misura di assortatività \textit{r(out,in)}. \\
+Al contrario, l'assortatività per grado cresce regolarmente fino all'iterazione 750 circa, per poi cominciare a calare leggermente: questo è indice del fatto che a partire da quel momento, l'in-degree medio dei nodi con molti collegamenti cresce in modo più rapido dell'out-degree dei nodi con pochi collegamenti, con effetto negativo sulla misura di assortatività \textit{r(out,in)}. Questo dovrebbe essere indicatore di una tendenza della rete a conservare una configurazione ad invarianza di scala.\\
 A differenza degli altri indici, l'assortatività per attributo è molto irregolare: dopo un brusco calo che la porta ad assumere valori negativi, continua ad oscillare in prossimità dello zero, senza mai tornare a valori positivi. Questo è segno che i nodi tendono a formare legami a prescindere dal 
 \begin{figure}[t]
 \begin{tabular}{cc}
@@ -286,8 +286,8 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 0.5\%}
 \end{figure}
-\\Il caso con densità di partenza pari a $0.5\%$ (figura 5) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che
-\begin{figure}[t]
+\\Il caso con densità di partenza pari a $0.5\%$ (figura 5) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. \\ \\
+\begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_1_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -296,6 +296,8 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 1.0\%}
+\end{figure}
+\begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_5_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -305,18 +307,9 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 5.0\%}
 \end{figure}
-
-\begin{figure}[b]
-\begin{tabular}{cc}
-  \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_5_0.pdf} \\
-a. Densità & b. Coefficiente di clustering \\[6pt]
- \includegraphics[width=81mm]{images/deg_assortativity_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/homophily_1000_rnd_1080_5_0.pdf} \\
-c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
-\end{tabular}
-\centering
-\caption{Indici random network, densità 5.0\%}
-\end{figure}
-
+Le run con densità di partenza pari all'$1.0\%$ e al $5.0\%$ (figure 6 e 7) hanno prodotto risultati piuttosto simili, e condividono un fenomeno importante: la densità, dopo un'iniziale fase di crescita, tende a rallentare la sua corsa con approssimazione logaritmica, attestandosi, nell'ultimo caso, poco sotto all'$8.0\%$. Sembra, quindi, che ci sia un limite alla crescita del numero di archi, per cui il completamento della rete (denstà $100\%$) sembra essere scongiurato. Il rallentamento viene percepito anche dal coefficiente di clustering, che decelera vistosamente fino a livellarsi. L'assortatività di scala presenta lo stesso fenomeno del primo e del terzo esperimento, ma lo sviluppo è più repentino man mano che si cresce con la densità iniziale: più collegamenti permettono ai nodi di avere più occasioni di instaurarne altri, per cui il processo di trasformazione da random network a rete ad invarianza di scala è più rapido. L'assortatività per attributo è poco indicativa, in quanto in un caso descresce e da posotiva diventa negativa, per poi risalire in modo incerto, mentre nell'altro cresce costantemente ma resta negativa.
+\\
+\\
 \subsection{Fase 2}
 \section{Conclusione}
 \label{sec:end}

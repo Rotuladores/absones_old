@@ -13,6 +13,7 @@
 \usepackage{multicol}
 \usepackage{tikz}
 \usepackage{hyperref}
+\usepackage{float}
 
 % FANCY TITLE AND ABSTRACT IS LIT
 \usepackage{lipsum}
@@ -286,8 +287,8 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 0.5\%}
 \end{figure}
-\\Il caso con densità di partenza pari a $0.5\%$ (figura 5) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. \\ \\
-\begin{figure}[h]
+\\Il caso con densità di partenza pari a $0.5\%$ (figura 5) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. 
+\begin{figure}[H]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_1_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -296,8 +297,8 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 1.0\%}
-\end{figure}
-\begin{figure}[h]
+%\end{figure}
+%\begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_5_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -307,9 +308,65 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 5.0\%}
 \end{figure}
-Le run con densità di partenza pari all'$1.0\%$ e al $5.0\%$ (figure 6 e 7) hanno prodotto risultati piuttosto simili, e condividono un fenomeno importante: la densità, dopo un'iniziale fase di crescita, tende a rallentare la sua corsa con approssimazione logaritmica, attestandosi, nell'ultimo caso, poco sotto all'$8.0\%$. Sembra, quindi, che ci sia un limite alla crescita del numero di archi, per cui il completamento della rete (denstà $100\%$) sembra essere scongiurato. Il rallentamento viene percepito anche dal coefficiente di clustering, che decelera vistosamente fino a livellarsi. L'assortatività di scala presenta lo stesso fenomeno del primo e del terzo esperimento, ma lo sviluppo è più repentino man mano che si cresce con la densità iniziale: più collegamenti permettono ai nodi di avere più occasioni di instaurarne altri, per cui il processo di trasformazione da random network a rete ad invarianza di scala è più rapido. L'assortatività per attributo è poco indicativa, in quanto in un caso descresce e da posotiva diventa negativa, per poi risalire in modo incerto, mentre nell'altro cresce costantemente ma resta negativa.
-\\
-\\
+Le run con densità di partenza pari all'$1.0\%$ e al $5.0\%$ (figure 6 e 7) hanno prodotto risultati piuttosto simili, e condividono un fenomeno importante: la densità, dopo un'iniziale fase di crescita, tende a rallentare la sua corsa con approssimazione logaritmica, attestandosi, nell'ultimo caso, poco sotto all'$8.0\%$. Sembra, quindi, che ci sia un limite alla crescita del numero di archi, per cui il completamento della rete (denstà $100\%$) sembra essere scongiurato. Il rallentamento viene percepito anche dal coefficiente di clustering, che decelera vistosamente fino a livellarsi. L'assortatività di scala presenta lo stesso fenomeno del primo e del terzo esperimento, ma lo sviluppo è più repentino man mano che si cresce con la densità iniziale: più collegamenti permettono ai nodi di avere più occasioni di instaurarne altri, per cui il processo di trasformazione da random network a rete ad invarianza di scala è più rapido. L'assortatività per attributo è poco indicativa, in quanto in un caso descresce e da positiva diventa negativa, per poi risalire in modo incerto, mentre nell'altro cresce costantemente ma resta negativa.
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+  \includegraphics[width=81mm]{images/spath_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/spath_1000_rnd_1080_5_0.pdf} \\
+a. Densità 1.0\% & b. Densità 5.0\% \\[6pt]
+\end{tabular}
+\centering
+\caption{Cammino minimo medio}
+\end{figure}
+Per questi ultimi due esperimenti è stato possibile calcolare fin dalla prima iterazione il \textit{cammino minimo medio} (figura 8). Com'era prevedibile, in entrambi i casi è sempre decrescente, per via della crecente densità; é interessante notare come nel caso con densità $5.0\%$ il cammino minimo medio scenda al di sotto della soglia dei due step. Esiste perciò un numero non indifferente di cammini composti solo da un arco, per cui ogni nodo ha accesso nel suo \textit{fov} una grande quantità di retweet provenienti da nodi inizialmente piuttosto lontani. Ci si aspetterebbe quindi che questo porti a una crescita esponenziale delle connessioni, in realtà le limitazioni poste nel modello riescono a limitarne l'esplosione. \\ \\
+Richiamando quanto detto nella sezione \ref{subsec:graph}, una rete è detta ad invarianza di scala, o scale-free, se la distribuzione dei gradi (in-degree o out-degree) dei suoi nodi segue una power law. Le figure 9, 10, 11, 12 e 13 mostrano il plot della distribuzione iniziale (verde) e della distribuzione finale (rossa), dell'\textit{in-degree} dei nodi in ogni esperimento di questa sezione, normalizzati per il numero massimo di in-degree in modo da poterne confrontare l'andamento. \'E importante notare che la curva verde della figura 9 è stata generata secondo una power law, quindi rappresenta un modello di rete ad invarianza di scala ``ideale"; normalizzata in questa maniera, può quindi essere presa come modello di riferimento anche per gli altri esperimenti, perciò l'abbiamo riportata (in blu) in tutti gli altri grafici. \\ \\
+La prima esecuzione del modello (figura 9) non va a modificare sostanzialmente la natura scale free della rete, in quanto la distribuzione in uscita è solo leggermente deformata. Nella seconda run (figura 10) è lampante come la costruzione random iniziale sia distante dal modello a invarianza di scala, e, nonostante l'esecuzione del nostro modello, la distribuzione dell'in-degree non cambia. Nella terza run (figura 11) si ha una situazione di partenza analoga alla precedente, con la sola differenza della densità; dopo l'esecuzione del modello però, la curva è molto più simile ad una power law rispetto al caso precedente. Il nostro modello sembra quindi adattare, con un aiuto derivante dalla relativamente elevata densità, una random network ad una rete scale-free. Questo fenomeno viene ulteriormente accentuato dal caso con densità di partenza all'$1.0\%$ (figura 12): nonostante una curva di partenza di tipo randomico, la curva finale si discosta di poco da quella ideale. Un discorso a sè stante spetta per l'ultima run (figura 13), dove la rete randomica istanziata in partenza presenta già una distribuzione dell'in-degree molto simile ad una power law, e l'esecuzione del nostro modello non fa altro che accentuare la distanza tra i nodi ``popolari" e quelli meno importanti.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/dist_1000_sf_1080_0.pdf}
+\caption{Distribuzione in-degree della rete scale-free, densità 0.1\%}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/dist_1000_rnd_1080_01_0.pdf}
+\caption{Distribuzione in-degree della rete random, densità 0.1\%}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/dist_1000_rnd_1080_05_0.pdf}
+\caption{Distribuzione in-degree della rete random, densità 0.5\%}
+\end{figure}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/dist_1000_rnd_1080_1_0.pdf}
+\caption{Distribuzione in-degree della rete random, densità 1.0\%}
+\end{figure}
+Sembra quindi che ci sia una certa correlazione tra l'indice di assortatività per grado visto in precedenza e l'andamento delle distribuzioni dell'in-degree, in quanto i casi che presentavano un comportamento ``a cuspide" nella misura di assortatività tendono a rispettare il comportamento di una rete ad invarianza di scala, in particolare la run con rete scale-free e le run con rete random con valori di densità $0.5\%$, $1.0\%$ e $5.0\%$. 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/dist_1000_rnd_1080_5_0.pdf}
+\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\end{figure}
+Nella sezione \ref{subsec:graph} abbiamo esposto la definizione di invarianza di scala e di power law. Dai dati prodotti dagli esperimenti è possibile stimare i valori $C$ e $\gamma$ delle curve finali (in rosso) rappresentate nei plot precedenti. Nella libreria \textit{scipy} di Python è presente un'implementazione del \textit{metodo non lineare dei minimi quadrat}i: l'abbiamo utilizzata per stimare i parametri delle curve.
+Nella tabella sottostante riportiamo i valori dei coefficienti $C$ e $\gamma$ della power law per le distribuzioni finali (in rosso) di tutte le run effettuate \textit{con instanziazione randomica della rete} 
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+    \hline
+    Densità & 0.1\% & 0.5\% & 1.0\% & 5.0\% \\ \hline \hline
+	$C$ & 22.11 & 1981.45 & 1832.28 & 1722.57 \\ \hline
+	$\gamma$ & 0.36 & 0.55 & 0.63 & 0.55 \\ \hline
+    \end{tabular}
+\end{center}
+In quest'altra tabella riportiamo i valori per le distribuzioni finali della run effettuata \textit{con instanziazione scale-free della rete}:
+\begin{center}
+    \begin{tabular}{| l | l | l |}
+    \hline
+    Step & 0 & 1080 \\ \hline \hline
+	$C$ & 386.26 & 390.65 \\ \hline
+	$\gamma$ & 1.09 & 0.87 \\ \hline
+    \end{tabular}
+\end{center}
+Da notare che la prima colonna di questa tabella contiente i parametri della curva di riferimento.
 \subsection{Fase 2}
 \section{Conclusione}
 \label{sec:end}

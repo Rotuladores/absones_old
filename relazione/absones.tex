@@ -379,26 +379,77 @@ Altre considerazioni sono le seguenti:
 \item[Ipotesi di small-world] Anche per l'ipotesi di small-world vale quanto affermato sulla densità reale di un social network come Twitter: è concesso solo supporre il valore reale del cammino minimo medio. In aggiunta, questa è una metrica che risente particolarmente della limitatezza intrinseca della simulazione: con solo 1000 agenti, il cammino minimo medio non può essere paragonato a quello di una rete che dispone di un numero di agenti maggiore di circa cinque ordini di grandezza, tanto più che non sempre in una simulazione si ha a che fare con un grafo connesso, come testimoniato nelle run. Ne concludiamo che l'ipotesi di small-world non possa essere verificata facilmente, se non con un lavoro di analisi su una rete reale. 
 \end{description}
 \subsection{Fase 2}
+In questa fase, proponiamo la simulazione del seguente scenario: un utente ``hub" \textit{retwitta} un utente ``sconosciuto". L'obiettivo è studiare la variazione di in-degree dell'utente prescelto. La procedura è molto semplice, e si può riassumere così:
+\begin{enumerate}
+\item Ad una precisa iterazione, viene selezionato l'utente più popolare, ovvero con in-degree massimo, e quello meno popolare, con in-degree minimo.
+\item Si crea un tweet ``fortunato" e lo si aggiunge alla lista di tweet generale
+\item Si crea un retweet da parte dell'utente più popolare contenente il tweet fortunato e lo si aggiunge alla lista generale dei retweet.  
+\end{enumerate}
+Il tweet fortunato è caratterizzato dai seguenti parametri:
+\begin{itemize}
+\item Likability = 1
+\item Dislikability = 0
+\item Topic = scelto a caso dalla distribuzioni di topic del nodo ``hub"
+\end{itemize}
+Per le simulazioni abbiamo usato i due modelli migliori in base a quanto visto nella prima fase di esperimenti:
+\begin{itemize}
+\item Modello a invarianza di scala, densità $0.1\%$
+\item Modello randomico, densità $1.0\%$
+\end{itemize}
+I parametri della simulazione sono gli stessi della fase 1.
+L'iterazione prescelta per lo scatto di questo meccanismo è l'iterazione 400; l'abbiamo scelta in quanto lascia al modello 400 iterazioni per ``assestarsi", e 680 iterazioni per studiare il trend dell'in-degree.
+\\ \\
+L'obiettivo è, come già accennato, modellare il fatto realmente accaduto tra Termite e l'On. Gasparri nel 2012. Come in questo caso, ci aspettiamo che Termite (l'utente sconosciuto) abbia un picco di notorietà negli istanti immediatamente successivi all'evento (tweet fortunato), per poi stabilizzarsi se non addirittura descrescere. Da notare che il picco raggiunto da Termite era di circa 10.000 follower, quindi anche il massimo raggiunto durante le simulazioni dall'utente prescelto dovrebbe essere contenuto rispetto alle dimensioni della rete.
 \subsubsection{Risultati}
+Le figure 14, 15 e 16 mostrano i trend per la simulazione della rete scale-free, mentre le figure 17, 18 e 19 mostrano i trend per la rete randomica.
+La figura 14 fornisce un quadro a grandi linee dell'andamento dell'in-degree della rete a invarianza di scala: durante il periodo di simulazione la maggior parte dei nodi rimane sotto la soglia dei 25 follower, mentre pochi altri spaziano tra questa soglia e i 300 collegamenti in entrata. Ogni nodo sembra manifestare un comportamento unico e non correlato a quello degli altri. In questa situazione abbiamo forzato l'evento di cui sopra. La figura 15 mostra l'in-degree del nodo prescelto, mentre la figura 16 mostra il trend del nodo ``hub" che l'ha retwittato. 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/totale_1000_sf_1080_1.pdf}
 \caption{Andamento generale dell'in-degre dei nodi della rete scale-free}
 \end{figure}
+Il numero di follower dell'utente prescelto si impenna subito dopo l'iterazione 400, fino a raggiungere il numero di 22 archi entranti. Le iterazioni successive sono caratterizzate da un generico calo dei follower, fino all'assestamento, intorno all'iterazione 950, su circa 15 seguaci. Prevedibilmente, il trend dell'utente popolare non risente del cambiamento, e continua la crescita fino alla terminazione. \\ \\
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/prescelto_1000_sf_1080_1.pdf}
-\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\caption{Andamento in-degree del nodo prescelto, nella rete scale-free}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/gasparri_1000_sf_1080_1.pdf}
+\caption{Andamento in-degree del nodo popolare, nella rete scale-free}
+\end{figure}
+Una situazione diversa si presenta nella simulazione con rete randomica. La figura 17 mostra un comportamento generale dei nodi piuttosto simile: sebbene la maggior parte rimanga confinata sotto i 100 follower (notare la differenza con la precedente simulazione, dovuta alla diversa densità), gli utenti popolari mostrano quasi tutti un comportamento crescente. Inoltre, questi nodi popolari sono molto più numerosi rispetto alla precedente simulazione. Questo fenomeno dovrebbe essere dovuto al processo descritto nella fase 1, secondo cui la rete randomica si ``trasforma" in una rete a invarianza di scala.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/totale_1000_rnd_1080_1_1.pdf}
+\caption{Andamento generale dell'in-degre dei nodi della rete scale-free}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/prescelto_1000_rnd_1080_1_1.pdf}
 \caption{Distribuzione in-degree della rete random, densità 5.0\%}
 \end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/gasparri_1000_rnd_1080_1_1.pdf}
+\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\end{figure}
+In questo contesto è plausibile un andamento della curva dei follower del nodo prescelto come evidenziato dalla figura 18: l'in-degree, da un valore inferiore a 20, si alza parecchio fino a superare il valore di 800 archi entranti. L'utente sconosciuto diventa nell'arco di pochissimo tempo un nodo ``hub" a tutti gli effetti. Questo è dovuto sicuramente alla maggiore densità iniziale, che accelera i cambiamenti all'interno della rete, e alla costruzione randomica iniziale, che fa della rete un ambiente ancora poco stabile.
 \section{Conclusione}
 \label{sec:end}
 \section{Sviluppi futuri}
 \label{sec:future}
+\begin{enumerate}
+\item Multithreading
+\item Più grosso
+\item Omofilia
+\item Raffinare fase 2
+	tweet polemico
+	out degree
+	
+\item Restringere densità \& più simulazioni
+\end{enumerate}
 
 
 \begin{thebibliography}{9}

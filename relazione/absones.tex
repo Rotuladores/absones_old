@@ -367,7 +367,34 @@ In quest'altra tabella riportiamo i valori per le distribuzioni finali della run
     \end{tabular}
 \end{center}
 Da notare che la prima colonna di questa tabella contiente i parametri della curva di riferimento.
+\subsubsection{Commento}
+Da questi esperimenti possiamo trarre le seguenti considerazioni sugli obiettivi che ci eravamo posti:
+\begin{description}
+\item[Completamento della rete] Il nostro modello riesce a porre un limite alla crescita del numero di collegamenti; la rete, e quindi gli agenti, raggiungono una certa stabilità in prossimità di alcunoi valori di densità (circa tra il $7\%$ e l'$8\%$). Non avendo idea dell'entità della densità del grafo reale di Twitter, si può solo supporre che un certo valore di densità sia quello esatto; probabilmente un valore tra il $7\%$ e l'$8\%$ è ancora pittosto alto, c'è però margine per migliorarlo, andando a restringere acora di più i parametri descritti nella sezione \ref{sec:mod}.
+\item[Invarianza di scala] Nella prima run, il nostro modello ha dimostrato che, data una configurazione di partenza del grafo a invarianza di scala, riesce a mantenere tale configurazione per tutto il periodo considerato. Nella altre quattro run, dove la rete è stata istanziata in modo randomico, in tre casi il nostro modello ha ``forzato" tutta la rete ad una configurazione assimilabile ad un paradigma scale free. Imputiamo la non riuscita dell'unico caso (rete randomica, densità 0.1\%) alla bassa densità di partenza, che, in un periodo di 1080 iterazioni, non è stato sufficiente a far entrare a pieno regime le meccaniche tipiche di una rete scale-free. C'è ancora margine di miglioramento su questo punto, ma confidiamo nella buona base di partenza offerta dalla nostra soluzione.
+\end{description}
+Altre considerazioni sono le seguenti:
+\begin{description}
+\item[Omofilia] La misura scelta per l'omofilia, ovvero l'\textit{assortatività per attributo}, non sembra aver fornito una risposta soddisfacente sul comportamento omofilo o meno degli agenti. In tutte le run l'indice si mostra parecchio irregolare, e comunque mai completamente positivo. Riteniamo che il problema non sia della metodologia usata per calcolare l'assortatività (piuttosto nota e utilizzata in letteratura), quanto nella rappresentazione dell'attributo di cui questa misura tiene conto: come già spiegato nella sezione \ref{sec:mod}, abbiamo ``condensato" un vettore di interessi in un solo attributo, corrispondente all'interesse con il valore maggiore all'interno del vettore; questo non coglie tutta l'informazione fornita da un vettore di valori, il quale viene usato dagli agenti per stabilire i collegamenti. L'informazione intercettata dall'indice è perciò incompleta. Un possibile miglioramento è senz'altro quello di trovare una misura alternativa, e più esaustiva.
+\item[Ipotesi di small-world] Anche per l'ipotesi di small-world vale quanto affermato sulla densità reale di un social network come Twitter: è concesso solo supporre il valore reale del cammino minimo medio. In aggiunta, questa è una metrica che risente particolarmente della limitatezza intrinseca della simulazione: con solo 1000 agenti, il cammino minimo medio non può essere paragonato a quello di una rete che dispone di un numero di agenti maggiore di circa cinque ordini di grandezza, tanto più che non sempre in una simulazione si ha a che fare con un grafo connesso, come testimoniato nelle run. Ne concludiamo che l'ipotesi di small-world non possa essere verificata facilmente, se non con un lavoro di analisi su una rete reale. 
+\end{description}
 \subsection{Fase 2}
+\subsubsection{Risultati}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/totale_1000_sf_1080_1.pdf}
+\caption{Andamento generale dell'in-degre dei nodi della rete scale-free}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/prescelto_1000_sf_1080_1.pdf}
+\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/gasparri_1000_sf_1080_1.pdf}
+\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\end{figure}
 \section{Conclusione}
 \label{sec:end}
 \section{Sviluppi futuri}

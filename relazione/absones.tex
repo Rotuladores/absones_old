@@ -189,13 +189,15 @@ dove $e_{xy}$ è la probabilità che un arco qualsiasi conduca da un nodo con va
 Una rete viene indicata come \textit{rete a invarianza di scala} (\textit{scale free network}) se la distribuzione dei gradi dei nodi (probabilità $p(k_i)$ che un nodo scelto in modo random abbia grado $k_i$) segue una \textit{power law} \cite{scalefree}.\\
 Una \textit{power law} \cite{barabasi} è una funzione $y=f(x)$ in cui il valore $y$ della funzione è proporzionale ad una potenza del valore in ingresso $x$:
 \begin{equation}
+\label{eq:power}
 p_x \sim x^{-\gamma}
 \end{equation}
-L'equazione 4 è chiamata \textit{power law distribution} e l'esopente $-\gamma$ è detto \textit{degree exponent}. La rappresentazione con il logaritmo dell'equazione 4 diventa
+L'equazione \ref{eq:power} è chiamata \textit{power law distribution} e l'esopente $-\gamma$ è detto \textit{degree exponent}. La rappresentazione con il logaritmo dell'equazione \ref{eq:power} diventa
 \begin{equation}
+\label{eq:power2}
 \log p_x \sim -\gamma \log p
 \end{equation}
-Se vale l'equazione 5, allora ci si aspetta che $\log p_x$ dipenda linearmente da $\log x$, con inclinazione della retta pari a $\gamma$, come indicato nella figura 2. Assumendo che il grado di un nodo sia una quantità discreta, si può adottare il formalismo per il discreto; in questo modo, l'equazione 4 diventa
+Se vale l'equazione \ref{eq:power2}, allora ci si aspetta che $\log p_x$ dipenda linearmente da $\log x$, con inclinazione della retta pari a $\gamma$, come indicato nella figura \ref{fig:power}. Assumendo che il grado di un nodo sia una quantità discreta, si può adottare il formalismo per il discreto; in questo modo, l'equazione \ref{eq:power} diventa
 \begin{equation}
 p_x \sim Cx^{-\gamma}
 \end{equation} 
@@ -204,11 +206,269 @@ dove $C$ è una costante.
 \centering
 \includegraphics[scale=0.6]{images/powerlaw.png}
 \caption{Distribuzione del WWW misurata nel 1999 \cite{barabasi}. La figura a. rappresenta la distribuzione dei nodi rispetto all'\textit{in-degree}, mentre b. rispetto all'\textit{out-degree}. Entrambe usano una scala logaritmica.}
+\label{fig:power}
 \end{figure}
 \section{Descrizione modello} 
 \label{sec:mod}
-\section{Visione multi-agente}
-\label{sec:mas}
+Abbiamo cercato di creare un modello che rispecchi il pi\`u possibile il modo in cui Twitter viene utilizzato nella realt\`a da utenti umani. Ovviamente alcune restrizioni e semplificazioni sono state effettuate per creare un modello realizzabile sia dal punto di vista concettuale che computazionale. Tuttavia ABSoNeS risulta essere una buona base per la simulazione di social network, come verrà descritto più avanti. Alcune delle semplificazioni pi\`u rilevanti possono comunque essere introdotte in futuro senza la necessit\`a di stravolgere il modello attuale, ma arricchendolo con relativa semplicit\`a.
+\\ \\
+ABSoNeS è composto da un \textit{grafo} i cui nodi rappresentano gli \textit{utenti} (quindi gli \textit{agenti}) di una rete sociale ispirata a Twitter. Ogni nodo può produrre oggetti (tweet e retweet) e stabilire o interrompere collegamenti secondo delle \textit{probabilità} (statiche o dinamiche); l'agire o meno di questi utenti è determinato secondo un campionamento di tipo Monte Carlo su queste probabilità. Ogni nodo ha degli attributi che lo rendono unico, dunque ognuno di questi agenti sviluppa un comportamento che lo identifica, ed è parzialmente influenzato dalle azioni degli agenti con cui è in contatto. 
+\\ \\
+Di seguito elenchiamo gli elementi chiave comuni a tutti gli utenti. Tali aspetti servono a descrivere le caratteristiche personali degli utenti, in particolare il loro periodo di attivit\`a durante il giorno e i loro interessi personali.
+Questi elementi sono al momento immutabili dopo la creazione dell'utente, per quanto questa possa sembrare una forte restrizione, non \`e sbagliato assumere che mediamente gli interessi e gli impegni lavorativi di una persona non cambino nell'arco di qualche mese, che \`e l'obiettivo della simulazione.
+\begin{description}
+  \item[Fasi Temporali (FT)] Dividiamo la giornata in 12 fasi che 
+    rappresentano 2 ore l'una in cui ogni utente ha un personale
+    valore di \textit{activity} che rappresenta il suo utilizzo di Twitter.
+    Tali fasi sono cos\`i suddivise:
+    \begin{itemize}
+      \item 4 fasi con \textit{activity} pari a 0 corrispondente a 8
+      ore di sonno, ovvero la quantit\`a consigliata (e quasi mai 
+      rispettata);
+      \item 4 fasi con \textit{activity} bassa, corrispondente a 8 ore di 
+      lavoro;
+      \item 4 fasi con \textit{activity} elevata che rappresenta 8 ore di 
+      tempo libero in cui l'utente ha una attivit\`a maggiore su 
+      Twitter.
+    \end{itemize} 
+
+  \item[Topic] ovvero i possibili argomenti di interesse esistenti 
+    nel modello perci\`o abbiamo una lista \textit{topic} 
+    $ = (t_1, \dots , t_n) $ definiti a priori e immutabili. 
+    Non vengono mai utilizzati direttamente, ma vengono utilizzati 
+    come indici di riferimento dunque non \`e necessario 
+    implementarli realmente.
+\end{description}
+
+\subsection{Utenti}
+\label{subsec:users}
+Gli utenti sono i nodi della rete. Di seguito mostriamo come gli utenti sono rappresentati nel modello, in particolare ogni utente \`e caratterizzato da:
+
+\begin{description}
+  \item[Personal Interest (PI)] \`e un vettore di probabilità $PI$ 
+    $=(p_1, \dots, p_n)$ dove $p_i \in (0, 1)$.
+    indica la probabilit\`a di interesse del nodo rispetto al 
+    \textit{topic} $i$ generata casualmente. Da notare che $\sum_{i=1}^n p_i = 1$.
+  \item[Timezone (TZ)] ovvero una lista $TZ$ $=(tz_1, \dots, tz_{12}) $
+  dove i $tz_i$ sono generati in accordo con le \textbf{FT} 
+  come segue:
+  \begin{itemize}
+    \item Viene scelto un indice $1\leq i \leq 12$ casualmente
+    \item Si impostano le ore di sonno $tz_j = 0$ per $j = i, \dots , i+3$
+    \item Si impostano le ore di lavoro $tz_j$ = bassa \textit{activity} per 
+      $j = i+4, \dots , i+7$
+    \item Si impostano le ore di tempo libero $tz_j$ = alta \textit{activity}
+      per $j = i+8, \dots , i+11$
+  \end{itemize}
+  Tutte le precedenti operazioni di indici sono da considerarsi 
+  $mod \quad 12$. Il motivo di questa scelta \`e quello di simulare
+  sia diversi orari per le persone, come ad esempio lavori notturni, sia diversi fusi orari cercando di distribuire uniformemente gli orari personali. Nel codice, i valori per alta e bassa activity sono probabilità, e vengono generate usando una distribuzione triangolare con i seguenti parametri:
+  \begin{itemize}
+  \item Bassa activity: $a = 0$, $m = 0.25$, $b = 0.6$  
+  \item Alta activity: $a = 0.4$, $m = 0.75$, $b = 1$ 
+  \end{itemize}
+\end{description}
+Ogni utente \`e inoltre caratterizzato dalle seguenti propriet\`a:
+
+\begin{description}
+  \item[Followers] per ogni utente U definiamo come \textit{followers}(U) 
+  l'insieme dei followers di U. Il loro numero è pari all'\textit{in-degree} del nodo U.
+  \item[Following] similmente al precedente \textit{following}(U) indica
+  l'insieme degli utenti seguiti da U. Il loro numero è pari all'\textit{out-degree} del nodo U.
+  \item[Direct Tag (dtag)] \textit{dtag}(U, T) \`e l'insieme dei tweets che
+  contengo un tag all'utente U generati al tempo T. 
+  Una descrizione pi\`u dettagliata \`e disponibile nella sezione
+  riguardante i tweet [\ref{subsec:social}].
+  \item[Field Of View (FOV)] \textit{FOV}(U, T) rappresenta l'insieme dei
+  delle notizie visualizzate dall'utente U al tempo T, con 
+  \textit{FOV} $\subseteq$ \textit{tweet}(\textit{following}(U), $T_i$) $\cup$ 
+  \textit{retweet}(\textit{following}(U), $T_j$) $\cup$ \textit{dtag}(U, $T_l$) 
+  per $T_{i,j,l} \in \overline{T}$ lista di
+  tempi non maggiori al tempo attuale T.
+  Questo insieme \`e definito sia per una questione
+  computazionale, ma anche per un motivo reale in quanto \`e 
+  difficile che un utente nell'arco della giornata riesca a vedere
+  tutti i tweets e i retweets degli utenti che segue e i tweet che
+  in cui risulta direttamente \textit{taggato}. Questa affermazione
+  diventa sempre pi\`u ragionevole al crescere della popolarit\`a 
+  di un utente.
+\end{description}
+
+Ovviamente un grafo senza archi non rappresenterebbe nulla, cos\`i come un simulatore di social network senza interazione tra gli utenti; perci\`o di seguito viene mostrato come sono definiti gli archi e che caratteristiche hanno e pi\`u in seguito le possibili interazioni tra gli utenti.
+
+\begin{description}
+  \item[Edges] un arco tra due utenti $U_1$ e $U_2$, scritto come
+  $(U_1 ,U_2)$ rappresenta la relazione di following tra il primo 
+  ed il secondo. Di conseguenza, ovviamente, 
+  risulta che $U_1 \in $  \textit{followers}($U_2$) e simmetricamente
+   $U_2 \in $  \textit{following}($U_1$)
+   \item[Attachment] ad un arco $e_j \in U\times U$ \`e associato un 
+   valore \textit{attach}($U_1, U_2$) $ \in [0,1]$ che rappresenta l' 
+   \textit{attaccamento} di $U_1$ a $U_2$, pi\`u questo valore si 
+   avvicina a 0 pi\`u la probabilit\`a che $U_1$ smetta di seguire
+   $U_2$ aumenta e viceversa. Quando l'arco viene creato il valore
+   di \textit{attach} \`e relativamente alto (si usa una distribuzione triangolare con parametri $a = 0.5$, $m = 0.8$, $b = 1$) in quanto ci si 
+   aspetta che un utente non smetta di seguire un altro utente
+   poco dopo aver iniziato a seguirlo.
+\end{description}
+
+\subsection{Attivit\`a di base}
+\label{subsec:prob}
+
+Elenchiamo qui le azioni che ogni utente può effettuare. Queste azioni vengono decise sulla base di estrazioni Monte Carlo: estratto un numero casuale, se ricade entro un certo intervallo di probabilità l'azione viene compiuta.
+
+\begin{description}
+  \item[Tweet] Posto $x = \dfrac{|followers(U)|}{|Users|}$ ogni utente U ad ogni tempo T ha la possibilit\`a
+  di creare un tweet secondo la seguente probabilit\`a:
+    \begin{equation}
+    \label{eq:ptwt}
+      P_{tweet} = \alpha TZ(T) (-\dfrac{\log{(x+4)}}{  \log{(x+2)}} +2)
+    \end{equation}
+  Questo perch\`e ci si aspetta che un utente popolare sia pi\`u 
+  attivo di uno sconosciuto, per mantenere il suo livello di 
+  popolarit\`a. Questa \`e una rappresentazione della realt\`a che contiene una restrizione, in quanto esistono esempi di persone poco conosciute che producono molti tweets, e di persone molto famose che non usano mai i social, soprattutto i pi\`u anziani. Tuttavia \`e ragionevole pensare che la precedente assunzione sia mediamente vera. La funzione \ref{eq:ptwt} cerca di tradurre questo concetto in uno spazio di probabilità: più il rapporto $x$ tende a 1, più la funzione cresce, ma in maniera logaritmica, in modo che quando $x = 1$ si ha che $P_{tweet} \approx 0.5 $; questo è per evitare la  iperattività degli agenti, e prevenire così il completamento della rete. $\alpha$ è un fattore di normalizzazione, ottenuta sommando $P_{tweet}$ a $  P_{\neg tweet}$:
+  \begin{equation}
+    \label{eq:ptwt}
+      P_{\neg tweet} = \alpha (1 - TZ(T)) (1 - (-\dfrac{\log{(x+4)}}{  \log{(x+2)}} +2))
+    \end{equation}
+  
+  \item[Retweet] La probabilità $P_{retweet}$ è calcolata col medesimo meccanismo di $P_{tweet}$
+    Nel modello assumiamo per semplicit\`a che un utente possa produrre al massimo un retweet ad istante di tempo. Una possibile versione futura potrebbe rilassare questo vincolo rendendo ancora pi\`u simile alla realt\`a il modello.
+    
+  \item[Tag] Ogni tweet ha una possibilit\`a di contenere un tag 
+  diretto ad un altro utente V. Tuttavia per questa caratteristica non \`e possibile fare delle assunzioni che possano essere verosimili, in quanto twetter permette ad un qualunque utente di taggare un qualunque altro utente. Perci\`o abbiamo deciso di implementare un sistema randomico dove ogni utente ha il 20 \% di probabilit\`a di taggare un altro qualsiasi utente. 
+  Grazie proprio a questa particolare caratteristica \`e possibile che accadano, sia nella realt\`a che nel modello casi particolari come quello descritto nella fase sperimentale.
+\end{description}
+
+\subsection{Attivit\`a sociali}
+\label{subsec:social}
+\`E importante definire quali sono le attivit\`a sociali che gli utenti possono fare per interagire tra di loro. Queste attività hanno come oggetto di scambio fra gli utenti i seguenti oggetti:
+
+\begin{description}
+  \item[Tweet] Il tweet dell'utente U al tempo T \`e definito come
+  \textit{tweet}(U,T) = ($j$, \textit{likability}, \textit{dislikability}, \textit{dtag}
+  %, U, T
+  ) dove:
+  \begin{itemize}
+    \item $j$ \`e il \textit{topic} su cui il tweet verte
+    \item \textit{likability} $\in [0,1]$, indica la probabilit\`a di quanto
+    il tweet possa piacere agli utenti a cui interessa il 
+    \textit{topic} $j$. 
+    \item \textit{dislikability} $\in [0,1]$, rappresenta la probabilit\`a di quanto il tweet 
+    possa non piacere a chi non \`e interessato all'argomento
+    \item \textit{dtag} indica l'utente V taggato nel tweet. Tale valore 
+    pu\`o anche essere nullo.
+%    \item U \`e l'utente che ha effettuato il tweet, e T il tempo in
+%    cui \`e stato creato.
+%    Necessari per l'implementazione.
+  \end{itemize}
+  
+  \item[Retweet] Il retweet effettuato dall'utente U al tempo T
+  del tweet di V al tempo $\overline{T}$, definito come:
+  \textit{retweet}(U, T) = \textit{tweet}(V, $\overline{T}$)
+  
+  \item[Dtag] Il tag diretto di un utente U ad un altro utente V al 
+  tempo T \`e definito come \textit{dtag}(U, V, T) = tweet(U, T) e 
+  rappresenta il caso in cui l' utente U ha ``taggato'' V con un 
+  \textit{@U}. Questo permette all'utente V di vedere un tweet 
+  di U, anche nel caso in cui non lo seguisse.
+\end{description}
+In base agli oggetti definiti in precedenza possiamo definire le 
+azioni di:
+
+\begin{description}
+
+  \item[Post] Nel momento in cui l'utente U \`e abilitato alla 
+  creazione di un tweet viene generato casualmente un 
+  \textit{topic} $j$ su cui verter\`a il tweet in modo tale che un topic 
+  di interesse per U sia selezionato con maggiore probabilit\`a.
+  Una volta scelto il topic $j$:
+  \begin{itemize}
+    \item se $j$ \`e di interesse per U (U.$PI$($j$) $\geq 0.5$)
+     allora il \textit{tweet} risultante
+    avr\`a una \textit{likability} elevata mentre la \textit{dislikability} sar\`a casuale.
+    \item viceversa il \textit{tweet} generato avr\`a una \textit{dislikability} alta ed
+    una \textit{likability} casuale.
+  \end{itemize}
+  Una volta definito il tweet viene generata la probabilit\`a di 
+  avere un \textit{dtag} ad un altro utente V. Se tale tag viene generato allora il \textit{tweet} avr\`a
+  un tag all'utente V, altrimenti il post non avr\`a alcun \textit{dtag}.
+  
+  \item[Repost] Per ogni utente U viene scelta casualmente una lista 
+  di $k$ \textit{tweet} $\overline{w} \in$ \textit{FOV}(U)$^k$, successivamente
+  per ogni $\overline{w}_i \in \overline{w}$ viene valutata la 
+  possibilit\`a di retweet di $\overline{w}_i$ secondo l' equazione
+  \ref{eq:ptwt}, in caso favorevole viene prodotto \textit{retweet}(U, T) 
+  che sar\`a una lista di retweet effettuati da U al tempo T.
+  \item[Unfollow] Ad ogni istante T di tempo, ogni nodo ha lo $0.5\%$ di possibilità di intraprendere un'attività di valutazione dell'attachment che intercorre tra lui e gli utenti da lui seguiti. La valutazione avviene secondo il seguente algoritmo:
+  \begin{enumerate}
+  \item Genera il $FOV$ per l'utente $U_1$.
+  \item Scorri tutti gli elementi (tweet o retweet) presenti nel $FOV$
+  \item Aggiorna l'attachment con il nodo $U_2$ che ha effettuato il tweet o il retweet:
+  \begin{enumerate}
+  \item Se il topic dell'elemento è di interesse dell'utente (topic maggiore della media dei valori del $PI$) allora $attach(U_1,U_2)_{new} = \dfrac{attach(U_1,U_2)_{old}+ likability}{2}$
+  \item Se il topic dell'elemento no è di interesse dell'utente (topic minore della media dei valori del $PI$) allora $attach(U_1,U_2)_{new} = \dfrac{attach(U_1,U_2)_{old}+ dislikability}{2}$
+  \end{enumerate}
+  \item Elimina il collegamento con il nodo con il minore attachment
+  \end{enumerate}
+  L'idea originale era quella di valutare l'attachment di tutti gli archi ad ogni istante T: questo è chiaramente un compito oneroso che, specialmente in reti con elevata densità, aumenta enormemente i tempi di esecuzione. Inoltre, non rispecchia appieno il processo di unfollow reale, poichè nessun utente umano valuta regolarmente l'interesse verso ogni suo collegamento. Per cui abbiamo abbandonato questa soluzione in favore dell'algoritmo appena descritto.
+  \item[Follow] Esistono due tipi di possibili modalit\`a di 
+  following:
+    \begin{description}
+      \item[By Retweet (BR)] 
+      Nel caso in cui nel FOV compaia un retweet di un utente non 
+      seguito, si pu\`o decidere di seguirlo attraverso la seguente 
+      valutazione: si considerano gli ultimi $n$ \textit{tweet} e \textit{retweet} (a partire dall'istante $T = -20$)
+      dell'utente target e da questi si inferiscono i suoi interessi.
+      Dal momento che per un utente non \`e possibile conoscere il vettore di probabilit\`a privato di un altro utente, esso viene inferito dal potenziale follower che ha intenzione di seguirne un altro valutando i topic dei suoi precedenti tweet, e la loro compatibilit\`a viene valutata utilizzando la cosine similarity che, siccome ha a che fare con vettori di probabilità, assumerà valori nell'intervallo [0,1]. L'operazione di follow andrà a buon fine se il valore estratto è \textit{minore} del valore di distanza calcolato in questo modo.
+    Questa scelta \`e giustificata dal fatto che nella realt\`a non \`e possibile conoscere gli interessi di un'altra persona se non inferendola da ci\`o che condivide, oppure attraverso un fattore di intuito umano, che chiaramente gli utenti simulati non hanno.
+      \item[Outside Factor (OF)] avviene quando un utente U comincia
+      a seguire un nodo V per fattori esterni al Social Network, 
+      quali ad esempio nuova amicizia nella vita reale, nuovo
+      follow su altri mezzi di comunicazioni online, ecc. Questa operazione è speculare all'unfollow: ad ogni istante di tempo $T$ ogni nodo ha lo $0.5\%$ di possibilità di iniziare a seguirne un altro, estratto a caso dall'insieme di utenti. 
+	  
+    \end{description}
+\end{description}
+
+
+
+\subsection{Step Simulazione}
+\label{subsec:step}
+
+Usando tutte le azioni definite in precedenza possiamo ora descrivere gli 
+step che avvengono nella simulazione ad ogni istante di tempo T.
+
+\begin{description}
+  \item[Tweet Step (TS)] Per ogni utente U viene generato una 
+  probabilit\`a casuale $P_t(U,T)$ che rappresenta la sua 
+  inclinazione di produrre un \textit{tweet} al tempo T. Se $P_t(U,T)$
+  risulta minore alla probabilit\`a $P_{tweet}$ (eq. \ref{eq:ptwt}) allora
+  viene generato il \textit{tweet}(U, T) come descritto in \textbf{Post}.
+  
+  \item[Retweet Step (RS)] Similmente alla fase precedente,
+  per ogni utente U viene generato una 
+  probabilit\`a casuale $P_r(U,T)$ che rappresenta la sua 
+  inclinazione di produrre un \textit{retweet} al tempo T. Se $P_r(U,T)$
+  risulta minore alla probabilit\`a $P_{retweet}$ (eq. \ref{eq:ptwt}) 
+  allora viene generato il \textit{retweet}(U, T) come descritto in 
+  \textbf{Repost}. In questa fase avvengono anche le eventuali valutazioni del \textbf{Follow by retweet}, con la creazione di nuovi archi.
+  
+  \item[Evaluation Step (ES)] Questa fase comprende le altre due operazioni descritte, ovvero \textbf{Follow by Outside Factor} e l'\textbf{Unfollow}. 
+\end{description}
+
+Le azioni descritte in precedenza devono necessariamente essere 
+eseguite sequenzialmente una dopo l'altra, tuttavia i singoli step 
+possono essere facilmente parallelizzati, senza problemi di 
+concorrenza, in quanto il post di un tweet \`e indipendente per ogni
+utente; lo stesso vale per il retweet e infine l'aggiornamento dell'
+\textit{attach} \`e  dipendente dai tweet e i retweet effettuati 
+\textbf{TS} e \textbf{RS}, ma i singoli aggiornamenti sono 
+indipendenti tra gli utenti. Per questo motivo \`e 
+possibile parallelizzare il modello in modo che 
+le azioni contenute in ogni step di simulazione 
+vengano effettuate contemporaneamente, ma comunque rispettando l'ordine descritto.
+Questa modello di parallelizzazione non \`e tuttavia implementato per questa versione in quanto sarebbe necessario implementare tecniche di sincronizzazione tra le strutture dati che contengono gli elementi della simulazione.
+
 \section{Esperimenti}
 \label{sec:esp}
 In questa sezione esponiamo le prove condotte con il nostro modello. 
@@ -233,7 +493,7 @@ Per valutare la buona riuscita degli esperimenti, considerando quanto prodotto d
 Altre metriche che abbiamo incluso nell'analisi sono:
 \begin{enumerate}
     \item Il \textit{coefficiente di clustering}, per valutare la predisposizione alla formazione di gruppi di agenti.
-    \item L'\textit{assortatività per attributo}, per valutare l'omofilia rispetto ai topic caratterizzanti gli utenti
+    \item L'\textit{assortatività per attributo}, per valutare l'omofilia rispetto ai topic caratterizzanti gli utenti. Come attributo abbiamo scelto il topic con valore più alto nel $PI$ di ogni nodo.
     \item L'\textit{assortatività per grado r(out,in)}, a supporto del punto 2 della lista precedente, ovvero la valutazione dell'invarianza di scala.
     \item Il \textit{cammino minimo medio} (in caso di reti connesse) per verificare l'ipotesi di \textit{small world}
 \end{enumerate}
@@ -251,7 +511,7 @@ La differenza tra le varie run sta nella diversa istanziazione della rete inizia
 Il package networkx di Python permette l'istanziazione di una rete scale-free con una densità non modificabile pari a circa $0.1\%$: questo è dovuto al particolare modello usato dalla libreria, descritto in \cite{sfnx}, che per rispetto alla power law non permette la scelta del numero di archi iniziale.
 A questa abbiamo quindi affincato una serie di prove con una random network come configurazione di partenza, avente valori diversi come densità iniziale: nello specifico, i valori sono $0.1\%$, $0.5\%$, $1.0\%$ e $5.0\%$.
 \subsubsection{Risultati}
-Le figure 3, 4, 5, 6 e 7 mostrano l'andamento dei quattro indici che abbiamo scelto per la valutazione.
+Le figure \ref{fig:sf1}, \ref{fig:rnd01}, \ref{fig:rnd05}, \ref{fig:rnd1} e \ref{fig:rnd5} mostrano l'andamento dei quattro indici che abbiamo scelto per la valutazione.
 \begin{figure}[h]
 \begin{tabular}{cc}
   \includegraphics[width=83mm]{images/evolution_1000_sf_1080_0.pdf} &   \includegraphics[width=83mm]{images/clustering_1000_sf_1080_0.pdf} \\
@@ -260,8 +520,9 @@ a. Densità & b. Coefficiente di clustering \\[6pt]
 c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \caption{Indici scale-free network, densità 0.1\%}
+\label{fig:sf1}
 \end{figure}
-Nell'esperimento con istanziazione della rete iniziale a invarianza di scala (figura 3) si può notare come la densità cresca in modo piuttosto contenuto sebbene in modo debolmente esponenziale: da una densità iniziale di circa $0.1\%$ si arriva a circa $0.5\%$. Il coefficiente di clustering invece ha un andamento particolare: decresce fino a poco prima della metà del periodo considerato, per poi iniziare una crescita irregolare fino alla fine dell'esperimento. Una spiegazione di questo fenomeno potrebbe essere il fatto che, in principio, la rete abbia molti nodi senza alcun collegamento in entrata o in uscita; inoltre, una porzione ancora maggiore di questi nodi ha solo pochi collegamenti in uscita verso i due, tre nodi ``hub" che fanno capo alla maggior parte degli archi. \'E plausibile quindi che, fino ad un certo punto, i collegamenti non vadano a rafforzare comunità già presenti, quanto a unire per la prima volta nodi distanti.
+Nell'esperimento con istanziazione della rete iniziale a invarianza di scala (figura \ref{fig:sf1}) si può notare come la densità cresca in modo piuttosto contenuto sebbene in modo debolmente esponenziale: da una densità iniziale di circa $0.1\%$ si arriva a circa $0.5\%$. Il coefficiente di clustering invece ha un andamento particolare: decresce fino a poco prima della metà del periodo considerato, per poi iniziare una crescita irregolare fino alla fine dell'esperimento. Una spiegazione di questo fenomeno potrebbe essere il fatto che, in principio, la rete abbia molti nodi senza alcun collegamento in entrata o in uscita; inoltre, una porzione ancora maggiore di questi nodi ha solo pochi collegamenti in uscita verso i due, tre nodi ``hub" che fanno capo alla maggior parte degli archi. \'E plausibile quindi che, fino ad un certo punto, i collegamenti non vadano a rafforzare comunità già presenti, quanto a unire per la prima volta nodi distanti.
 Al contrario, l'assortatività per grado cresce regolarmente fino all'iterazione 750 circa, per poi cominciare a calare leggermente: questo è indice del fatto che a partire da quel momento, l'in-degree medio dei nodi con molti collegamenti cresce in modo più rapido dell'out-degree dei nodi con pochi collegamenti, con effetto negativo sulla misura di assortatività \textit{r(out,in)}. Questo dovrebbe essere indicatore di una tendenza della rete a conservare una configurazione ad invarianza di scala.\\
 A differenza degli altri indici, l'assortatività per attributo è molto irregolare: dopo un brusco calo che la porta ad assumere valori negativi, continua ad oscillare in prossimità dello zero, senza mai tornare a valori positivi. Questo è segno che i nodi tendono a formare legami a prescindere dal 
 \begin{figure}[t]
@@ -273,9 +534,10 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 0.1\%}
+\label{fig:rnd01}
 \end{figure}
 topic più rappresentativo di ognuno.\\ \\
-L'esperimento successivo (figura 4) condivide con il primo il valore di densità iniziale, mentre differisce per costruzione: è infatti una random network priva, quindi, di nodi ``hub"; si riscontrano comunque nodi con più collegamenti in entrata e in uscita rispetto agli altri, ma la differenza, in questi termini, è molto ridotta. Ciò si rispecchia in una crescita molto più contenuta e lineare della densità (si arriva all'ultima iterazione con circa lo $0.3\%$), con i nodi che, avendo tutti un \textit{field of view} limitato, fanno fatica a stabilire nuovi collegamenti con nodi affini dal punto di vista degli interessi. Da qui si può trarre la conclusione che la presenza di nodi ``popolari" faciliti l'instaurazione di nuovi legami tra nodi meno importanti.
+L'esperimento successivo (figura \ref{fig:rnd01}) condivide con il primo il valore di densità iniziale, mentre differisce per costruzione: è infatti una random network priva, quindi, di nodi ``hub"; si riscontrano comunque nodi con più collegamenti in entrata e in uscita rispetto agli altri, ma la differenza, in questi termini, è molto ridotta. Ciò si rispecchia in una crescita molto più contenuta e lineare della densità (si arriva all'ultima iterazione con circa lo $0.3\%$), con i nodi che, avendo tutti un \textit{field of view} limitato, fanno fatica a stabilire nuovi collegamenti con nodi affini dal punto di vista degli interessi. Da qui si può trarre la conclusione che la presenza di nodi ``popolari" faciliti l'instaurazione di nuovi legami tra nodi meno importanti.
 Inoltre, nell'andamento del coefficiente di clustering, si riscontra lo stesso fenomeno osservato in precedenza sulla scale-free network: dopo un calo iniziale, l'indice torna a crescere, ma in modo sensibilmente più lento rispetto all'altro caso. Da notare anche il valore di partenza, circa cinque volte minore. Anche questo comportamento può essere imputato alla scarsa densità e all'elevata sparsità degli archi, per cui le comunità vengono costituite con fatica. L'assortatività per grado mostra un andamento incerto ma crescente, a indicare che i nodi tendono a legarsi in base alla similarità tra out e in degree. L'assortatività per attributo è più incerta rispetto al caso precedente, con la differenza che nella seconda metà della simulazione rimane quasi sempre positiva.
 \begin{figure}[h]
 \begin{tabular}{cc}
@@ -286,8 +548,9 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 0.5\%}
+\label{fig:rnd05}
 \end{figure}
-\\Il caso con densità di partenza pari a $0.5\%$ (figura 5) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. 
+\\ \\Il caso con densità di partenza pari a $0.5\%$ (figura \ref{fig:rnd05}) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. 
 \begin{figure}[H]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_1_0.pdf} \\
@@ -297,6 +560,7 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 1.0\%}
+\label{fig:rnd1}
 %\end{figure}
 %\begin{figure}[h]
 \begin{tabular}{cc}
@@ -307,8 +571,9 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \end{tabular}
 \centering
 \caption{Indici random network, densità 5.0\%}
+\label{fig:rnd5}
 \end{figure}
-Le run con densità di partenza pari all'$1.0\%$ e al $5.0\%$ (figure 6 e 7) hanno prodotto risultati piuttosto simili, e condividono un fenomeno importante: la densità, dopo un'iniziale fase di crescita, tende a rallentare la sua corsa con approssimazione logaritmica, attestandosi, nell'ultimo caso, poco sotto all'$8.0\%$. Sembra, quindi, che ci sia un limite alla crescita del numero di archi, per cui il completamento della rete (denstà $100\%$) sembra essere scongiurato. Il rallentamento viene percepito anche dal coefficiente di clustering, che decelera vistosamente fino a livellarsi. L'assortatività di scala presenta lo stesso fenomeno del primo e del terzo esperimento, ma lo sviluppo è più repentino man mano che si cresce con la densità iniziale: più collegamenti permettono ai nodi di avere più occasioni di instaurarne altri, per cui il processo di trasformazione da random network a rete ad invarianza di scala è più rapido. L'assortatività per attributo è poco indicativa, in quanto in un caso descresce e da positiva diventa negativa, per poi risalire in modo incerto, mentre nell'altro cresce costantemente ma resta negativa.
+Le run con densità di partenza pari all'$1.0\%$ e al $5.0\%$ (figure \ref{fig:rnd1} e \ref{fig:rnd5}) hanno prodotto risultati piuttosto simili, e condividono un fenomeno importante: la densità, dopo un'iniziale fase di crescita, tende a rallentare la sua corsa con approssimazione logaritmica, attestandosi, nell'ultimo caso, poco sotto all'$8.0\%$. Sembra, quindi, che ci sia un limite alla crescita del numero di archi, per cui il completamento della rete (denstà $100\%$) sembra essere scongiurato. Il rallentamento viene percepito anche dal coefficiente di clustering, che decelera vistosamente fino a livellarsi. L'assortatività di scala presenta lo stesso fenomeno del primo e del terzo esperimento, ma lo sviluppo è più repentino man mano che si cresce con la densità iniziale: più collegamenti permettono ai nodi di avere più occasioni di instaurarne altri, per cui il processo di trasformazione da random network a rete ad invarianza di scala è più rapido. L'assortatività per attributo è poco indicativa, in quanto in un caso descresce e da positiva diventa negativa, per poi risalire in modo incerto, mentre nell'altro cresce costantemente ma resta negativa.
 
 \begin{figure}[H]
 \begin{tabular}{cc}
@@ -317,35 +582,41 @@ a. Densità 1.0\% & b. Densità 5.0\% \\[6pt]
 \end{tabular}
 \centering
 \caption{Cammino minimo medio}
+\label{fig:spath}
 \end{figure}
-Per questi ultimi due esperimenti è stato possibile calcolare fin dalla prima iterazione il \textit{cammino minimo medio} (figura 8). Com'era prevedibile, in entrambi i casi è sempre decrescente, per via della crecente densità; é interessante notare come nel caso con densità $5.0\%$ il cammino minimo medio scenda al di sotto della soglia dei due step. Esiste perciò un numero non indifferente di cammini composti solo da un arco, per cui ogni nodo ha accesso nel suo \textit{fov} una grande quantità di retweet provenienti da nodi inizialmente piuttosto lontani. Ci si aspetterebbe quindi che questo porti a una crescita esponenziale delle connessioni, in realtà le limitazioni poste nel modello riescono a limitarne l'esplosione. \\ \\
-Richiamando quanto detto nella sezione \ref{subsec:graph}, una rete è detta ad invarianza di scala, o scale-free, se la distribuzione dei gradi (in-degree o out-degree) dei suoi nodi segue una power law. Le figure 9, 10, 11, 12 e 13 mostrano il plot della distribuzione iniziale (verde) e della distribuzione finale (rossa), dell'\textit{in-degree} dei nodi in ogni esperimento di questa sezione, normalizzati per il numero massimo di in-degree in modo da poterne confrontare l'andamento. \'E importante notare che la curva verde della figura 9 è stata generata secondo una power law, quindi rappresenta un modello di rete ad invarianza di scala ``ideale"; normalizzata in questa maniera, può quindi essere presa come modello di riferimento anche per gli altri esperimenti, perciò l'abbiamo riportata (in blu) in tutti gli altri grafici. \\ \\
-La prima esecuzione del modello (figura 9) non va a modificare sostanzialmente la natura scale free della rete, in quanto la distribuzione in uscita è solo leggermente deformata. Nella seconda run (figura 10) è lampante come la costruzione random iniziale sia distante dal modello a invarianza di scala, e, nonostante l'esecuzione del nostro modello, la distribuzione dell'in-degree non cambia. Nella terza run (figura 11) si ha una situazione di partenza analoga alla precedente, con la sola differenza della densità; dopo l'esecuzione del modello però, la curva è molto più simile ad una power law rispetto al caso precedente. Il nostro modello sembra quindi adattare, con un aiuto derivante dalla relativamente elevata densità, una random network ad una rete scale-free. Questo fenomeno viene ulteriormente accentuato dal caso con densità di partenza all'$1.0\%$ (figura 12): nonostante una curva di partenza di tipo randomico, la curva finale si discosta di poco da quella ideale. Un discorso a sè stante spetta per l'ultima run (figura 13), dove la rete randomica istanziata in partenza presenta già una distribuzione dell'in-degree molto simile ad una power law, e l'esecuzione del nostro modello non fa altro che accentuare la distanza tra i nodi ``popolari" e quelli meno importanti.
+Per questi ultimi due esperimenti è stato possibile calcolare fin dalla prima iterazione il \textit{cammino minimo medio} (figura \ref{fig:spath}). Com'era prevedibile, in entrambi i casi è sempre decrescente, per via della crecente densità; é interessante notare come nel caso con densità $5.0\%$ il cammino minimo medio scenda al di sotto della soglia dei due step. Esiste perciò un numero non indifferente di cammini composti solo da un arco, per cui ogni nodo ha accesso nel suo \textit{fov} una grande quantità di retweet provenienti da nodi inizialmente piuttosto lontani. Ci si aspetterebbe quindi che questo porti a una crescita esponenziale delle connessioni, in realtà le limitazioni poste nel modello riescono a limitarne l'esplosione. \\ \\
+Richiamando quanto detto nella sezione \ref{subsec:graph}, una rete è detta ad invarianza di scala, o scale-free, se la distribuzione dei gradi (in-degree o out-degree) dei suoi nodi segue una power law. Le figure \ref{fig:sfd}, \ref{fig:rndd01}, \ref{fig:rndd05}, \ref{fig:rndd1} e \ref{fig:rndd5} mostrano il plot della distribuzione iniziale (verde) e della distribuzione finale (rossa), dell'\textit{in-degree} dei nodi in ogni esperimento di questa sezione, normalizzati per il numero massimo di in-degree in modo da poterne confrontare l'andamento. \'E importante notare che la curva verde della figura  è stata generata secondo una power law, quindi rappresenta un modello di rete ad invarianza di scala ``ideale"; normalizzata in questa maniera, può quindi essere presa come modello di riferimento anche per gli altri esperimenti, perciò l'abbiamo riportata (in blu) in tutti gli altri grafici. \\ \\
+La prima esecuzione del modello (figura \ref{fig:sfd}) non va a modificare sostanzialmente la natura scale free della rete, in quanto la distribuzione in uscita è solo leggermente deformata. Nella seconda run (figura \ref{fig:rndd01}) è lampante come la costruzione random iniziale sia distante dal modello a invarianza di scala, e, nonostante l'esecuzione del nostro modello, la distribuzione dell'in-degree non cambia. Nella terza run (figura \ref{fig:rndd05}) si ha una situazione di partenza analoga alla precedente, con la sola differenza della densità; dopo l'esecuzione del modello però, la curva è molto più simile ad una power law rispetto al caso precedente. Il nostro modello sembra quindi adattare, con un aiuto derivante dalla relativamente elevata densità, una random network ad una rete scale-free. Questo fenomeno viene ulteriormente accentuato dal caso con densità di partenza all'$1.0\%$ (figura \ref{fig:rndd1}): nonostante una curva di partenza di tipo randomico, la curva finale si discosta di poco da quella ideale. Un discorso a sè stante spetta per l'ultima run (figura \ref{fig:rndd5}), dove la rete randomica istanziata in partenza presenta già una distribuzione dell'in-degree molto simile ad una power law, e l'esecuzione del nostro modello non fa altro che accentuare la distanza tra i nodi ``popolari" e quelli meno importanti.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/dist_1000_sf_1080_0.pdf}
 \caption{Distribuzione in-degree della rete scale-free, densità 0.1\%}
+\label{fig:sfd}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/dist_1000_rnd_1080_01_0.pdf}
 \caption{Distribuzione in-degree della rete random, densità 0.1\%}
+\label{fig:rndd01}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/dist_1000_rnd_1080_05_0.pdf}
 \caption{Distribuzione in-degree della rete random, densità 0.5\%}
+\label{fig:rndd05}
 \end{figure}
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{images/dist_1000_rnd_1080_1_0.pdf}
 \caption{Distribuzione in-degree della rete random, densità 1.0\%}
+\label{fig:rndd1}
 \end{figure}
 Sembra quindi che ci sia una certa correlazione tra l'indice di assortatività per grado visto in precedenza e l'andamento delle distribuzioni dell'in-degree, in quanto i casi che presentavano un comportamento ``a cuspide" nella misura di assortatività tendono a rispettare il comportamento di una rete ad invarianza di scala, in particolare la run con rete scale-free e le run con rete random con valori di densità $0.5\%$, $1.0\%$ e $5.0\%$. 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/dist_1000_rnd_1080_5_0.pdf}
 \caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\label{fig:rndd5}
 \end{figure}
 Nella sezione \ref{subsec:graph} abbiamo esposto la definizione di invarianza di scala e di power law. Dai dati prodotti dagli esperimenti è possibile stimare i valori $C$ e $\gamma$ delle curve finali (in rosso) rappresentate nei plot precedenti. Nella libreria \textit{scipy} di Python è presente un'implementazione del \textit{metodo non lineare dei minimi quadrat}i: l'abbiamo utilizzata per stimare i parametri delle curve.
 Nella tabella sottostante riportiamo i valori dei coefficienti $C$ e $\gamma$ della power law per le distribuzioni finali (in rosso) di tutte le run effettuate \textit{con instanziazione randomica della rete} 
@@ -390,6 +661,7 @@ Il tweet fortunato è caratterizzato dai seguenti parametri:
 \item Likability = 1
 \item Dislikability = 0
 \item Topic = scelto a caso dalla distribuzioni di topic del nodo ``hub"
+\item Tag = nodo hub
 \end{itemize}
 Per le simulazioni abbiamo usato i due modelli migliori in base a quanto visto nella prima fase di esperimenti:
 \begin{itemize}
@@ -401,55 +673,72 @@ L'iterazione prescelta per lo scatto di questo meccanismo è l'iterazione 400; l
 \\ \\
 L'obiettivo è, come già accennato, modellare il fatto realmente accaduto tra Termite e l'On. Gasparri nel 2012. Come in questo caso, ci aspettiamo che Termite (l'utente sconosciuto) abbia un picco di notorietà negli istanti immediatamente successivi all'evento (tweet fortunato), per poi stabilizzarsi se non addirittura descrescere. Da notare che il picco raggiunto da Termite era di circa 10.000 follower, quindi anche il massimo raggiunto durante le simulazioni dall'utente prescelto dovrebbe essere contenuto rispetto alle dimensioni della rete.
 \subsubsection{Risultati}
-Le figure 14, 15 e 16 mostrano i trend per la simulazione della rete scale-free, mentre le figure 17, 18 e 19 mostrano i trend per la rete randomica.
-La figura 14 fornisce un quadro a grandi linee dell'andamento dell'in-degree della rete a invarianza di scala: durante il periodo di simulazione la maggior parte dei nodi rimane sotto la soglia dei 25 follower, mentre pochi altri spaziano tra questa soglia e i 300 collegamenti in entrata. Ogni nodo sembra manifestare un comportamento unico e non correlato a quello degli altri. In questa situazione abbiamo forzato l'evento di cui sopra. La figura 15 mostra l'in-degree del nodo prescelto, mentre la figura 16 mostra il trend del nodo ``hub" che l'ha retwittato. 
+Le figure \ref{fig:mat1}, \ref{fig:t1} e \ref{fig:g1} mostrano i trend per la simulazione della rete scale-free, mentre le figure \ref{fig:mat2}, \ref{fig:t2} e \ref{fig:g2} mostrano i trend per la rete randomica.
+La figura \ref{fig:mat1} fornisce un quadro a grandi linee dell'andamento dell'in-degree della rete a invarianza di scala: durante il periodo di simulazione la maggior parte dei nodi rimane sotto la soglia dei 25 follower, mentre pochi altri spaziano tra questa soglia e i 300 collegamenti in entrata. Ogni nodo sembra manifestare un comportamento unico e non correlato a quello degli altri. In questa situazione abbiamo forzato l'evento di cui sopra. La figura \ref{fig:t1} mostra l'in-degree del nodo prescelto, mentre la figura \ref{fig:g1} mostra il trend del nodo ``hub" che l'ha retwittato. 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/totale_1000_sf_1080_1.pdf}
 \caption{Andamento generale dell'in-degre dei nodi della rete scale-free}
+\label{fig:mat1}
 \end{figure}
 Il numero di follower dell'utente prescelto si impenna subito dopo l'iterazione 400, fino a raggiungere il numero di 22 archi entranti. Le iterazioni successive sono caratterizzate da un generico calo dei follower, fino all'assestamento, intorno all'iterazione 950, su circa 15 seguaci. Prevedibilmente, il trend dell'utente popolare non risente del cambiamento, e continua la crescita fino alla terminazione. \\ \\
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/prescelto_1000_sf_1080_1.pdf}
 \caption{Andamento in-degree del nodo prescelto, nella rete scale-free}
+\label{fig:t1}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/gasparri_1000_sf_1080_1.pdf}
 \caption{Andamento in-degree del nodo popolare, nella rete scale-free}
+\label{fig:g1}
 \end{figure}
-Una situazione diversa si presenta nella simulazione con rete randomica. La figura 17 mostra un comportamento generale dei nodi piuttosto simile: sebbene la maggior parte rimanga confinata sotto i 100 follower (notare la differenza con la precedente simulazione, dovuta alla diversa densità), gli utenti popolari mostrano quasi tutti un comportamento crescente. Inoltre, questi nodi popolari sono molto più numerosi rispetto alla precedente simulazione. Questo fenomeno dovrebbe essere dovuto al processo descritto nella fase 1, secondo cui la rete randomica si ``trasforma" in una rete a invarianza di scala.
+Una situazione diversa si presenta nella simulazione con rete randomica. La figura \ref{fig:mat2} mostra un comportamento generale dei nodi piuttosto simile: sebbene la maggior parte rimanga confinata sotto i 100 follower (notare la differenza con la precedente simulazione, dovuta alla diversa densità), gli utenti popolari mostrano quasi tutti un comportamento crescente. Inoltre, questi nodi popolari sono molto più numerosi rispetto alla precedente simulazione. Questo fenomeno dovrebbe essere dovuto al processo descritto nella fase 1, secondo cui la rete randomica si ``trasforma" in una rete a invarianza di scala.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/totale_1000_rnd_1080_1_1.pdf}
-\caption{Andamento generale dell'in-degre dei nodi della rete scale-free}
+\caption{Andamento generale dell'in-degre dei nodi della rete randomica}
+\label{fig:mat2}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/prescelto_1000_rnd_1080_1_1.pdf}
-\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\caption{Andamento in-degree del nodo prescelto, nella rete randomica}
+\label{fig:t2}
 \end{figure}
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/gasparri_1000_rnd_1080_1_1.pdf}
-\caption{Distribuzione in-degree della rete random, densità 5.0\%}
+\caption{Andamento in-degree del nodo popolare, nella rete randomica}
+\label{fig:g2}
 \end{figure}
-In questo contesto è plausibile un andamento della curva dei follower del nodo prescelto come evidenziato dalla figura 18: l'in-degree, da un valore inferiore a 20, si alza parecchio fino a superare il valore di 800 archi entranti. L'utente sconosciuto diventa nell'arco di pochissimo tempo un nodo ``hub" a tutti gli effetti. Questo è dovuto sicuramente alla maggiore densità iniziale, che accelera i cambiamenti all'interno della rete, e alla costruzione randomica iniziale, che fa della rete un ambiente ancora poco stabile.
-\section{Conclusione}
+In questo contesto è plausibile un andamento della curva dei follower del nodo prescelto come evidenziato dalla figura \ref{fig:t2} l'in-degree, da un valore inferiore a 20, si alza parecchio fino a superare il valore di 800 archi entranti, valore attorno al quale oscilla ma senza mai calare definitvamente. L'utente sconosciuto diventa nell'arco di pochissimo tempo un nodo ``hub" a tutti gli effetti. Questo è dovuto sicuramente alla maggiore densità iniziale, che accelera i cambiamenti all'interno della rete, e alla costruzione randomica iniziale, secondo quanto già evidenziato nella fase 1. Da notare anche la differenza di importanza dell'utente famoso tra la rete randomica e quella scale free: entrambi crescono fino alla fine delle iterazioni, ma mentre la crescita del nodo hub della rete scale-free è molto irregolare e il valore rimane sotto i 300 follower, la crescita della sua controparte in ambiente randomico (figura \ref{fig:g2}) è molto più regolare, fino al raggiungimento dei 1000 follower, il massimo possibile.
+\subsubsection{Commento}
+Dagli esperimenti condotti in questa fase è possibile trarre le seguenti conclusioni:
+\begin{description}
+\item[Rete scale-free] Il comportamento generale dei nodi sembra piuttosto ``naturale" e veritiero; in aggiunta, dopo il verificarsi dello scenario pianificato, la situazione che si viene a creare è molto simile a quella riscontrata nella realtà: l'utente sconosciuto cresce improvvisamente di popolarità, ma in modo contenuto rispetto alle dimensioni totali della rete. Dopo aver raggiunto il picco, i follower cominciano ad abbandonarlo, fino ad assestarsi su un valore intermedio tra i follower che aveva in precedenza ed il picco raggiunto. 
+\item[Rete randomica] Nonostante il processo di ``metamorfosi" da rete randomica a rete scale-free che si verifica durante l'esecuzione del modello, la situazione che si viene a creare sembra non essere adatta alla simulazione di scenari. Il picco di popolarità ottenuto dal nodo prescelto è sproporzionato rispetto a quanto avvenuto nella realtà tra Termite e Gasparri.
+Probabilmente gli agenti hanno bisogno di più tempo per stabilire trend di popolarità paragonabili a quelli riscontrati nella rete a invarianza di scala. Un fattore importante è sicuramente il limite alla crescita della densità, posto probabilmente troppo in alto ($7-8\%$): solo dopo il raggiungimento di questa soglia il comportamento dei nodi può differenziarsi.
+\end{description}
+
+\section{Conclusione e sviluppi futuri}
 \label{sec:end}
-\section{Sviluppi futuri}
-\label{sec:future}
-\begin{enumerate}
-\item Multithreading
-\item Più grosso
-\item Omofilia
-\item Raffinare fase 2
-	tweet polemico
-	out degree
-	
-\item Restringere densità \& più simulazioni
-\end{enumerate}
+Abbiamo qui esposto il nostro modello ABSoNeS e gli esperimenti condotti. In linea generale il modello può essere considerato come una buona base di partenza per la simulazione di Twitter, in quanto abbiamo verificato la prevenzione del completamento della rete e la proprietà ad invarianza di scala. In particolare, sia nella fase 1 che nella fase 2 delle prove è emerso come la configurazione iniziale della rete a invarianza di scala sia la migliore per conservarne le proprietà tipiche di una rete sociale e, successivamente, per simulare scenari. Resta il dubbio della densità iniziale, in quanto non è possibile stabilire la densità effettiva di Twitter: la rete a invarianza di scala limita la scelta della densità iniziale allo $0.1\%$, ma questo può essere aumentato manualmente con archi aggiunti in modo randomico, fino a raggiungere densità di partenza più elevata, seppur inquinando leggermente la power law. In questo modo si ridurrebbe inoltre il numero di nodi con grado $0$ presenti all'inizio delle run con bassa densità. \\ \\
+Le reti randomiche hanno il vantaggio principale nella scelta della densità iniziale, ma hanno bisogno di tempo per adattarsi alla soluzione modellistica da noi proposta. Infatti, sono servite a provare la limitatezza della crescita della densità, ma non hanno fornito l'ambiente necessario a simulare uno scenario.
+\\ \\
+Detto ciò, i possibili miglioramenti per ABSoNeS sono i seguenti:
+\begin{description}
+\item[Densità] Scongiurato il problema del completamento della rete, è emerso come il limite posto alla densità sia ancora troppo elevato. Un irrigidimento 
+\item[Rete iniziale]
+\item[Dimensioni rete] Una simulazione 
+\item[Omofilia] Nella fase 1 degli esperimenti abbiamo constatato la limitatezza dell'assortatività per attributo come misura di omofilia. Purtroppo, networkx non ha implementazioni di questa metrica in grado di utilizzare attributi vettoriali. In \cite{mixing} viene fornita un'espansione della formula di assortatività in grado di misurare l'omofilia tenedo conto di attributi vettoriali: l'implementazione in Pyhton di questa metrica sarebbe un primo passo per il miglioramento dell'analisi di omofilia.
+\item[Simulazione scenari] Nella fase 2 abbiamo simulato 
+\item[Multithreading] L'aspetto implementativo sicuramente pi\`u interessante \`e la possibilit\`a di parallelizzare il modello, rendendo la simulazione molto pi\`u veloce permettendoci inoltre di aumentare la quantit\`a di nodi ed arco nel grafo iniziale e di permettere un aumento di grandezza dello stesso. Tuttavia non ci \`e stato possibile seguire questa strada implementativa per via delle restrizioni di Python. Abbiamo implementato il modello \textit{multi-threading} del linguaggio che per\`o risulta essere un modello che non parallelizza veramente il processo in quando nonostante pi\`u di un thread sia attivo sono tutti soggetti al controllo dell'interprete che \`e single core. La soluzione sarebbe quella di utilizzare il modello \textit{multi-processing} di Python, tuttavia questo richiede la gestione della concorrenza all'accesso e modifica delle strutture dati, e di conseguenza della memoria, relative alla simulazione. 
+Una possibile strada da percorrere potrebbe quella di riscrivere l'intero modello in un linguaggio pi\`u a basso livello e pensato per una concorrenza sicura e stabile, come ad esempio \textbf{Rust}. Questa transizione porterebbe anche l'invalutabile vantaggio di accellerare notevolmente tutte le operazioni in quanto Rust \`e pensato per essere una alternativa pi\`u moderna e pi\`u memory-safe al C++, ed in quanto tale risulta avere velocit\`a paragonabili al C/C++ in quanto \`e compilato con lo stesso compilatore e utilizza le stesse librerie del C++. Si presuppone un aumento di prestazioni di circa il 130\% oltre ad una possibilit\`a di parallelizzare la parte pi\`u complessa e costosa in termini di tempo del modello, raggiungendo un aumento di velocit\`a inestimabile. 
+Lo svantaggio pi\`u grande sarebbere quello di perdere la possibilt\`a di utilizzare la libreria NetworkX che oltre che essere estremamente ottimizzata contiene diversi parametri essenziali per la valutazione del risultato della simulazione.
+\end{description}
+
 
 
 \begin{thebibliography}{9}

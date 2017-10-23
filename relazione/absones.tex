@@ -468,7 +468,30 @@ possibile parallelizzare il modello in modo che
 le azioni contenute in ogni step di simulazione 
 vengano effettuate contemporaneamente, ma comunque rispettando l'ordine descritto.
 Questa modello di parallelizzazione non \`e tuttavia implementato per questa versione in quanto sarebbe necessario implementare tecniche di sincronizzazione tra le strutture dati che contengono gli elementi della simulazione.
+\section{Interpretazione multi-agente}
+\label{sec:mas}
+Prima di descrivere gli agenti \`e necessario caratterizzare l'ambiente in cui essi operano.
+Nel modello descritto in precedenza l'ambiente \`e formalizzato come un grafo diretto in cui i nodi sono gli agenti e gli archi sono le connessioni tra di essi e il peso \`e la forza del loro legame.
+Questo tipo di ambiente \`e tendenzialmente inaccessibile in quanto gli agenti hanno visione solo dell'ambiente che li circonda; per\`o ci sono delle eccezioni. \`E possibile che un utente abbia accesso ad una parte di ambiente a lui distante nel caso in cui venga taggato da una persona con cui non ha nessun legame, questo \`e il principio su cui la fase 2 degli esperimenti si basa. Esiste inoltre il caso degenere in cui un particolare agente \`e connesso a tutti i nodi e quindi ha potenzialmente accesso a tutto l'ambiente, tuttavia in questo caso la sua visione \`e limitata dal suo FOV. Per via del fatto che gli utenti basano le proprie azioni su un modello probabilistico l'ambiente risulta non deterministico, in quanto non \`e possibile prevedere con certezza il suo stato successivo. Possiamo definire l'ambiente come episodico in quanto ogni utente prende decisioni in base allo stato in cui attualmente si trova la simulazione senza considerare le i possibili effetti nel futuro. Risulta complicato definire se gli angeti si trovino in contesto statico o dinamico o dinamico e discreto o continuo, in quanto non si applica completamente a nessuna delle due possibili definizioni. L'ambiente risuta statico perch\`e non ci sono processi che sono al di fuori del controllo degli utenti (tale concetto non \`e pi\`u veritiero nel caso in cui venga implementata in una versione futura la crescita del grafo iniziale), tuttavia gli agenti producono degli artefatti che modificano in qualche modo l'ambiente e le future interazioni delle sue componenti.
+Inoltre possiamo definire la simulazione come discreta, in quanto esiste un numero predefinito di azioni che gli utenti possono compiere, ma le percezioni che gli utenti hanno dello stesso cambiano ad ogni step. I metodi di interazioni permesse sono descritte pi\`u in dettaglio nel seguito.
 
+Gli agenti all'interno del modello ABSoNeS possono essere visti come agenti un ibrido tra hysteretic e knowledge-based. Le loro azioni nel modello agent-based vengono classificate come:
+\begin{description}
+    \item[See] Gli agenti, o utenti in questo caso,
+    osservano l'ambiente che li circonda; ovvero guardano chi li segue e chi loro seguono. Inoltre vedono gli elementi presenti nell'ambiente quali tweet, retweet e tag diretti. Tuttavia hanno una visione limitata di ci\`o che li circonda. Sono infatti in grado di visionare solo l'ambiente che li circonda che in questo caso corrisponde agli altri utenti ai quali sono connessi e alle loro azioni.
+    \item[Action] Le modalit\`a in cui gli agenti compiono le loro azioni sociali sono il motivo per cui possono essere classificati come ibridi.
+    Questo \`e dovuto al fatto che gli utenti decidono che tweet produrre in base a loro stati interni: activity e personal interest. Tali caratteristiche influiscono sulle azioni personali che ogni utente compie e solo la parte isteretica dell'agente.
+    Quando per\`o un agente si trova nella sua fase evaluation prende decisioni in base ad una conoscenza che inferisce da ci\`o che lo circonda. 
+    In particolare la decisione di continuare a seguire o di smettere di seguire qualcuno \`e dovuta da un ragionamento effettuato sui tweet, prodotti da altri agenti, che osserva. E il suo valore di attachment varia a seconda di un ragionamento, per quanto banale, basato di essi.
+    La parte pi\`u caratterizzante deriva dal ragionamento che ogni agente effettua quando decide di seguire qualcuno. Infatti guardando le azioni di un altro utente inferisce quali possano essere i suoi interessi e se sono compatibili a propri. In caso positivo pu\`o decire di seguirlo, altrimenti no.
+    \item[Do] Le azioni che ogni utente pu\`o effettuare sono largamente descritte nella sezione di modellazione, tuttavia riassumento ogni utente \`e in grado di seguire, smettere di seguire; produrre un tweet o un retweet; taggare direttamente un altro utente.
+    \item[Internal] Alcuni stati interni dell'utente sono immutabili, ovvero i personal intereset e le time zone. Tuttavia dopo ogni step di simulazione ogni agente aggiorna i suoi valori di attachment verso gli altri utenti.
+\end{description}
+Gli agenti nel modello sono da considerarsi autonomi su alcuni dei contesti che li caratterizzano; in particolare ogni agente \`e in grado di decire le proprie azioni in base ai suoi stati interni e alla visione dell'ambiente che lo circonda; ha inoltre controllo su alcuni dei suoi stati interni, anche se questo controllo \`e dovuto ad una risposta all'ambiente e non ad una sua decisione. Tuttavia gli utenti non hanno la capacit\`a di prendere decisioni in base alla loro esperienza regressa, ma in ogni caso questo fattore non \`e particolarmente rilevante in quanto possiamo facilmente osservare che spesso nemmeno gli utenti reali dei social network imparano dalle loro azioni. Basti pensare al presidente Trump, che nonostante abbia usato per anni il suo account tweetter per auto-diffamarsi, presumibilmente senza rendersene conto, continua a fare lo stesso nonostante l'importanza della carica che copre.
+
+Per completezza di descrizione risulta essenziale osservare che gli agenti non hanno un obiettivo, n\`e in comune n\`e personale. Potrebbe sembrare che ogni utente abbia come obiettivo quello di aumentare sempre di pi\`u la sua cerchia di followers anche se in realt\`a, per come \`e definito il modello, gli agenti non hanno nessun interesse verso questo obiettivo e nemmeno sono incetivati ad averlo. Cos\`i come per la maggior parte degli utenti reali, gli agenti sono solo interessati ad espreme le loro opinioni senza un obiettivo particolare. Per lo stesso motivo le azioni che compiono non hanno una utilit\`a nei confronti di s\`e stessi, dell'ambiente e degli altri utenti, semplicemente tweettano per il solo piacere di farlo.
+
+\`E difficile caratterizzare in termini classici l'interazione tra gli utenti, in quanto essi non hanno interazione diretta e non si passano nessuna informazione tra loro. Si potrebbe dire che gli agenti comunicano attraverso degli artefatti condivisi (tweet, ecc) avvicinandosi al modello artifact-mediated indirect interaction; tuttavia, nonostante gli artefatti siano condivisi e ci sono delle chiare regole che ne definiscono l'accesso da parte degli agenti, essi non sono un vero e proprio canale di comunicazione ma risultano essere delle ``tracce'' a cui altri agenti decidono se prestare attenzione o meno. Questo \`e dovuto dal fatto che non sia presente nessun obiettivo, comune o personale a cui tutti fanno riferimento.
 \section{Esperimenti}
 \label{sec:esp}
 In questa sezione esponiamo le prove condotte con il nostro modello. 
@@ -628,7 +651,7 @@ Nella tabella sottostante riportiamo i valori dei coefficienti $C$ e $\gamma$ de
 	$\gamma$ & 0.36 & 0.55 & 0.63 & 0.55 \\ \hline
     \end{tabular}
 \end{center}
-In quest'altra tabella riportiamo i valori per le distribuzioni finali della run effettuata \textit{con instanziazione scale-free della rete}:
+In quest'altra tabella riportiamo i valori per le distribuzioni iniziale e finale della run effettuata \textit{con instanziazione scale-free della rete}:
 \begin{center}
     \begin{tabular}{| l | l | l |}
     \hline
@@ -637,7 +660,20 @@ In quest'altra tabella riportiamo i valori per le distribuzioni finali della run
 	$\gamma$ & 1.09 & 0.87 \\ \hline
     \end{tabular}
 \end{center}
-Da notare che la prima colonna di questa tabella contiente i parametri della curva di riferimento.
+Da notare che la prima colonna di questa tabella contiente i parametri della curva di riferimento. \\
+Per quanto riguarda le reti random, quella che alla fine delle iterazioni rispetta più fedelmente l'invarianza di scala è quella con densità di partenza posta all'$1.0\%$ (figura \ref{fig:grnd}). La migliore in assoluto è invece la run con la rete scale-free iniziale (figura \ref{fig:gsf}). Dai plot salta immediatamente all'occhio la differenza di densità tra le due soluzioni, e il diverso numero di nodi ``hub".
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/init_1000_rnd_1080_1_0.png}
+\caption{Grafo rete random, densità 1.0\%}
+\label{fig:grnd}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{images/init_1000_sf_1080_0.png}
+\caption{Grafo rete scale-free, densità 0.1\%}
+\label{fig:gsf}
+\end{figure}
 \subsubsection{Commento}
 Da questi esperimenti possiamo trarre le seguenti considerazioni sugli obiettivi che ci eravamo posti:
 \begin{description}
@@ -724,16 +760,14 @@ Probabilmente gli agenti hanno bisogno di più tempo per stabilire trend di popo
 
 \section{Conclusione e sviluppi futuri}
 \label{sec:end}
-Abbiamo qui esposto il nostro modello ABSoNeS e gli esperimenti condotti. In linea generale il modello può essere considerato come una buona base di partenza per la simulazione di Twitter, in quanto abbiamo verificato la prevenzione del completamento della rete e la proprietà ad invarianza di scala. In particolare, sia nella fase 1 che nella fase 2 delle prove è emerso come la configurazione iniziale della rete a invarianza di scala sia la migliore per conservarne le proprietà tipiche di una rete sociale e, successivamente, per simulare scenari. Resta il dubbio della densità iniziale, in quanto non è possibile stabilire la densità effettiva di Twitter: la rete a invarianza di scala limita la scelta della densità iniziale allo $0.1\%$, ma questo può essere aumentato manualmente con archi aggiunti in modo randomico, fino a raggiungere densità di partenza più elevata, seppur inquinando leggermente la power law. In questo modo si ridurrebbe inoltre il numero di nodi con grado $0$ presenti all'inizio delle run con bassa densità. \\ \\
+Abbiamo qui esposto il nostro modello ABSoNeS e gli esperimenti condotti. In linea generale il modello può essere considerato come una buona base di partenza per la simulazione di Twitter, in quanto abbiamo verificato la prevenzione del completamento della rete e la proprietà ad invarianza di scala. In particolare, sia nella fase 1 che nella fase 2 delle prove è emerso come la configurazione iniziale della rete a invarianza di scala sia la migliore per conservarne le proprietà tipiche di una rete sociale e, successivamente, per simulare scenari. Resta il dubbio della densità iniziale, in quanto non è possibile stabilire la densità effettiva di Twitter: la rete a invarianza di scala limita la scelta della densità iniziale allo $0.1\%$, ma questo può essere aumentato manualmente con archi aggiunti in modo randomico, fino a raggiungere densità di partenza più elevata, seppur inquinando leggermente la power law. In questo modo si ridurrebbe inoltre il numero di nodi con grado $0$ presenti all'inizio delle run con bassa densità.  \\ \\
 Le reti randomiche hanno il vantaggio principale nella scelta della densità iniziale, ma hanno bisogno di tempo per adattarsi alla soluzione modellistica da noi proposta. Infatti, sono servite a provare la limitatezza della crescita della densità, ma non hanno fornito l'ambiente necessario a simulare uno scenario.
 \\ \\
 Detto ciò, i possibili miglioramenti per ABSoNeS sono i seguenti:
 \begin{description}
-\item[Densità] Scongiurato il problema del completamento della rete, è emerso come il limite posto alla densità sia ancora troppo elevato. Un irrigidimento 
-\item[Rete iniziale]
-\item[Dimensioni rete] Una simulazione 
-\item[Omofilia] Nella fase 1 degli esperimenti abbiamo constatato la limitatezza dell'assortatività per attributo come misura di omofilia. Purtroppo, networkx non ha implementazioni di questa metrica in grado di utilizzare attributi vettoriali. In \cite{mixing} viene fornita un'espansione della formula di assortatività in grado di misurare l'omofilia tenedo conto di attributi vettoriali: l'implementazione in Pyhton di questa metrica sarebbe un primo passo per il miglioramento dell'analisi di omofilia.
-\item[Simulazione scenari] Nella fase 2 abbiamo simulato 
+\item[Densità] Scongiurato il problema del completamento della rete, è emerso come il limite posto alla densità sia ancora troppo elevato. Un irrigidimento della probabilità di follow può ovviare a questo problema. In questo modo verrebbe garantita maggiormente la stabilità delle reti e un limite ai ``boom" di follower evidenziati soprattutto nelle reti random. 
+\item[Dimensioni rete] Una simulazione di un sistema complesso difficilmente avrà le stesse dimensioni del sistema stesso: per ragioni implementative ne viene preso solo un pezzo o, come nela nostro caso, se ne crea una versione ridotta. \'E chiaro però che più la simulazione si avvicina come dimensioni al sistema reale, più può essere considerata attendibile; nel caso di social network, il numero di nodi dovrebbe essere quanto più alto possibile. Un possibile sviluppo futuro è dunque quello di aumentare il numero di nodi; un altra espansione in questi termini è quella di considerare la creazione e cancellazione di nodi. Nella realtà, infatti, nuovi utenti si aggiungono costantemente alla rete, e altri vengono eliminati. 
+\item[Omofilia] Nella fase 1 degli esperimenti abbiamo constatato la limitatezza dell'assortatività per attributo come misura di omofilia. Purtroppo, networkx non ha implementazioni di questa metrica in grado di utilizzare attributi vettoriali. In \cite{mixing} viene fornita un'espansione della formula di assortatività in grado di misurare l'omofilia tenedo conto di attributi vettoriali: l'implementazione in Python di questa metrica sarebbe un primo passo per il miglioramento dell'analisi di omofilia. Inoltre, il vettore di interessi $PI$ può essere sostituito con una rappresentazione più ricca delle caratteristiche e degli interessi di un utente.
 \item[Multithreading] L'aspetto implementativo sicuramente pi\`u interessante \`e la possibilit\`a di parallelizzare il modello, rendendo la simulazione molto pi\`u veloce permettendoci inoltre di aumentare la quantit\`a di nodi ed arco nel grafo iniziale e di permettere un aumento di grandezza dello stesso. Tuttavia non ci \`e stato possibile seguire questa strada implementativa per via delle restrizioni di Python. Abbiamo implementato il modello \textit{multi-threading} del linguaggio che per\`o risulta essere un modello che non parallelizza veramente il processo in quando nonostante pi\`u di un thread sia attivo sono tutti soggetti al controllo dell'interprete che \`e single core. La soluzione sarebbe quella di utilizzare il modello \textit{multi-processing} di Python, tuttavia questo richiede la gestione della concorrenza all'accesso e modifica delle strutture dati, e di conseguenza della memoria, relative alla simulazione. 
 Una possibile strada da percorrere potrebbe quella di riscrivere l'intero modello in un linguaggio pi\`u a basso livello e pensato per una concorrenza sicura e stabile, come ad esempio \textbf{Rust}. Questa transizione porterebbe anche l'invalutabile vantaggio di accellerare notevolmente tutte le operazioni in quanto Rust \`e pensato per essere una alternativa pi\`u moderna e pi\`u memory-safe al C++, ed in quanto tale risulta avere velocit\`a paragonabili al C/C++ in quanto \`e compilato con lo stesso compilatore e utilizza le stesse librerie del C++. Si presuppone un aumento di prestazioni di circa il 130\% oltre ad una possibilit\`a di parallelizzare la parte pi\`u complessa e costosa in termini di tempo del modello, raggiungendo un aumento di velocit\`a inestimabile. 
 Lo svantaggio pi\`u grande sarebbere quello di perdere la possibilt\`a di utilizzare la libreria NetworkX che oltre che essere estremamente ottimizzata contiene diversi parametri essenziali per la valutazione del risultato della simulazione.

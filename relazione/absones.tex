@@ -470,12 +470,12 @@ vengano effettuate contemporaneamente, ma comunque rispettando l'ordine descritt
 Questa modello di parallelizzazione non \`e tuttavia implementato per questa versione in quanto sarebbe necessario implementare tecniche di sincronizzazione tra le strutture dati che contengono gli elementi della simulazione.
 \section{Interpretazione multi-agente}
 \label{sec:mas}
-Prima di descrivere gli agenti \`e necessario caratterizzare l'ambiente in cui essi operano.
+Prima di descrivere gli agenti \`e necessario caratterizzare l'ambiente in cui essi operano. In \cite{norvig} vengono descritti i parametri con cui un agent environment si caratterizza.
 Nel modello descritto in precedenza l'ambiente \`e formalizzato come un grafo diretto in cui i nodi sono gli agenti e gli archi sono le connessioni tra di essi e il peso \`e la forza del loro legame.
 Questo tipo di ambiente \`e tendenzialmente inaccessibile in quanto gli agenti hanno visione solo dell'ambiente che li circonda; per\`o ci sono delle eccezioni. \`E possibile che un utente abbia accesso ad una parte di ambiente a lui distante nel caso in cui venga taggato da una persona con cui non ha nessun legame, questo \`e il principio su cui la fase 2 degli esperimenti si basa. Esiste inoltre il caso degenere in cui un particolare agente \`e connesso a tutti i nodi e quindi ha potenzialmente accesso a tutto l'ambiente, tuttavia in questo caso la sua visione \`e limitata dal suo FOV. Per via del fatto che gli utenti basano le proprie azioni su un modello probabilistico l'ambiente risulta non deterministico, in quanto non \`e possibile prevedere con certezza il suo stato successivo. Possiamo definire l'ambiente come episodico in quanto ogni utente prende decisioni in base allo stato in cui attualmente si trova la simulazione senza considerare le i possibili effetti nel futuro. Risulta complicato definire se gli angeti si trovino in contesto statico o dinamico o dinamico e discreto o continuo, in quanto non si applica completamente a nessuna delle due possibili definizioni. L'ambiente risuta statico perch\`e non ci sono processi che sono al di fuori del controllo degli utenti (tale concetto non \`e pi\`u veritiero nel caso in cui venga implementata in una versione futura la crescita del grafo iniziale), tuttavia gli agenti producono degli artefatti che modificano in qualche modo l'ambiente e le future interazioni delle sue componenti.
 Inoltre possiamo definire la simulazione come discreta, in quanto esiste un numero predefinito di azioni che gli utenti possono compiere, ma le percezioni che gli utenti hanno dello stesso cambiano ad ogni step. I metodi di interazioni permesse sono descritte pi\`u in dettaglio nel seguito.
 
-Gli agenti all'interno del modello ABSoNeS possono essere visti come agenti un ibrido tra hysteretic e knowledge-based. Le loro azioni nel modello agent-based vengono classificate come:
+Gli agenti all'interno del modello ABSoNeS possono essere visti come agenti un ibrido tra hysteretic e knowledge-based \cite{ferber}. Le loro azioni nel modello agent-based vengono classificate come:
 \begin{description}
     \item[See] Gli agenti, o utenti in questo caso,
     osservano l'ambiente che li circonda; ovvero guardano chi li segue e chi loro seguono. Inoltre vedono gli elementi presenti nell'ambiente quali tweet, retweet e tag diretti. Tuttavia hanno una visione limitata di ci\`o che li circonda. Sono infatti in grado di visionare solo l'ambiente che li circonda che in questo caso corrisponde agli altri utenti ai quali sono connessi e alle loro azioni.
@@ -562,7 +562,7 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 topic più rappresentativo di ognuno.\\ \\
 L'esperimento successivo (figura \ref{fig:rnd01}) condivide con il primo il valore di densità iniziale, mentre differisce per costruzione: è infatti una random network priva, quindi, di nodi ``hub"; si riscontrano comunque nodi con più collegamenti in entrata e in uscita rispetto agli altri, ma la differenza, in questi termini, è molto ridotta. Ciò si rispecchia in una crescita molto più contenuta e lineare della densità (si arriva all'ultima iterazione con circa lo $0.3\%$), con i nodi che, avendo tutti un \textit{field of view} limitato, fanno fatica a stabilire nuovi collegamenti con nodi affini dal punto di vista degli interessi. Da qui si può trarre la conclusione che la presenza di nodi ``popolari" faciliti l'instaurazione di nuovi legami tra nodi meno importanti.
 Inoltre, nell'andamento del coefficiente di clustering, si riscontra lo stesso fenomeno osservato in precedenza sulla scale-free network: dopo un calo iniziale, l'indice torna a crescere, ma in modo sensibilmente più lento rispetto all'altro caso. Da notare anche il valore di partenza, circa cinque volte minore. Anche questo comportamento può essere imputato alla scarsa densità e all'elevata sparsità degli archi, per cui le comunità vengono costituite con fatica. L'assortatività per grado mostra un andamento incerto ma crescente, a indicare che i nodi tendono a legarsi in base alla similarità tra out e in degree. L'assortatività per attributo è più incerta rispetto al caso precedente, con la differenza che nella seconda metà della simulazione rimane quasi sempre positiva.
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_05_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_05_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -572,9 +572,6 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 0.5\%}
 \label{fig:rnd05}
-\end{figure}
-\\ \\Il caso con densità di partenza pari a $0.5\%$ (figura \ref{fig:rnd05}) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. 
-\begin{figure}[H]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_1_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_1_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -584,8 +581,12 @@ c. Assortatività per grado & d. Assortatività per attributo \\[6pt]
 \centering
 \caption{Indici random network, densità 1.0\%}
 \label{fig:rnd1}
+\end{figure}
+Il caso con densità di partenza pari a $0.5\%$ (figura \ref{fig:rnd05}) è piuttosto interessante, in quanto vi abbiamo osservato la crescita più rapida per quanto riguarda la densità: dallo $0.5\%$ iniziale, dopo una fase relativamente calma, cresce fino a superare il $6\%$ alla fine della simulazione. Questo si riflette sugli altri indici: ad esempio, il coefficiente di clustering, dopo un rapido incremento con una pendenza pari a quella assunta dalla densità, comicia a ridurre l'ascesa. Questo suggerisce che, man mano che la densità si fa importante, i collegamenti avvengo sempre di più all'interno di comunità già formate. Non solo: a partire dall'iterazione 984 la rete ha anche raggiunto lo stato di completa \textit{connessione}, ovvero la rete è diventata un'unica componente connessa; questo concorre all'affievolimento della crescita del coefficiente di clustering, in quanto favorisce l'instaurazione di archi intra-comunità. Nell'assortatività per grado si ritrova il fenomeno osservato nella prima run: l'indice cresce fino a raggiungere un picco, per poi calare fino alla fine delle iterazioni, a indicare una tendenza della rete ad assumere una struttura ad invarianza di scala. Qui però il fenomeno è più rapido: il picco è più alto e viene raggiunto prima, mentre nella fase calante si verifica un livellamento improvviso, riscontrato anche nella misura di omofilia, dove l'assortatività per attributo si stabilizza sullo 0; questo comportamento può essere imputato al fatto che la rete ha raggiunto uno stato in cui le differenze tra i nodi, sia dal punto di vista della metrica $r(out,in)$ che dell'assortatività per attributo, sono meno accentuate; in altre parole, l'invarianza di scala comincia ad indebolirsi. Inoltre, la distanza tra i nodi diventa molto piccola, per cui è più facile per un agente scovare un altro agente simile per topic e instaurare un collegamento. 
+%\begin{figure}[H]
+
 %\end{figure}
-%\begin{figure}[h]
+\begin{figure}[H]
 \begin{tabular}{cc}
   \includegraphics[width=81mm]{images/evolution_1000_rnd_1080_5_0.pdf} &   \includegraphics[width=81mm]{images/clustering_1000_rnd_1080_5_0.pdf} \\
 a. Densità & b. Coefficiente di clustering \\[6pt]
@@ -847,5 +848,10 @@ ISO 690
   
 \bibitem{sfnx}
   Bollobás, B., Borgs, C., Chayes, J., \& Riordan, O. (2003, January). Directed scale-free graphs. In Proceedings of the fourteenth annual ACM-SIAM symposium on Discrete algorithms (pp. 132-139). Society for Industrial and Applied Mathematics.
+  
+\bibitem{norvig}
+  Russell, S., Norvig, P. (1995).  Artificial intelligence. A modern approach. Artificial Intelligence. Prentice-Hall, Egnlewood Cliffs, 25, 27.
+ISO 690	
+
 \end{thebibliography}
 \end{document}
